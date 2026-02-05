@@ -1,9 +1,3 @@
-// ===== SPLASH PAGE =====
-document.getElementById("enter-btn").addEventListener("click", ()=>{
-    document.getElementById("splash").classList.add("hidden");
-    document.getElementById("main-page").classList.remove("hidden");
-});
-
 // ===== MAIN PAGE BUTTON =====
 document.getElementById("go-menu").addEventListener("click", ()=>{
     document.getElementById("main-page").classList.add("hidden");
@@ -29,7 +23,6 @@ const parlayTotalSpan = document.getElementById("parlay-total");
 let parlayRows = [];
 const maxRows = 20;
 
-// Create table row
 function createParlayRow(index){
     const tr = document.createElement("tr");
     tr.dataset.index = index;
@@ -70,7 +63,6 @@ function createParlayRow(index){
     selectResult.addEventListener("change", calculateParlay);
 }
 
-// Calculate totals
 function calculateParlay(){
     let total = 1;
     parlayRows.forEach(row=>{
@@ -92,7 +84,6 @@ function calculateParlay(){
     parlayTotalSpan.textContent = total.toFixed(2);
 }
 
-// Add row
 document.getElementById("add-row").addEventListener("click", ()=>{
     if(parlayRows.length >= maxRows){
         alert("Maximum 20 rows allowed!");
@@ -102,7 +93,6 @@ document.getElementById("add-row").addEventListener("click", ()=>{
     calculateParlay();
 });
 
-// Reset odds
 document.getElementById("reset-odds").addEventListener("click", ()=>{
     parlayRows.forEach(row=>{
         row.odds.value = 1;
