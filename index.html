@@ -1,182 +1,50 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Live Score Website</title>
-<style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body, html { height:100%; font-family: Arial, sans-serif; background:#121212; color:white; }
-
-  /* HALAMAN AWAL */
-  #landing {
-    height:100vh;
-    display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;
-    background: linear-gradient(to right, #2c3e50, #3498db);
-    padding:20px;
-  }
-  #landing button {
-    padding:12px 30px; font-size:16px; border:none; border-radius:5px; cursor:pointer; margin-top:20px;
-    background:white; color:#333; transition:0.3s;
-  }
-  #landing button:hover { background:#eee; }
-
-  /* HALAMAN MENU UTAMA */
-  #main {
-    display:none; height:100vh; width:100%;
-    background-image: url('https://i.ibb.co/67T8hQv2/save-follow-me.jpg');
-    background-size: cover; background-position:center; background-repeat:no-repeat;
-    display:flex; flex-direction:column; justify-content:center; align-items:center;
-    padding:20px; color:white; text-align:center; position:relative;
-  }
-  .btnBack {
-    position:absolute; top:20px; left:20px; padding:10px 15px; background:rgba(0,0,0,0.5);
-    border:none; border-radius:5px; color:white; cursor:pointer; font-weight:bold; z-index:10; transition:0.3s;
-  }
-  .btnBack:hover { background: rgba(0,0,0,0.8); }
-  .menu-container { display:flex; gap:20px; flex-wrap:wrap; justify-content:center; width:100%; max-width:700px; }
-  .menu-button {
-    background: rgba(255,255,255,0.2); border:2px solid white; border-radius:10px;
-    color:white; padding:20px; font-size:18px; cursor:pointer; flex:1 1 180px; transition:0.3s; user-select:none;
-  }
-  .menu-button:hover { background: rgba(255,255,255,0.35); transform: scale(1.05); }
-
-  /* HALAMAN LIVE SCORE */
-  #liveScorePage { display:none; padding:20px; background:#121212; color:white; min-height:100vh; overflow-y:auto; }
-  #liveScorePage h2 { margin-bottom:20px; }
-  #liveScoreContainer { max-width:900px; margin:auto; }
-  .match-card {
-    background:#1e1e1e; border-radius:8px; padding:15px 20px; margin-bottom:15px; display:flex; flex-direction:column; box-shadow:0 2px 8px rgba(0,0,0,0.7);
-  }
-  .league-name { font-weight:700; font-size:1.1rem; margin-bottom:8px; color:#66ccff; }
-  .match-info { display:flex; justify-content:space-between; align-items:center; }
-  .team { flex:1; display:flex; align-items:center; }
-  .team-logo { width:30px; height:30px; margin-right:8px; object-fit:contain; border-radius:50%; background:white; }
-  .team-name { font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .score { font-weight:700; font-size:1.3rem; margin:0 10px; min-width:40px; text-align:center; }
-  .match-date { margin-top:8px; font-size:0.9rem; color:#aaa; }
-  .status { font-weight:700; padding:4px 8px; border-radius:5px; font-size:0.8rem; text-align:center; min-width:70px; color:white; }
-  .status.SCHEDULED { background:#555; }
-  .status.IN_PLAY { background:#f39c12; }
-  .status.FINISHED { background:#27ae60; }
-  .status.PAUSED { background:#e74c3c; }
-  @media(max-width:600px){ .match-info { flex-direction:column; gap:10px; } .score { margin:10px 0; } }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soccer Hub - Live Score & Jadwal</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="container">
+        <h1>Selamat Datang di Soccer Hub</h1>
+        <button onclick="showMenu()">Masuk</button>
 
-<!-- HALAMAN AWAL -->
-<div id="landing">
-  <h1>Selamat Datang di Live Score</h1>
-  <p>Klik tombol masuk untuk melanjutkan</p>
-  <button onclick="masuk()">Masuk</button>
-</div>
-
-<!-- HALAMAN MENU UTAMA -->
-<div id="main">
-  <button class="btnBack" onclick="kembaliMenu()">← Kembali</button>
-  <h2>Pilih Menu</h2>
-  <div class="menu-container">
-    <button class="menu-button" onclick="menuClicked('Calculator Parlay')">Calculator Parlay</button>
-    <button class="menu-button" onclick="menuClicked('Bonus Event')">Bonus Event</button>
-    <button class="menu-button" onclick="menuClicked('Live Score')">Live Score</button>
-  </div>
-</div>
-
-<!-- HALAMAN LIVE SCORE -->
-<div id="liveScorePage">
-  <button class="btnBack" onclick="kembaliMenu()">← Kembali</button>
-  <h2>Live Score Semua Pertandingan</h2>
-  <div id="liveScoreContainer"></div>
-</div>
-
-<script>
-  const API_KEY = '7fb015b58da246fa96726319ef843ecc';
-  const API_URL = 'https://api.football-data.org/v4/matches';
-
-  // Navigasi halaman
-  function masuk(){ 
-    document.getElementById('landing').style.display='none'; 
-    document.getElementById('main').style.display='flex'; 
-  }
-  function kembaliMenu(){ 
-    document.getElementById('liveScorePage').style.display='none'; 
-    document.getElementById('main').style.display='flex'; 
-  }
-  function menuClicked(menuName){
-    if(menuName==='Live Score'){ 
-      document.getElementById('main').style.display='none'; 
-      document.getElementById('liveScorePage').style.display='block'; 
-      showLiveScores(); 
-    } else { 
-      alert('Kamu memilih menu: ' + menuName); 
-    }
-  }
-
-  // Fetch semua pertandingan
-  async function fetchAllMatches(){
-    try{
-      const res = await fetch(API_URL,{
-        headers:{ 'X-Auth-Token': API_KEY }
-      });
-      const data = await res.json();
-      return data.matches; // Tampilkan semua, tanpa filter
-    }catch(e){ console.error(e); return []; }
-  }
-
-  // Format tanggal
-  function formatDateTime(dateString){
-    const options={ day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit', hour12:false };
-    return new Date(dateString).toLocaleString('id-ID', options);
-  }
-
-  function getStatusClass(status){
-    switch(status){
-      case 'SCHEDULED': return 'SCHEDULED';
-      case 'IN_PLAY': return 'IN_PLAY';
-      case 'FINISHED': return 'FINISHED';
-      case 'PAUSED': return 'PAUSED';
-      default: return '';
-    }
-  }
-
-  async function showLiveScores(){
-    const matches = await fetchAllMatches();
-    const container = document.getElementById('liveScoreContainer');
-    container.innerHTML = '';
-    if(matches.length===0){ 
-      container.innerHTML='<p>Tidak ada data live saat ini.</p>'; 
-      return; 
-    }
-
-    matches.forEach(match=>{
-      const league = match.competition.name;
-      const date = formatDateTime(match.utcDate);
-      const home = match.homeTeam.name;
-      const away = match.awayTeam.name;
-      const homeScore = match.score.fullTime.home!==null?match.score.fullTime.home:'-';
-      const awayScore = match.score.fullTime.away!==null?match.score.fullTime.away:'-';
-      const status = match.status;
-
-      const homeLogo = 'https://via.placeholder.com/30?text=H';
-      const awayLogo = 'https://via.placeholder.com/30?text=A';
-
-      const card = document.createElement('div');
-      card.className='match-card';
-      card.innerHTML=`
-        <div class="league-name">${league}</div>
-        <div class="match-info">
-          <div class="team"><img src="${homeLogo}" alt="${home}" class="team-logo"/><div class="team-name" title="${home}">${home}</div></div>
-          <div class="score">${homeScore} - ${awayScore}</div>
-          <div class="team"><img src="${awayLogo}" alt="${away}" class="team-logo"/><div class="team-name" title="${away}">${away}</div></div>
-          <div class="status ${getStatusClass(status)}">${status.replace('_',' ')}</div>
+        <div id="menu" class="hidden">
+            <button onclick="showSection('calculator')">Calculator Parlay</button>
+            <button onclick="showSection('bonus')">Bonus Event</button>
+            <button onclick="showSection('live')">Live Score</button>
+            <button onclick="showSection('schedule')">Jadwal Pertandingan</button>
         </div>
-        <div class="match-date">${date}</div>
-      `;
-      container.appendChild(card);
-    });
-  }
-</script>
 
+        <div id="sections">
+            <div id="calculator" class="section hidden">
+                <h2>Calculator Parlay</h2>
+                <p>Fitur kalkulasi taruhan parlay akan muncul di sini.</p>
+                <button onclick="backToMenu()">Kembali</button>
+            </div>
+
+            <div id="bonus" class="section hidden">
+                <h2>Bonus Event</h2>
+                <p>Informasi bonus dan event terbaru akan muncul di sini.</p>
+                <button onclick="backToMenu()">Kembali</button>
+            </div>
+
+            <div id="live" class="section hidden">
+                <h2>Live Score Liga Besar</h2>
+                <div id="matches-live">Loading live matches...</div>
+                <button onclick="backToMenu()">Kembali</button>
+            </div>
+
+            <div id="schedule" class="section hidden">
+                <h2>Jadwal Pertandingan Mendatang</h2>
+                <div id="matches-schedule">Loading schedule...</div>
+                <button onclick="backToMenu()">Kembali</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
