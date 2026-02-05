@@ -1,9 +1,15 @@
+/* GENERAL */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
-    padding: 20px;
+    padding: 0;
     text-align: center;
     background: #f4f4f4;
+}
+
+/* HIDDEN SECTIONS */
+.section.hidden, #menu.hidden, #splash.hidden, #main-page.hidden {
+    display: none;
 }
 
 h1, h2, h3 {
@@ -11,17 +17,23 @@ h1, h2, h3 {
 }
 
 button {
-    padding: 10px 15px;
+    padding: 10px 20px;
     margin: 5px;
     cursor: pointer;
     font-size: 16px;
 }
 
-.section.hidden, #menu.hidden, #splash.hidden, #main-page.hidden {
-    display: none;
+/* SPLASH */
+#splash {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #ececec;
 }
 
-/* MAIN PAGE / LOGO */
+/* MAIN PAGE WITH BACKGROUND */
 #main-page {
     height: 100vh;
     display: flex;
@@ -34,16 +46,26 @@ button {
 }
 
 .logo {
-    width: 200px;
+    width: 250px;
     margin-bottom: 20px;
 }
 
-/* PARLAY TABLE */
+/* MAIN MENU */
+#menu button {
+    width: 200px;
+}
+
+/* PARLAY CALCULATOR TABLE */
+.table-wrapper {
+    overflow-x: auto;
+    margin: 10px auto;
+    max-width: 600px;
+}
+
 table {
     width: 100%;
-    max-width: 600px;
-    margin: 0 auto 10px auto;
     border-collapse: collapse;
+    margin-bottom: 10px;
 }
 
 th, td {
@@ -53,6 +75,20 @@ th, td {
 }
 
 th {
-    background: #333;
-    color: #fff;
+    background-color: #333;
+    color: white;
+}
+
+input[type="number"] {
+    width: 80px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+    .logo {
+        width: 150px;
+    }
+    button {
+        width: 150px;
+    }
 }
