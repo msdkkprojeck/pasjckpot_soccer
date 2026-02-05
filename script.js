@@ -6,7 +6,7 @@ document.getElementById("enter-btn").addEventListener("click", ()=>{
 
 // ===== MAIN PAGE BUTTON =====
 document.getElementById("go-menu").addEventListener("click", ()=>{
-    document.getElementB    yId("main-page").classList.add("hidden");
+    document.getElementById("main-page").classList.add("hidden");
     document.getElementById("menu").classList.remove("hidden");
 });
 
