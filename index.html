@@ -3,43 +3,50 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Parlay Calculator</title>    
+<title>Soccer Website</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- MAIN MENU -->
-    <div id="menu">
-        <h1>Main Menu</h1>
-        <button onclick="showSection('parlay')">Parlay Calculator</button>
-        <button onclick="showSection('live')">Live Score</button>
-        <button onclick="showSection('schedule')">Upcoming Matches</button>
-    </div>
 
-    <!-- PARLAY CALCULATOR -->
-    <div id="parlay" class="section hidden">
-        <h2>Parlay Calculator</h2>
-        <div id="parlay-rows"></div>
-        <button id="add-row">Add Row</button>
-        <button id="reset-odds">Reset Odds</button>
-        <h3>Total: <span id="parlay-total">0.00</span></h3>
-        <div id="per-odds"></div>
-        <button onclick="backToMenu()">Back to Main Menu</button>
-    </div>
+<!-- SPLASH PAGE -->
+<div id="splash">
+    <h1>Welcome to Soccer Portal</h1>
+    <button id="enter-btn">Enter</button>
+</div>
 
-    <!-- LIVE SCORE -->
-    <div id="live" class="section hidden">
-        <h2>Live Score</h2>
-        <div id="matches-live">Live Score feature not available yet.</div>
-        <button onclick="backToMenu()">Back to Main Menu</button>
-    </div>
+<!-- MAIN MENU -->
+<div id="menu" class="hidden">
+    <h1>Main Menu</h1>
+    <button onclick="showSection('parlay')">Parlay Calculator</button>
+    <button onclick="showSection('bonus')">Bonus Event</button>
+    <button onclick="showSection('live')">Live Score</button>
+</div>
 
-    <!-- UPCOMING MATCHES -->
-    <div id="schedule" class="section hidden">
-        <h2>Upcoming Matches</h2>
-        <div id="matches-schedule">Upcoming matches feature not available yet.</div>
-        <button onclick="backToMenu()">Back to Main Menu</button>
-    </div>
+<!-- PARLAY CALCULATOR -->
+<div id="parlay" class="section hidden">
+    <h2>Parlay Calculator</h2>
+    <div id="parlay-rows"></div>
+    <button id="add-row">Add Row</button>
+    <button id="reset-odds">Reset Odds</button>
+    <h3>Total: <span id="parlay-total">0.00</span></h3>
+    <div id="per-odds"></div>
+    <button onclick="backToMenu()">Back to Main Menu</button>
+</div>
 
-    <script src="script.js"></script>
+<!-- BONUS EVENT -->
+<div id="bonus" class="section hidden">
+    <h2>Bonus Event</h2>
+    <p>Feature coming soon...</p>
+    <button onclick="backToMenu()">Back to Main Menu</button>
+</div>
+
+<!-- LIVE SCORE -->
+<div id="live" class="section hidden">
+    <h2>Live Score</h2>
+    <p>Feature coming soon...</p>
+    <button onclick="backToMenu()">Back to Main Menu</button>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
