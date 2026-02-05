@@ -3,15 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Soccer Website</title>
+<title>Pasjackpot Soccer</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <!-- SPLASH PAGE -->
 <div id="splash">
-    <h1>Welcome to Soccer Portal</h1>
+    <h1>Welcome to Pasjackpot Soccer</h1>
     <button id="enter-btn">Enter</button>
+</div>
+
+<!-- MAIN PAGE / LOGO -->
+<div id="main-page" class="hidden">
+    <div class="logo-container">
+        <img src="https://i.ibb.co/BKNPDfmy/logo-pasjackpot.webp" alt="Pasjackpot Logo" class="logo">
+    </div>
+    <button id="go-menu">Enter Main Menu</button>
 </div>
 
 <!-- MAIN MENU -->
@@ -25,11 +33,20 @@
 <!-- PARLAY CALCULATOR -->
 <div id="parlay" class="section hidden">
     <h2>Parlay Calculator</h2>
-    <div id="parlay-rows"></div>
+    <table id="parlay-table">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Odds</th>
+                <th>Result</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody id="parlay-rows"></tbody>
+    </table>
     <button id="add-row">Add Row</button>
     <button id="reset-odds">Reset Odds</button>
     <h3>Total: <span id="parlay-total">0.00</span></h3>
-    <div id="per-odds"></div>
     <button onclick="backToMenu()">Back to Main Menu</button>
 </div>
 
