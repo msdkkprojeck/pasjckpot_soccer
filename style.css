@@ -1,0 +1,61 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: url('https://i.ibb.co/67T8hQv2/save-follow-me.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
+}
+
+.container {
+    background: rgba(0, 0, 0, 0.6);
+    padding: 20px;
+    max-width: 900px;
+    margin: 50px auto;
+    border-radius: 10px;
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #2196F3;
+    color: white;
+    font-size: 1em;
+}
+
+button:hover {
+    background-color: #1976D2;
+}
+
+.hidden {
+    display: none;
+}
+
+.section {
+    margin-top: 20px;
+    text-align: left;
+}
+
+.match {
+    border-bottom: 1px solid #fff;
+    padding: 10px 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.match:last-child {
+    border-bottom: none;
+}
+
+.league {
+    font-weight: bold;
+    font-size: 1.1em;
+}
