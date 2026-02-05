@@ -1,7 +1,9 @@
 body {
     font-family: Arial, sans-serif;
-    margin: 20px;
-    background: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+    background: #f4f4f4;
+    text-align: center;
 }
 
 h1, h2, h3 {
@@ -9,19 +11,26 @@ h1, h2, h3 {
 }
 
 button {
-    padding: 8px 12px;
+    padding: 10px 15px;
     margin: 5px;
     cursor: pointer;
+    font-size: 16px;
 }
 
-.section.hidden { display: none; }
+.section.hidden, #menu.hidden, #splash.hidden {
+    display: none;
+}
 
 #parlay-rows {
     margin-bottom: 10px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .parlay-row {
     display: flex;
+    justify-content: center;
     align-items: center;
     margin-bottom: 5px;
 }
