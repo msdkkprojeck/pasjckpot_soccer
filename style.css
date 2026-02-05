@@ -2,8 +2,8 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 20px;
-    background: #f4f4f4;
     text-align: center;
+    background: #f4f4f4;
 }
 
 h1, h2, h3 {
@@ -17,33 +17,42 @@ button {
     font-size: 16px;
 }
 
-.section.hidden, #menu.hidden, #splash.hidden {
+.section.hidden, #menu.hidden, #splash.hidden, #main-page.hidden {
     display: none;
 }
 
-#parlay-rows {
-    margin-bottom: 10px;
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.parlay-row {
+/* MAIN PAGE / LOGO */
+#main-page {
+    height: 100vh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-bottom: 5px;
+    background-image: url('https://i.ibb.co/kg6xWd8R/jpg.jpg');
+    background-size: cover;
+    background-position: center;
 }
 
-.parlay-row input {
-    width: 80px;
-    margin-right: 5px;
+.logo {
+    width: 200px;
+    margin-bottom: 20px;
 }
 
-.parlay-row select {
-    margin-right: 5px;
+/* PARLAY TABLE */
+table {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto 10px auto;
+    border-collapse: collapse;
 }
 
-#per-odds {
-    margin-top: 10px;
+th, td {
+    border: 1px solid #333;
+    padding: 8px;
+    text-align: center;
+}
+
+th {
+    background: #333;
+    color: #fff;
 }
