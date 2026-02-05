@@ -33,17 +33,19 @@
 <!-- PARLAY CALCULATOR -->
 <div id="parlay" class="section hidden">
     <h2>Parlay Calculator</h2>
-    <table id="parlay-table">
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Odds</th>
-                <th>Result</th>
-                <th>Subtotal</th>
-            </tr>
-        </thead>
-        <tbody id="parlay-rows"></tbody>
-    </table>
+    <div class="table-wrapper">
+        <table id="parlay-table">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Odds</th>
+                    <th>Result</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody id="parlay-rows"></tbody>
+        </table>
+    </div>
     <button id="add-row">Add Row</button>
     <button id="reset-odds">Reset Odds</button>
     <h3>Total: <span id="parlay-total">0.00</span></h3>
