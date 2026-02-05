@@ -1,4 +1,22 @@
-const menuDiv = document.getElementById("menu");
+// ===== SPLASH PAGE =====
+document.getElementById("enter-btn").addEventListener("click", ()=>{
+    document.getElementById("splash").classList.add("hidden");
+    document.getElementById("menu").classList.remove("hidden");
+});
+
+// ===== MENU FUNCTIONS =====
+function showSection(sectionId){
+    document.getElementById("menu").classList.add("hidden");
+    document.querySelectorAll(".section").forEach(sec => sec.classList.add("hidden"));
+    document.getElementById(sectionId).classList.remove("hidden");
+}
+
+function backToMenu(){
+    document.querySelectorAll(".section").forEach(sec => sec.classList.add("hidden"));
+    document.getElementById("menu").classList.remove("hidden");
+}
+
+// ===== PARLAY CALCULATOR =====
 const parlayRowsDiv = document.getElementById("parlay-rows");
 const parlayTotalSpan = document.getElementById("parlay-total");
 const perOddsDiv = document.getElementById("per-odds");
@@ -6,19 +24,7 @@ const perOddsDiv = document.getElementById("per-odds");
 let parlayRows = [];
 const maxRows = 20;
 
-// ===== MENU FUNCTIONS =====
-function showSection(sectionId){
-    menuDiv.classList.add("hidden");
-    document.querySelectorAll(".section").forEach(sec => sec.classList.add("hidden"));
-    document.getElementById(sectionId).classList.remove("hidden");
-}
-
-function backToMenu(){
-    document.querySelectorAll(".section").forEach(sec => sec.classList.add("hidden"));
-    menuDiv.classList.remove("hidden");
-}
-
-// ===== PARLAY CALCULATOR =====
+// Create a parlay row
 function createParlayRow(index){
     const div = document.createElement("div");
     div.className = "parlay-row";
@@ -31,7 +37,7 @@ function createParlayRow(index){
     inputOdds.min = 1;
 
     const selectResult = document.createElement("select");
-    ["Win","Lose","Half Win","Draw"].forEach(opt=>{
+    ["Win","Half Win","Lose","Draw"].forEach(opt=>{
         const o = document.createElement("option");
         o.value = opt;
         o.textContent = opt;
@@ -48,7 +54,7 @@ function createParlayRow(index){
     parlayRows.push({odds: inputOdds, result: selectResult});
 }
 
-// Calculate parlay
+// Calculate total
 function calculateParlay(){
     let total = 1;
     let perOddsText = "";
