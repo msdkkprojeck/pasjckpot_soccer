@@ -1,6 +1,12 @@
 // ===== SPLASH PAGE =====
 document.getElementById("enter-btn").addEventListener("click", ()=>{
     document.getElementById("splash").classList.add("hidden");
+    document.getElementById("main-page").classList.remove("hidden");
+});
+
+// ===== MAIN PAGE BUTTON =====
+document.getElementById("go-menu").addEventListener("click", ()=>{
+    document.getElementById("main-page").classList.add("hidden");
     document.getElementById("menu").classList.remove("hidden");
 });
 
@@ -19,23 +25,26 @@ function backToMenu(){
 // ===== PARLAY CALCULATOR =====
 const parlayRowsDiv = document.getElementById("parlay-rows");
 const parlayTotalSpan = document.getElementById("parlay-total");
-const perOddsDiv = document.getElementById("per-odds");
 
 let parlayRows = [];
 const maxRows = 20;
 
-// Create a parlay row
+// Create table row
 function createParlayRow(index){
-    const div = document.createElement("div");
-    div.className = "parlay-row";
-    div.dataset.index = index;
+    const tr = document.createElement("tr");
+    tr.dataset.index = index;
 
+    const tdNo = document.createElement("td");
+    tdNo.textContent = index + 1;
+
+    const tdOdds = document.createElement("td");
     const inputOdds = document.createElement("input");
     inputOdds.type = "number";
-    inputOdds.placeholder = "Odds";
     inputOdds.value = 1.0;
     inputOdds.min = 1;
+    tdOdds.appendChild(inputOdds);
 
+    const tdResult = document.createElement("td");
     const selectResult = document.createElement("select");
     ["Win","Half Win","Lose","Draw"].forEach(opt=>{
         const o = document.createElement("option");
@@ -43,23 +52,28 @@ function createParlayRow(index){
         o.textContent = opt;
         selectResult.appendChild(o);
     });
+    tdResult.appendChild(selectResult);
+
+    const tdSubtotal = document.createElement("td");
+    tdSubtotal.textContent = "0.00";
+
+    tr.appendChild(tdNo);
+    tr.appendChild(tdOdds);
+    tr.appendChild(tdResult);
+    tr.appendChild(tdSubtotal);
+
+    parlayRowsDiv.appendChild(tr);
+
+    parlayRows.push({odds: inputOdds, result: selectResult, subtotal: tdSubtotal});
 
     inputOdds.addEventListener("input", calculateParlay);
     selectResult.addEventListener("change", calculateParlay);
-
-    div.appendChild(inputOdds);
-    div.appendChild(selectResult);
-    parlayRowsDiv.appendChild(div);
-
-    parlayRows.push({odds: inputOdds, result: selectResult});
 }
 
-// Calculate total
+// Calculate totals
 function calculateParlay(){
     let total = 1;
-    let perOddsText = "";
-
-    parlayRows.forEach((row, idx)=>{
+    parlayRows.forEach(row=>{
         const odds = parseFloat(row.odds.value) || 1;
         const result = row.result.value;
         let multiplier = 1;
@@ -71,15 +85,14 @@ function calculateParlay(){
             case "Draw": multiplier = 1; break;
         }
 
+        row.subtotal.textContent = multiplier.toFixed(2);
         total *= multiplier;
-        perOddsText += `Row ${idx+1}: ${multiplier.toFixed(2)}<br>`;
     });
 
     parlayTotalSpan.textContent = total.toFixed(2);
-    perOddsDiv.innerHTML = perOddsText;
 }
 
-// Add new row
+// Add row
 document.getElementById("add-row").addEventListener("click", ()=>{
     if(parlayRows.length >= maxRows){
         alert("Maximum 20 rows allowed!");
