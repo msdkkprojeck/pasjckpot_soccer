@@ -1,48 +1,43 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Soccer Hub - Live Score & Jadwal</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parlay Calculator</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Selamat Datang di Soccer Hub</h1>
-        <button onclick="showMenu()">Masuk</button>
+    <!-- MAIN MENU -->
+    <div id="menu">
+        <h1>Main Menu</h1>
+        <button onclick="showSection('parlay')">Parlay Calculator</button>
+        <button onclick="showSection('live')">Live Score</button>
+        <button onclick="showSection('schedule')">Upcoming Matches</button>
+    </div>
 
-        <div id="menu" class="hidden">
-            <button onclick="showSection('calculator')">Calculator Parlay</button>
-            <button onclick="showSection('bonus')">Bonus Event</button>
-            <button onclick="showSection('live')">Live Score</button>
-            <button onclick="showSection('schedule')">Jadwal Pertandingan</button>
-        </div>
+    <!-- PARLAY CALCULATOR -->
+    <div id="parlay" class="section hidden">
+        <h2>Parlay Calculator</h2>
+        <div id="parlay-rows"></div>
+        <button id="add-row">Add Row</button>
+        <button id="reset-odds">Reset Odds</button>
+        <h3>Total: <span id="parlay-total">0.00</span></h3>
+        <div id="per-odds"></div>
+        <button onclick="backToMenu()">Back to Main Menu</button>
+    </div>
 
-        <div id="sections">
-            <div id="calculator" class="section hidden">
-                <h2>Calculator Parlay</h2>
-                <p>Fitur kalkulasi taruhan parlay akan muncul di sini.</p>
-                <button onclick="backToMenu()">Kembali</button>
-            </div>
+    <!-- LIVE SCORE -->
+    <div id="live" class="section hidden">
+        <h2>Live Score</h2>
+        <div id="matches-live">Live Score feature not available yet.</div>
+        <button onclick="backToMenu()">Back to Main Menu</button>
+    </div>
 
-            <div id="bonus" class="section hidden">
-                <h2>Bonus Event</h2>
-                <p>Informasi bonus dan event terbaru akan muncul di sini.</p>
-                <button onclick="backToMenu()">Kembali</button>
-            </div>
-
-            <div id="live" class="section hidden">
-                <h2>Live Score Liga Besar</h2>
-                <div id="matches-live">Loading live matches...</div>
-                <button onclick="backToMenu()">Kembali</button>
-            </div>
-
-            <div id="schedule" class="section hidden">
-                <h2>Jadwal Pertandingan Mendatang</h2>
-                <div id="matches-schedule">Loading schedule...</div>
-                <button onclick="backToMenu()">Kembali</button>
-            </div>
-        </div>
+    <!-- UPCOMING MATCHES -->
+    <div id="schedule" class="section hidden">
+        <h2>Upcoming Matches</h2>
+        <div id="matches-schedule">Upcoming matches feature not available yet.</div>
+        <button onclick="backToMenu()">Back to Main Menu</button>
     </div>
 
     <script src="script.js"></script>
