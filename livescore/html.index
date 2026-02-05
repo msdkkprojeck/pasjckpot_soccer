@@ -2,37 +2,43 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Live Score</title>
-
+    <title>Live Score Website</title>
     <style>
+        /* Reset dasar */
         body {
             margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: Arial, sans-serif;
         }
 
         /* HALAMAN AWAL */
-        #halamanAwal {
+        #landing {
             height: 100vh;
-            background: #0f2027;
-            background: linear-gradient(to right, #2c5364, #203a43, #0f2027);
-            color: white;
+            background: linear-gradient(to right, #2c3e50, #3498db);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            color: white;
+            text-align: center;
         }
 
-        #halamanAwal button {
-            padding: 12px 25px;
+        #landing button {
+            padding: 12px 30px;
             font-size: 16px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             margin-top: 20px;
+            background: white;
+            color: #333;
+        }
+
+        #landing button:hover {
+            background: #eee;
         }
 
         /* MENU UTAMA */
-        #menuUtama {
+        #main {
             display: none;
         }
 
@@ -51,7 +57,7 @@
             text-decoration: underline;
         }
 
-        .konten {
+        .content {
             padding: 20px;
         }
     </style>
@@ -59,14 +65,14 @@
 <body>
 
 <!-- HALAMAN AWAL -->
-<div id="halamanAwal">
-    <h1>Live Score Website</h1>
-    <p>Klik masuk untuk melihat menu utama</p>
+<div id="landing">
+    <h1>Selamat Datang di Live Score</h1>
+    <p>Klik tombol masuk untuk melanjutkan</p>
     <button onclick="masuk()">Masuk</button>
 </div>
 
 <!-- MENU UTAMA -->
-<div id="menuUtama">
+<div id="main">
     <nav>
         <a href="#">Home</a>
         <a href="#">Live Score</a>
@@ -74,16 +80,16 @@
         <a href="#">Kontak</a>
     </nav>
 
-    <div class="konten">
+    <div class="content">
         <h2>Menu Utama</h2>
-        <p>Selamat datang di halaman utama Live Score.</p>
+        <p>Ini adalah halaman utama website Live Score.</p>
     </div>
 </div>
 
 <script>
     function masuk() {
-        document.getElementById("halamanAwal").style.display = "none";
-        document.getElementById("menuUtama").style.display = "block";
+        document.getElementById("landing").style.display = "none";
+        document.getElementById("main").style.display = "block";
     }
 </script>
 
