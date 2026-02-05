@@ -86,30 +86,41 @@
 <!-- HALAMAN LIVE SCORE -->
 <div id="liveScorePage">
   <button class="btnBack" onclick="kembaliMenu()">← Kembali</button>
-  <h2>Live Score Liga Besar</h2>
+  <h2>Live Score Semua Pertandingan</h2>
   <div id="liveScoreContainer"></div>
 </div>
 
 <script>
-  // Masukkan API Key kamu di sini
   const API_KEY = '7fb015b58da246fa96726319ef843ecc';
   const API_URL = 'https://api.football-data.org/v4/matches';
-  const bigLeagues = ['PL','PD','SA','BL1','FL1']; // Liga besar
 
   // Navigasi halaman
-  function masuk(){ document.getElementById('landing').style.display='none'; document.getElementById('main').style.display='flex'; }
-  function kembaliMenu(){ document.getElementById('liveScorePage').style.display='none'; document.getElementById('main').style.display='flex'; }
+  function masuk(){ 
+    document.getElementById('landing').style.display='none'; 
+    document.getElementById('main').style.display='flex'; 
+  }
+  function kembaliMenu(){ 
+    document.getElementById('liveScorePage').style.display='none'; 
+    document.getElementById('main').style.display='flex'; 
+  }
   function menuClicked(menuName){
-    if(menuName==='Live Score'){ document.getElementById('main').style.display='none'; document.getElementById('liveScorePage').style.display='block'; showLiveScores(); }
-    else{ alert('Kamu memilih menu: ' + menuName); }
+    if(menuName==='Live Score'){ 
+      document.getElementById('main').style.display='none'; 
+      document.getElementById('liveScorePage').style.display='block'; 
+      showLiveScores(); 
+    } else { 
+      alert('Kamu memilih menu: ' + menuName); 
+    }
   }
 
-  // Fetch live matches
-  async function fetchLiveMatches(){
+  // Fetch semua pertandingan
+  async function fetchAllMatches(){
     try{
-      const res = await fetch(API_URL,{ headers:{ 'X-Auth-Token': API_KEY } });
+      const res = await fetch(API_URL,{
+        headers:{ 'X-Auth-Token': API_KEY }
+      });
       const data = await res.json();
-      return data.matches.filter(match => bigLeagues.includes(match.competition.code));
+      return data.matches; // Tampilkan semua, tanpa filter
     }catch(e){ console.error(e); return []; }
   }
 
@@ -130,10 +141,13 @@
   }
 
   async function showLiveScores(){
-    const matches = await fetchLiveMatches();
+    const matches = await fetchAllMatches();
     const container = document.getElementById('liveScoreContainer');
     container.innerHTML = '';
-    if(matches.length===0){ container.innerHTML='<p>Tidak ada data live saat ini.</p>'; return; }
+    if(matches.length===0){ 
+      container.innerHTML='<p>Tidak ada data live saat ini.</p>'; 
+      return; 
+    }
 
     matches.forEach(match=>{
       const league = match.competition.name;
@@ -144,7 +158,6 @@
       const awayScore = match.score.fullTime.away!==null?match.score.fullTime.away:'-';
       const status = match.status;
 
-      // Logo tim placeholder
       const homeLogo = 'https://via.placeholder.com/30?text=H';
       const awayLogo = 'https://via.placeholder.com/30?text=A';
 
