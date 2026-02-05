@@ -68,6 +68,7 @@
         cursor: pointer;
         font-weight: bold;
         transition: background 0.3s ease;
+        z-index: 10;
     }
     #btnBack:hover {
         background: rgba(0,0,0,0.8);
@@ -100,7 +101,6 @@
         background: rgba(255,255,255,0.35);
         transform: scale(1.05);
     }
-
 </style>
 </head>
 <body>
@@ -125,7 +125,7 @@
 
 <script>
     // Ganti link background di sini:
-    const backgroundImageURL = 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1470&q=80';
+    const backgroundImageURL = 'https://i.ibb.co/67T8hQv2/save-follow-me.jpg';
 
     // Set background gambar halaman menu utama
     document.getElementById('main').style.backgroundImage = `url('${backgroundImageURL}')`;
@@ -142,7 +142,7 @@
 
     function menuClicked(menuName) {
         alert('Kamu memilih menu: ' + menuName);
-        // Di sini nanti bisa ditambah fungsi pindah halaman / load konten
+        // Nanti bisa dikembangkan fungsi navigasi ke halaman lain di sini
     }
 </script>
 
