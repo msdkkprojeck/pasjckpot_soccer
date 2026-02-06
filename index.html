@@ -1,65 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pasjackpot Soccer</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PasJackpot</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- MAIN PAGE -->
-<div id="main-page">
-    <div class="logo-container">
-        <img src="https://i.ibb.co/BKNPDfmy/logo-pasjackpot.webp" alt="Pasjackpot Logo" class="logo">
+  <!-- BACKGROUND OVERLAY -->
+  <div class="overlay"></div>
+
+  <!-- HALAMAN HOME -->
+  <section id="home" class="page active">
+    <img src="https://i.ibb.co/BKNPDfmy/logo-pasjackpot.webp" class="logo" alt="PasJackpot">
+    <button class="btn-main" onclick="goToMenu()">MASUK</button>
+  </section>
+
+  <!-- MAIN MENU -->
+  <section id="menu" class="page">
+    <img src="https://i.ibb.co/BKNPDfmy/logo-pasjackpot.webp" class="logo small" alt="PasJackpot">
+
+    <div class="menu-buttons">
+      <button class="btn-glow" onclick="openCalculator()">CALCULATOR</button>
+      <button class="btn-glow disabled">BONUS EVENT</button>
+      <button class="btn-glow disabled">LIVE SCORE</button>
     </div>
-    <button id="go-menu">Go to Main Menu</button>
-</div>
+  </section>
 
-<!-- MAIN MENU -->
-<div id="menu" class="hidden">
-    <h1>Main Menu</h1>
-    <button onclick="showSection('parlay')">Parlay Calculator</button>
-    <button onclick="showSection('bonus')">Bonus Event</button>
-    <button onclick="showSection('live')">Live Score</button>
-</div>
+  <!-- CALCULATOR PARLAY -->
+  <section id="calculator" class="page">
+    <h2>PARLAY CALCULATOR</h2>
 
-<!-- PARLAY CALCULATOR -->
-<div id="parlay" class="section hidden">
-    <h2>Parlay Calculator</h2>
-    <div class="table-wrapper">
-        <table id="parlay-table">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Odds</th>
-                    <th>Result</th>
-                    <th>Subtotal</th>
-                </tr>
-            </thead>
-            <tbody id="parlay-rows"></tbody>
-        </table>
+    <div class="result-options">
+      <button class="btn-glow small">WIN FULL</button>
+      <button class="btn-glow small">HALF WIN</button>
+      <button class="btn-glow small">HALF LOSE</button>
+      <button class="btn-glow small">DRAW</button>
     </div>
-    <button id="add-row">Add Row</button>
-    <button id="reset-odds">Reset Odds</button>
-    <h3>Total: <span id="parlay-total">0.00</span></h3>
-    <button onclick="backToMenu()">Back to Main Menu</button>
-</div>
 
-<!-- BONUS EVENT -->
-<div id="bonus" class="section hidden">
-    <h2>Bonus Event</h2>
-    <p>Coming soon...</p>
-    <button onclick="backToMenu()">Back to Main Menu</button>
-</div>
+    <div class="odds-container" id="oddsContainer">
+      <!-- Input odds muncul di sini -->
+    </div>
 
-<!-- LIVE SCORE -->
-<div id="live" class="section hidden">
-    <h2>Live Score</h2>
-    <p>Coming soon...</p>
-    <button onclick="backToMenu()">Back to Main Menu</button>
-</div>
+    <button class="btn-glow" onclick="addOdds()">+ TAMBAH ODDS</button>
 
-<script src="script.js"></script>
+    <div class="output">
+      <input type="text" placeholder="Total Odds" readonly>
+      <input type="text" placeholder="Modal" readonly>
+      <input type="text" placeholder="Potensi Menang" readonly>
+    </div>
+
+    <div class="bottom-buttons">
+      <button class="btn-glow small" onclick="resetOdds()">RESET</button>
+      <button class="btn-glow small" onclick="backToMenu()">KEMBALI</button>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
 </body>
 </html>
