@@ -6,13 +6,13 @@ function backToMenu() {
 // Container tempat bonus event
 const bonusContainer = document.getElementById("bonusContainer");
 
-// Data bonus event
+// Data bonus event sementara dengan gambar placeholder
 const bonusEvents = [
-  { id: 1, img: "https://i.ibb.co/2v3B9Pv/event1.jpg", detail: "DIMAS BOHONG" },
-  { id: 2, img: "https://i.ibb.co/2v3B9Pv/event1.jpg", detail: "DIMAS BOHONG" },
-  { id: 3, img: "https://i.ibb.co/2v3B9Pv/event1.jpg", detail: "DIMAS BOHONG" },
-  { id: 4, img: "https://i.ibb.co/2v3B9Pv/event1.jpg", detail: "DIMAS BOHONG" },
-  { id: 5, img: "https://i.ibb.co/2v3B9Pv/event1.jpg", detail: "DIMAS BOHONG" },
+  { id: 1, img: "https://picsum.photos/400/150?random=1", detail: "DIMAS BOHONG" },
+  { id: 2, img: "https://picsum.photos/400/150?random=2", detail: "DIMAS BOHONG" },
+  { id: 3, img: "https://picsum.photos/400/150?random=3", detail: "DIMAS BOHONG" },
+  { id: 4, img: "https://picsum.photos/400/150?random=4", detail: "DIMAS BOHONG" },
+  { id: 5, img: "https://picsum.photos/400/150?random=5", detail: "DIMAS BOHONG" },
 ];
 
 // Buat card bonus event
@@ -23,17 +23,25 @@ bonusEvents.forEach(event => {
     <img src="${event.img}" alt="Bonus Event ${event.id}">
     <div class="buttons">
       <button class="btn-glow" onclick="claimBonus(${event.id})">CLAIM</button>
-      <button class="btn-glow" onclick="toggleDetail(this)">DETAIL</button>
+      <button class="btn-glow" onclick="toggleDetailAccordion(this)">DETAIL</button>
     </div>
     <div class="bonus-detail">${event.detail}</div>
   `;
   bonusContainer.appendChild(card);
 });
 
-// Fungsi toggle detail
-function toggleDetail(button) {
+// Fungsi toggle accordion
+function toggleDetailAccordion(button) {
+  const allDetails = document.querySelectorAll(".bonus-detail");
   const detail = button.parentElement.nextElementSibling;
-  if(detail.style.display === "block"){
+
+  // Tutup semua detail lain
+  allDetails.forEach(d => {
+    if(d !== detail) d.style.display = "none";
+  });
+
+  // Toggle detail yang diklik
+  if(detail.style.display === "block") {
     detail.style.display = "none";
   } else {
     detail.style.display = "block";
