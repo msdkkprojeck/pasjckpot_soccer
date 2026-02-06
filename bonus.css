@@ -46,9 +46,20 @@ h2 {
 }
 
 .bonus-card img {
-  width: 100%;
+  width: 100%;       /* full lebar card */
+  height: 100px;     /* tinggi lebih kecil agar panjang horizontal */
   border-radius: 12px;
-  object-fit: cover;
+  object-fit: cover; /* gambar tetap proporsional tapi crop jika perlu */
+}
+
+/* Tampilkan ukuran gambar */
+.bonus-card .img-size {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #ffd28c;
+  text-align: center;
+}
+
 }
 
 .bonus-card .buttons {
