@@ -8,18 +8,17 @@
 </head>
 <body>
 
-  <!-- BACKGROUND OVERLAY -->
   <div class="overlay"></div>
 
-  <!-- HALAMAN HOME -->
+  <!-- HOME -->
   <section id="home" class="page active">
-    <img src="https://i.ibb.co/BKNPDfmy/logo-pasjackpot.webp" class="logo" alt="PasJackpot">
+    <img src="https://i.ibb.co/BKNPDfmy/logo-pasjackpot.webp" class="logo">
     <button class="btn-main" onclick="goToMenu()">MASUK</button>
   </section>
 
   <!-- MAIN MENU -->
   <section id="menu" class="page">
-    <img src="https://i.ibb.co/BKNPDfmy/logo-pasjackpot.webp" class="logo small" alt="PasJackpot">
+    <img src="https://i.ibb.co/BKNPDfmy/logo-pasjackpot.webp" class="logo small">
 
     <div class="menu-buttons">
       <button class="btn-glow" onclick="openCalculator()">CALCULATOR</button>
@@ -28,20 +27,11 @@
     </div>
   </section>
 
-  <!-- CALCULATOR PARLAY -->
+  <!-- CALCULATOR -->
   <section id="calculator" class="page">
     <h2>PARLAY CALCULATOR</h2>
 
-    <div class="result-options">
-      <button class="btn-glow small">WIN FULL</button>
-      <button class="btn-glow small">HALF WIN</button>
-      <button class="btn-glow small">HALF LOSE</button>
-      <button class="btn-glow small">DRAW</button>
-    </div>
-
-    <div class="odds-container" id="oddsContainer">
-      <!-- Input odds muncul di sini -->
-    </div>
+    <div class="odds-container" id="oddsContainer"></div>
 
     <button class="btn-glow" onclick="addOdds()">+ TAMBAH ODDS</button>
 
