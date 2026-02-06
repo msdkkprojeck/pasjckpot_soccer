@@ -10,6 +10,16 @@ function goToMenu(){ showPage("menu"); }
 function openCalculator(){ showPage("calculator"); }
 function backToMenu(){ showPage("menu"); }
 
+/* FORMAT ANGKA KE RIBUAN */
+function formatNumber(num) {
+  return num.toLocaleString("en-US");
+}
+
+/* HAPUS KOMA KE ANGKA ASLI */
+function parseNumber(str) {
+  return parseFloat(str.replace(/,/g, "")) || 0;
+}
+
 function addOdds() {
   if (oddsCount >= maxOdds) return;
   oddsCount++;
@@ -26,7 +36,7 @@ function addOdds() {
     </select>
   `;
 
-  row.querySelectorAll("input,select").forEach(el=>{
+  row.querySelectorAll("input,select").forEach(el => {
     el.addEventListener("input", calculate);
   });
 
@@ -49,8 +59,6 @@ function calculate() {
         finalOdd = odd;
         break;
       case "halfwin":
-        finalOdd = 1 + (odd - 1) / 2;
-        break;
       case "halflose":
         finalOdd = 1 + (odd - 1) / 2;
         break;
@@ -62,19 +70,27 @@ function calculate() {
     totalOdds *= finalOdd;
   });
 
-  totalOdds = totalOdds.toFixed(2);
+  totalOdds = Number(totalOdds.toFixed(2));
   document.getElementById("totalOdds").value = totalOdds;
 
-  const stake = parseFloat(document.getElementById("stake").value);
-  if (stake && stake > 0) {
-    document.getElementById("winResult").value =
-      (stake * totalOdds).toFixed(2);
+  const stakeInput = document.getElementById("stake");
+  const stake = parseNumber(stakeInput.value);
+
+  if (stake > 0) {
+    const win = stake * totalOdds;
+    document.getElementById("winResult").value = formatNumber(Math.floor(win));
   } else {
     document.getElementById("winResult").value = "";
   }
 }
 
-document.getElementById("stake").addEventListener("input", calculate);
+/* FORMAT MODAL SAAT DIKETIK */
+const stakeInput = document.getElementById("stake");
+stakeInput.addEventListener("input", () => {
+  const raw = parseNumber(stakeInput.value);
+  stakeInput.value = raw ? formatNumber(raw) : "";
+  calculate();
+});
 
 function resetOdds() {
   oddsCount = 0;
