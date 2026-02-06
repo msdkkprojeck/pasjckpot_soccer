@@ -1,62 +1,188 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PasJackpot</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+* {
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+}
 
-  <!-- BACKGROUND OVERLAY -->
-  <div class="overlay"></div>
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top, rgba(255,140,0,0.25), transparent 40%),
+    url("https://i.ibb.co/kg6xWd8R/jpg.jpg") center/cover no-repeat fixed;
+  color: #ffb347;
+}
 
-  <!-- HALAMAN HOME -->
-  <section id="home" class="page active">
-    <img src="https://i.ibb.co/BKNPDfmy/logo-pasjackpot.webp" class="logo" alt="PasJackpot">
-    <button class="btn-main" onclick="goToMenu()">MASUK</button>
-  </section>
+/* OVERLAY GELAP */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  z-index: -1;
+}
 
-  <!-- MAIN MENU -->
-  <section id="menu" class="page">
-    <img src="https://i.ibb.co/BKNPDfmy/logo-pasjackpot.webp" class="logo small" alt="PasJackpot">
+/* PAGE */
+.page {
+  display: none;
+  min-height: 100vh;
+  padding: 20px;
+  text-align: center;
+}
 
-    <div class="menu-buttons">
-      <button class="btn-glow" onclick="openCalculator()">CALCULATOR</button>
-      <button class="btn-glow disabled">BONUS EVENT</button>
-      <button class="btn-glow disabled">LIVE SCORE</button>
-    </div>
-  </section>
+.page.active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 
-  <!-- CALCULATOR PARLAY -->
-  <section id="calculator" class="page">
-    <h2>PARLAY CALCULATOR</h2>
+/* LOGO */
+.logo {
+  max-width: 220px;
+  margin-bottom: 30px;
+  filter: drop-shadow(0 0 12px rgba(255,140,0,0.7));
+}
 
-    <div class="result-options">
-      <button class="btn-glow small">WIN FULL</button>
-      <button class="btn-glow small">HALF WIN</button>
-      <button class="btn-glow small">HALF LOSE</button>
-      <button class="btn-glow small">DRAW</button>
-    </div>
+.logo.small {
+  max-width: 160px;
+}
 
-    <div class="odds-container" id="oddsContainer">
-      <!-- Input odds muncul di sini -->
-    </div>
+/* BUTTON UMUM */
+button {
+  transition: all 0.3s ease;
+}
 
-    <button class="btn-glow" onclick="addOdds()">+ TAMBAH ODDS</button>
+/* BUTTON UTAMA */
+.btn-main {
+  padding: 14px 42px;
+  font-size: 18px;
+  background: linear-gradient(145deg, #ff9800, #ff6f00);
+  border: none;
+  border-radius: 30px;
+  color: #000;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(255,140,0,0.8);
+}
 
-    <div class="output">
-      <input type="text" placeholder="Total Odds" readonly>
-      <input type="text" placeholder="Modal" readonly>
-      <input type="text" placeholder="Potensi Menang" readonly>
-    </div>
+.btn-main:hover {
+  box-shadow: 0 0 25px rgba(255,140,0,1);
+}
 
-    <div class="bottom-buttons">
-      <button class="btn-glow small" onclick="resetOdds()">RESET</button>
-      <button class="btn-glow small" onclick="backToMenu()">KEMBALI</button>
-    </div>
-  </section>
+/* MENU HORIZONTAL */
+.menu-buttons {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
 
-  <script src="script.js"></script>
-</body>
-</html>
+/* BUTTON GLOW TRANSPARAN */
+.btn-glow {
+  background: rgba(255,165,0,0.15);
+  border: 1px solid rgba(255,165,0,0.7);
+  color: #ffb347;
+  padding: 14px 22px;
+  border-radius: 14px;
+  cursor: pointer;
+  box-shadow:
+    0 0 8px rgba(255,140,0,0.5),
+    inset 0 0 8px rgba(255,140,0,0.3);
+  backdrop-filter: blur(6px);
+}
+
+.btn-glow:hover {
+  box-shadow:
+    0 0 18px rgba(255,140,0,0.9),
+    inset 0 0 12px rgba(255,140,0,0.6);
+}
+
+.btn-glow.small {
+  padding: 8px 14px;
+  font-size: 14px;
+}
+
+.btn-glow.disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* JUDUL */
+h2 {
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px rgba(255,140,0,0.7);
+}
+
+/* RESULT OPTIONS */
+.result-options {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+/* PAPAN ODDS (TRANSPARAN) */
+.odds-container {
+  max-width: 420px;
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 10px;
+  background: rgba(0,0,0,0.45);
+  border: 1px solid rgba(255,140,0,0.4);
+  border-radius: 16px;
+  box-shadow:
+    0 0 18px rgba(255,140,0,0.3),
+    inset 0 0 15px rgba(255,140,0,0.15);
+  backdrop-filter: blur(8px);
+}
+
+/* INPUT ODDS */
+.odds-container input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 6px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(255,255,255,0.08);
+  color: #ffcc80;
+  outline: none;
+}
+
+.odds-container input::placeholder {
+  color: rgba(255,200,120,0.6);
+}
+
+/* OUTPUT */
+.output {
+  max-width: 420px;
+  width: 100%;
+  margin-top: 15px;
+}
+
+.output input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 6px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(0,0,0,0.5);
+  color: #ffa726;
+  box-shadow: inset 0 0 8px rgba(255,140,0,0.4);
+}
+
+/* BOTTOM BUTTON */
+.bottom-buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .menu-buttons {
+    flex-direction: column;
+  }
+
+  .logo {
+    max-width: 180px;
+  }
+}
