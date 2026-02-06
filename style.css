@@ -136,3 +136,49 @@ h2 {
   opacity: 1;
   transform: scale(1) translateY(0);
 }
+
+.btn-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-glow::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,165,0,0.35), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.btn-glow:hover::before {
+  opacity: 1;
+}
+
+.btn-glow:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+@keyframes slideFade {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.odds-row {
+  animation: slideFade 0.35s ease;
+}
+
+.odds-row select:focus {
+  box-shadow:
+    0 0 12px rgba(255,165,0,0.9),
+    inset 0 0 8px rgba(255,165,0,0.6);
+  transform: scale(1.05);
+}
