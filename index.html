@@ -8,45 +8,40 @@
 </head>
 <body>
 
-  <div class="overlay"></div>
+<div class="overlay"></div>
 
-  <!-- HOME -->
-  <section id="home" class="page active">
-    <img src="https://i.ibb.co/BKNPDfmy/logo-pasjackpot.webp" class="logo">
-    <button class="btn-main" onclick="goToMenu()">MASUK</button>
-  </section>
+<section id="home" class="page active">
+  <img src="https://i.ibb.co/BKNPDfmy/logo-pasjackpot.webp" class="logo">
+  <button class="btn-main" onclick="goToMenu()">MASUK</button>
+</section>
 
-  <!-- MAIN MENU -->
-  <section id="menu" class="page">
-    <img src="https://i.ibb.co/BKNPDfmy/logo-pasjackpot.webp" class="logo small">
+<section id="menu" class="page">
+  <img src="https://i.ibb.co/BKNPDfmy/logo-pasjackpot.webp" class="logo small">
+  <div class="menu-buttons">
+    <button class="btn-glow" onclick="openCalculator()">CALCULATOR</button>
+    <button class="btn-glow disabled">BONUS EVENT</button>
+    <button class="btn-glow disabled">LIVE SCORE</button>
+  </div>
+</section>
 
-    <div class="menu-buttons">
-      <button class="btn-glow" onclick="openCalculator()">CALCULATOR</button>
-      <button class="btn-glow disabled">BONUS EVENT</button>
-      <button class="btn-glow disabled">LIVE SCORE</button>
-    </div>
-  </section>
+<section id="calculator" class="page">
+  <h2>PARLAY CALCULATOR</h2>
 
-  <!-- CALCULATOR -->
-  <section id="calculator" class="page">
-    <h2>PARLAY CALCULATOR</h2>
+  <div class="odds-container" id="oddsContainer"></div>
+  <button class="btn-glow" onclick="addOdds()">+ TAMBAH ODDS</button>
 
-    <div class="odds-container" id="oddsContainer"></div>
+  <div class="output">
+    <input id="totalOdds" placeholder="Total Odds" readonly>
+    <input id="stake" type="number" placeholder="Modal">
+    <input id="winResult" placeholder="Hasil Menang" readonly>
+  </div>
 
-    <button class="btn-glow" onclick="addOdds()">+ TAMBAH ODDS</button>
+  <div class="bottom-buttons">
+    <button class="btn-glow small" onclick="resetOdds()">RESET</button>
+    <button class="btn-glow small" onclick="backToMenu()">KEMBALI</button>
+  </div>
+</section>
 
-    <div class="output">
-      <input type="text" placeholder="Total Odds" readonly>
-      <input type="text" placeholder="Modal" readonly>
-      <input type="text" placeholder="Potensi Menang" readonly>
-    </div>
-
-    <div class="bottom-buttons">
-      <button class="btn-glow small" onclick="resetOdds()">RESET</button>
-      <button class="btn-glow small" onclick="backToMenu()">KEMBALI</button>
-    </div>
-  </section>
-
-  <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
