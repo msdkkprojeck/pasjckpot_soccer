@@ -99,3 +99,29 @@ function resetOdds() {
   document.getElementById("stake").value = "";
   document.getElementById("winResult").value = "";
 }
+
+function animateNumber(element, target) {
+  const start = parseNumber(element.value || "0");
+  const duration = 500;
+  const startTime = performance.now();
+
+  function update(currentTime) {
+    const progress = Math.min((currentTime - startTime) / duration, 1);
+    const value = Math.floor(start + (target - start) * progress);
+    element.value = formatNumber(value);
+
+    if (progress < 1) {
+      requestAnimationFrame(update);
+    }
+  }
+
+  requestAnimationFrame(update);
+}
+
+const clickSound = document.getElementById("clickSound");
+
+function playClick() {
+  clickSound.currentTime = 0;
+  clickSound.volume = 0.25;
+  clickSound.play();
+}
