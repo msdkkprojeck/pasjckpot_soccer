@@ -7,7 +7,34 @@ const bonusContainer = document.getElementById("bonusContainer");
 const bonusEvents = [
   {
     img: "https://picsum.photos/400/150?random=1",
-    text: `TURNAMEN TURNOVER<br><br>...ISI PANJANG BONUS 1...`
+    text: `TURNAMEN TURNOVER
+Tingkatkan Transaksi, Rebut Peringkat & Jadilah Juara! 🏆💰
+periode 01 - 28 Februari
+📌 SYARAT & KETENTUAN
+✔ Berlaku untuk seluruh member
+✔ Hadiah utama berdasarkan TO tertinggi
+✔ All game
+✔ Tidak melakukan withdraw sebelum klaim
+✔ Klaim via Live Chat / Telegram / WhatsApp resmi
+✔ Tidak digabung dengan Spin Wheel atau promo lainnya.
+✔ Indikasi kecurangan → hadiah dibatalkan
+✅ HADIAHNYA :
+🥇 Juara 1 – Honda HR-V
+🥈 Juara 2 - Yamaha NMAX "Turbo" Series
+🥉 Juara 3 - Samsung Galaxy S25 Ultra
+🏅 Juara 4 - Emas 10 Gram
+🏅 Juara 5 - - Emas 5 Gram
+🏅 Juara 6 - Emas Gram
+🏅 Juara 7 - Uang Tunai Rp 7,000,000
+💰 Juara 8 - Uang Tunai Rp 5,000,000
+💰 Juara 9 - Uang Tunai Rp 3,000,000
+💰 Juara 10 - Emas 1 Gram
+💰 Juara 11 - Uang Tunai Rp 1.500.00
+💰 Juara 12 - Uang Tunai Rp 1.000.00
+💰 Juara 13 - Uang Tunai Rp 500.000
+💰 Juara 14 - Uang Tunai Rp 300.000
+💰 Juara 15 - Uang Tunai Rp 200.000
+<br><br>...ISI PANJANG BONUS 1...`
   },
   {
     img: "https://picsum.photos/400/150?random=2",
