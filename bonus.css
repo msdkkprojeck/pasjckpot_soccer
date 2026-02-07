@@ -199,3 +199,12 @@ h2 {
   from { transform: scale(0.9); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
+
+.bonus-title {
+  margin: 8px 0 10px;
+  font-weight: bold;
+  text-align: center;
+  color: #ffb347;
+  letter-spacing: 1px;
+  text-shadow: 0 0 6px rgba(255,140,0,0.8);
+}
