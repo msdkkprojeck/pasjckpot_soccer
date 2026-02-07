@@ -1,3 +1,16 @@
+// Efek suara klik tombol
+const clickSound = new Audio("https://www.myinstants.com/media/sounds/mouse-click.mp3"); // contoh link suara
+function playClick() {
+  clickSound.currentTime = 0;
+  clickSound.play().catch(e=>console.log("Audio autoplay blocked", e));
+}
+
+// Override tombol dengan efek suara
+document.addEventListener("click", (e) => {
+  if(e.target.classList.contains("btn-glow")) playClick();
+});
+
+
 document.addEventListener("DOMContentLoaded", () => {
 
   const bonusContainer = document.getElementById("bonusContainer");
