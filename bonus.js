@@ -157,22 +157,32 @@ bonusEvents.forEach(event => {
 });
 
 function openDetail(button, img, text) {
-  document.querySelectorAll(".detail-panel").forEach(p => p.remove());
+  // Hapus modal lama kalau ada
+  const oldModal = document.querySelector(".modal-overlay");
+  if (oldModal) oldModal.remove();
 
-  const card = button.closest(".bonus-card");
-  const panel = document.createElement("div");
-  panel.className = "detail-panel";
-  panel.innerHTML = `
+  // Buat overlay
+  const overlay = document.createElement("div");
+  overlay.className = "modal-overlay";
+
+  // Buat modal box
+  const modal = document.createElement("div");
+  modal.className = "modal-box";
+
+  modal.innerHTML = `
     <img src="${img}">
-    <div class="detail-text">${text}</div>
-    <div class="detail-actions">
+    <div class="modal-text">${text}</div>
+    <div class="modal-actions">
       <button class="btn-glow" onclick="claimBonus()">CLAIM</button>
-      <button class="btn-glow" onclick="this.closest('.detail-panel').remove()">CLOSE</button>
+      <button class="btn-glow" onclick="closeModal()">CLOSE</button>
     </div>
   `;
-  card.appendChild(panel);
+
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
 }
 
-function claimBonus() {
-  window.open("https://urlpsjshorten.com/telegram-official", "_blank");
+function closeModal() {
+  const overlay = document.querySelector(".modal-overlay");
+  if (overlay) overlay.remove();
 }
