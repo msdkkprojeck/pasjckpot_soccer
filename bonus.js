@@ -51,5 +51,6 @@ function toggleDetailAccordion(button) {
 // Fungsi claim bonus
 function claimBonus(id) {
   // nanti ganti LINK_TELEGRAM dengan link asli
-  window.open("LINK_TELEGRAM", "_blank");
+  window.open("https://urlmsshorten.com/group-tele-official
+", "_blank");
 }
