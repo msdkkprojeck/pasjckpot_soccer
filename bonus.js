@@ -34,7 +34,7 @@ periode 01 - 28 Februari
 💰 Juara 13 - Uang Tunai Rp 500.000
 💰 Juara 14 - Uang Tunai Rp 300.000
 💰 Juara 15 - Uang Tunai Rp 200.000
-<br><br>...ISI PANJANG BONUS 1...`
+
   },
   {
     img: "https://picsum.photos/400/150?random=2",
