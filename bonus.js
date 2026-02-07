@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const bonusEvents = [
     {
-      title: "TURNAMEN TURNOVER",
+      title: "TURNAMEN TURNOVER",  
       img: "https://picsum.photos/400/150?random=1",
       text: `
 <b>TURNAMEN TURNOVER</b><br>
