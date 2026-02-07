@@ -51,7 +51,7 @@ Periode 01 - 28 Februari<br><br>
 🏅 Emas 1 Gram<br>
 🏅 Uang Tunai Rp 1.500.000<br><br>
 
-✔ Gacha Angpao maksimal 2x per hari (setelah deposit)<br>
+✔ Gacha Angpao maksimal 2x per hari setelah deposit<br>
 ✔ Berlaku untuk seluruh member<br>
 ✔ Hadiah utama berdasarkan TO tertinggi (Juara 1–5)<br>
 ✔ Tidak melakukan WD sebelum klaim<br>
@@ -117,28 +117,28 @@ Bonus 25% • Untuk kamu yang download & terhubung<br><br>
 Download APK PASJACKPOT, deposit minimal Rp25.000 lalu klaim dengan screenshot APK sudah terpasang.<br><br>
 
 📌 <b>SYARAT & KETENTUAN</b><br>
-✔ Promo berlaku untuk semua member<br>
-✔ Wajib download APK PASJACKPOT<br>
+✔ Promo berlaku untuk semua member PASJACKPOT<br>
+✔ Member wajib download APK PASJACKPOT<br>
 ✔ Minimal deposit Rp25.000<br>
-✔ Maks bonus Rp100.000<br>
-✔ TO 1x (deposit + bonus)<br>
-✔ 1x klaim per user<br>
-✔ Slot & Arcade only<br>
-✔ Wajib lampirkan screenshot APK<br>
-✔ WD setelah TO terpenuhi<br>
-✔ Tidak digabung promo lain<br>
+✔ Maksimal bonus Rp100.000<br>
+✔ Turnover 1x (deposit + bonus)<br>
+✔ Promo 1x klaim per user<br>
+✔ Bonus hanya untuk Slot & Arcade<br>
+✔ Wajib lampirkan screenshot APK terpasang<br>
+✔ Withdraw setelah TO terpenuhi<br>
+✔ Tidak dapat digabung promo lain<br>
 ✔ Klaim via Live Chat / Telegram / WhatsApp resmi<br>
 ✔ Penyalahgunaan → bonus dibatalkan<br><br>
 
-🧮 <b>CONTOH TO</b><br>
+🧮 <b>CONTOH PERHITUNGAN TO</b><br>
 Deposit 50.000 + Bonus 12.500 = 62.500<br>
 TO wajib: 1x = 62.500
 `
   }
 ];
 
-// === RENDER SEMUA BONUS (SERAGAM) ===
-bonusEvents.forEach(event => {
+// ===== RENDER CARD BONUS (SEMUA SAMA) =====
+bonusEvents.forEach((event, index) => {
   const card = document.createElement("div");
   card.className = "bonus-card";
 
@@ -147,7 +147,7 @@ bonusEvents.forEach(event => {
     <div class="img-size">400 x 150</div>
 
     <div class="buttons">
-      <button class="btn-glow" onclick="openDetail('${event.img}', \`${event.text}\`)">DETAIL</button>
+      <button class="btn-glow" onclick="openDetail(${index})">DETAIL</button>
       <button class="btn-glow" onclick="claimBonus()">CLAIM</button>
     </div>
   `;
@@ -155,8 +155,10 @@ bonusEvents.forEach(event => {
   bonusContainer.appendChild(card);
 });
 
-// === MODAL DETAIL ===
-function openDetail(img, text) {
+// ===== MODAL DETAIL (OVERLAY) =====
+function openDetail(index) {
+  const event = bonusEvents[index];
+
   const old = document.querySelector(".modal-overlay");
   if (old) old.remove();
 
@@ -165,8 +167,8 @@ function openDetail(img, text) {
 
   overlay.innerHTML = `
     <div class="modal-box">
-      <img src="${img}">
-      <div class="modal-text">${text}</div>
+      <img src="${event.img}">
+      <div class="modal-text">${event.text}</div>
       <div class="modal-actions">
         <button class="btn-glow" onclick="claimBonus()">CLAIM</button>
         <button class="btn-glow" onclick="closeModal()">CLOSE</button>
@@ -178,8 +180,8 @@ function openDetail(img, text) {
 }
 
 function closeModal() {
-  const modal = document.querySelector(".modal-overlay");
-  if (modal) modal.remove();
+  const overlay = document.querySelector(".modal-overlay");
+  if (overlay) overlay.remove();
 }
 
 function claimBonus() {
