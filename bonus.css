@@ -1,4 +1,14 @@
-/* BONUS CARD */
+/* Body & Background */
+body {
+  background: #000 url("https://i.ibb.co/kg6xWd8R/jpg.jpg") no-repeat center center fixed;
+  background-size: cover;
+  font-family: 'Arial', sans-serif;
+  color: #fff;
+  margin: 0;
+  padding: 0;
+}
+
+/* Container */
 .bonus-container {
   display: flex;
   flex-direction: column;
@@ -6,33 +16,43 @@
   padding: 20px;
 }
 
+/* Card Bonus */
 .bonus-card {
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.6);
   border: 1px solid #ffb347;
   border-radius: 10px;
   padding: 10px;
   text-align: center;
   color: #fff;
-  box-shadow: 0 0 10px rgba(255,140,0,0.4);
+  box-shadow: 0 0 15px rgba(255,140,0,0.3);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
 }
 
+.bonus-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 25px rgba(255,140,0,0.6);
+}
+
+/* Image */
 .bonus-card img {
   width: 100%;
-  max-width: 400px;
+  max-width: 350px;  /* lebih kecil & panjang */
   height: auto;
   border-radius: 5px;
   display: block;
-  margin: 0 auto;
+  margin: 0 auto 10px auto;
 }
 
+/* Title */
 .bonus-title {
   margin: 10px 0;
   font-weight: bold;
-  font-size: 1.2em;
+  font-size: 1.3em;
   color: #ffb347;
   text-shadow: 0 0 6px rgba(255,140,0,0.8);
 }
 
+/* Tombol */
 .bonus-card .buttons {
   display: flex;
   justify-content: center;
@@ -40,11 +60,38 @@
   margin-top: 10px;
 }
 
-/* MODAL POPUP */
+.btn-glow {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  background: rgba(255,140,0,0.2);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(255,140,0,0.6);
+  transition: all 0.3s ease;
+  font-weight: bold;
+  text-shadow: 0 0 4px #ffb347;
+}
+
+.btn-glow:hover {
+  background: rgba(255,140,0,0.5);
+  box-shadow: 0 0 20px rgba(255,140,0,0.9);
+  transform: scale(1.05);
+}
+
+/* Animasi Glow */
+@keyframes glowPulse {
+  0% { box-shadow: 0 0 8px rgba(255,140,0,0.6); }
+  50% { box-shadow: 0 0 20px rgba(255,140,0,1); }
+  100% { box-shadow: 0 0 8px rgba(255,140,0,0.6); }
+}
+.btn-glow { animation: glowPulse 2s infinite; }
+
+/* Modal Overlay */
 .modal-overlay {
   position: fixed;
   top:0; left:0; right:0; bottom:0;
-  background: rgba(0,0,0,0.8);
+  background: rgba(0,0,0,0.9);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -53,8 +100,9 @@
   padding: 20px;
 }
 
+/* Modal Box */
 .modal-box {
-  background: rgba(0,0,0,0.85);
+  background: rgba(10,10,10,0.95);
   border: 1px solid #ffb347;
   border-radius: 10px;
   padding: 20px;
@@ -62,41 +110,50 @@
   width: 100%;
   color: #fff;
   text-align: left;
-  box-shadow: 0 0 20px rgba(255,140,0,0.5);
+  box-shadow: 0 0 25px rgba(255,140,0,0.5);
+  animation: fadeIn 0.3s ease;
 }
 
+/* Modal Image */
 .modal-box img {
   width: 100%;
   max-width: 300px;
   display: block;
-  margin: 0 auto 15px auto;
+  margin: 0 auto 10px auto;
   border-radius: 5px;
+  box-shadow: 0 0 15px rgba(255,140,0,0.5);
 }
 
+/* Modal Text */
 .modal-text {
   margin-bottom: 15px;
   line-height: 1.5;
+  color: #fff;
+  background: rgba(255,140,0,0.05);
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 0.95em;
+  text-shadow: 0 0 3px #ffb347;
 }
 
+/* Modal Actions */
 .modal-actions {
   display: flex;
   justify-content: center;
   gap: 10px;
 }
 
-/* Button */
-.btn-glow {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 5px;
-  background: rgba(255,140,0,0.3);
-  color: #fff;
-  cursor: pointer;
-  box-shadow: 0 0 8px rgba(255,140,0,0.6);
-  transition: all 0.3s ease;
+/* Animasi fadeIn */
+@keyframes fadeIn { 
+  0% {opacity:0; transform:scale(0.95);} 
+  100% {opacity:1; transform:scale(1);} 
 }
 
-.btn-glow:hover {
-  background: rgba(255,140,0,0.6);
-  box-shadow: 0 0 15px rgba(255,140,0,0.9);
+/* Scrollbar tipis dan glow */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255,140,0,0.5);
+  border-radius: 3px;
 }
