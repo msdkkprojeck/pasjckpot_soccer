@@ -1,55 +1,52 @@
-// Kembali ke menu utama
 function backToMenu() {
   window.location.href = "index.html";
 }
 
-// Container tempat bonus event
 const bonusContainer = document.getElementById("bonusContainer");
 
-// Data bonus event sementara dengan gambar placeholder
 const bonusEvents = [
-  { id: 1, img: "https://picsum.photos/400/150?random=1", detail: "DIMAS BOHONG" },
-  { id: 2, img: "https://picsum.photos/400/150?random=2", detail: "DIMAS BOHONG" },
-  { id: 3, img: "https://picsum.photos/400/150?random=3", detail: "DIMAS BOHONG" },
-  { id: 4, img: "https://picsum.photos/400/150?random=4", detail: "DIMAS BOHONG" },
-  { id: 5, img: "https://picsum.photos/400/150?random=5", detail: "DIMAS BOHONG" },
+  { id: 1, img: "https://picsum.photos/400/150?random=1" },
+  { id: 2, img: "https://picsum.photos/400/150?random=2" },
+  { id: 3, img: "https://picsum.photos/400/150?random=3" },
+  { id: 4, img: "https://picsum.photos/400/150?random=4" },
+  { id: 5, img: "https://picsum.photos/400/150?random=5" },
 ];
 
-// Buat card bonus event
 bonusEvents.forEach(event => {
   const card = document.createElement("div");
   card.className = "bonus-card";
   card.innerHTML = `
-    <img src="${event.img}" alt="Bonus Event ${event.id}">
+    <img src="${event.img}">
+    <div class="img-size">400 x 150</div>
+
     <div class="buttons">
-      <button class="btn-glow" onclick="claimBonus(${event.id})">CLAIM</button>
-      <button class="btn-glow" onclick="toggleDetailAccordion(this)">DETAIL</button>
+      <button class="btn-glow" onclick="openDetail(this, '${event.img}')">DETAIL</button>
+      <button class="btn-glow" onclick="claimBonus()">CLAIM</button>
     </div>
-    <div class="bonus-detail">${event.detail}</div>
   `;
   bonusContainer.appendChild(card);
 });
 
-// Fungsi toggle accordion
-function toggleDetailAccordion(button) {
-  const allDetails = document.querySelectorAll(".bonus-detail");
-  const detail = button.parentElement.nextElementSibling;
+function openDetail(button, imgSrc) {
+  // Tutup semua panel detail lain
+  document.querySelectorAll(".detail-panel").forEach(p => p.remove());
 
-  // Tutup semua detail lain
-  allDetails.forEach(d => {
-    if(d !== detail) d.style.display = "none";
-  });
+  const card = button.closest(".bonus-card");
 
-  // Toggle detail yang diklik
-  if(detail.style.display === "block") {
-    detail.style.display = "none";
-  } else {
-    detail.style.display = "block";
-  }
+  const panel = document.createElement("div");
+  panel.className = "detail-panel";
+  panel.innerHTML = `
+    <img src="${imgSrc}">
+    <div class="detail-text">DIMAS BOHONG</div>
+    <div class="detail-actions">
+      <button class="btn-glow" onclick="claimBonus()">CLAIM</button>
+      <button class="btn-glow" onclick="this.closest('.detail-panel').remove()">CLOSE</button>
+    </div>
+  `;
+
+  card.appendChild(panel);
 }
 
-// Fungsi claim bonus
-function claimBonus(id) {
-  // nanti ganti LINK_TELEGRAM dengan link asli
-  window.open("LINK_TELEGRAM", "_blank");
+function claimBonus() {
+  window.open("https://urlpsjshorten.com/telegram-official", "_blank");
 }
