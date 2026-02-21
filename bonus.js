@@ -54,22 +54,19 @@ Periode 01 - 28 Februari<br><br>
 `
     },
     {
-      title: "GACHA ANGPAO IMLEK",
-      img: "https://picsum.photos/400/150?random=2",
+      title: "🌙 BONUS NGABUBURIT – MENJELANG BUKA PUASA",
+      img: "https://i.ibb.co/fVPQ8P0X/banner-400x150-rapi.png",
       text: `
-📌 <b>SYARAT & KETENTUAN – GACHA ANGPAO IMLEK 🧧</b><br>
-🏍️ Honda ADV 160<br>
-🥈 Emas 3 Gram<br>
-🥉 Uang Tunai Rp 5.000.000<br>
-🏅 Emas 1 Gram<br>
-🏅 Uang Tunai Rp 1.500.000<br><br>
-✔ Maksimal 2x klaim per hari (setelah deposit)<br>
-✔ Berlaku untuk seluruh member<br>
-✔ Hadiah utama berdasarkan TO tertinggi (Juara 1–5)<br>
-✔ Tidak WD sebelum klaim<br>
-✔ Klaim via Live Chat / Telegram / WhatsApp resmi<br>
-✔ Tidak digabung promo lain<br>
-✔ Indikasi kecurangan → hadiah dibatalkan
+🌙 BONUS NGABUBURIT – MENJELANG BUKA PUASA
+Periode: 07.00 – 23.00 WIB 
+• Bonus deposit 25% khusus jam ngabuburit
+• Maksimal bonus: 200.000
+• TO X3 DEPO + BONUS
+▫️ Minimal Deposit Rp25.000
+▫️ Bonus 25% (Max Rp200.000)
+▫️ Berlaku pukul 16.00 – 18.00 WIB
+▫️ Turnover 3x (Deposit + Bonus)
+▫️ Untuk hanya bisa 1x dalam sehari
 `
     },
     {
@@ -86,15 +83,19 @@ Periode: SETIAP JUMAT 🔥<br><br>
 `
     },
     {
-      title: "PROMO VALENTINE",
-      img: "https://picsum.photos/400/150?random=4",
+      title: "🌙 BONUS SAHUR BERKAH – SAMBUT RAMADHAN",
+      img: "https://i.ibb.co/fVPQ8P0X/banner-400x150-rapi.png",
       text: `
-💖 <b>PROMO VALENTINE – CINTA & CUAN</b> 💖<br>
-📅 14 Februari | 24 Jam<br>
-🎁 Bonus hingga 14%<br>
-💰 Maks Rp 214.000<br>
-⚡ Klaim cepat<br>
-🔄 Semua game
+🌙 BONUS SAHUR BERKAH – SAMBUT RAMADHAN
+Periode: 00.00 – 06.00 WIB 
+• Bonus deposit 35% setiap transaksi di jam sahur
+• Maksimal bonus: 200.000
+• TO X3 DEPO + BONUS
+▫️ Minimal Deposit Rp25.000
+▫️ Bonus 35% (Max Rp200.000)
+▫️ Berlaku pukul 00.00 – 06.00 WIB
+▫️ Turnover 3x (Deposit + Bonus)
+▫️ Untuk hanya bisa 1x dalam sehari
 `
     },
     {
