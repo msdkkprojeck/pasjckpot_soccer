@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const bonusEvents = [
     {
       title: "TURNAMEN TURNOVER",  
-      img: "https://picsum.photos/400/150?random=1",
+      img: "https://i.ibb.co/mCyfTSLL/turnament.jpg",
       text: `
 <b>TURNAMEN TURNOVER</b><br>
 Tingkatkan Transaksi, Rebut Peringkat & Jadilah Juara! 🏆💰<br>
