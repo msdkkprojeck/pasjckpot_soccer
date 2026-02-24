@@ -100,7 +100,7 @@ Periode: 00.00 – 06.00 WIB
     },
     {
       title: "PASJACKPOT APK REWARD",
-      img: "https://picsum.photos/400/150?random=5",
+      img: "https://i.ibb.co/pjC1yHL3/5e9cf520-f2bb-43e9-9776-26625a3050c8.png",
       text: `
 <b>PASJACKPOT APK REWARD</b><br>
 Bonus 25% untuk user APK<br><br>
