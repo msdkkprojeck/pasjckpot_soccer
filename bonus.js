@@ -55,7 +55,7 @@ Periode 01 - 28 Februari<br><br>
     },
     {
       title: "🌙 BONUS NGABUBURIT – MENJELANG BUKA PUASA",
-      img: "https://i.ibb.co/fVPQ8P0X/banner-400x150-rapi.png",
+      img: "https://i.ibb.co/XrSB8gGW/20260225-012549.jpg",
       text: `
 🌙 BONUS NGABUBURIT – MENJELANG BUKA PUASA
 Periode: 07.00 – 23.00 WIB 
@@ -84,7 +84,7 @@ Periode: SETIAP JUMAT 🔥<br><br>
     },
     {
       title: "🌙 BONUS SAHUR BERKAH – SAMBUT RAMADHAN",
-      img: "https://i.ibb.co/fVPQ8P0X/banner-400x150-rapi.png",
+      img: "https://i.ibb.co/XrSB8gGW/20260225-012549.jpg",
       text: `
 🌙 BONUS SAHUR BERKAH – SAMBUT RAMADHAN
 Periode: 00.00 – 06.00 WIB 
