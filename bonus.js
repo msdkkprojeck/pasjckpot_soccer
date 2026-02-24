@@ -71,7 +71,7 @@ Periode: 07.00 – 23.00 WIB
     },
     {
       title: "BONUS JUMAT BERKAH 30%",
-      img: "https://picsum.photos/400/150?random=3",
+      img: "https://i.ibb.co/3yZTkbkb/0e94dc2d-85eb-4986-8ca6-e3c912a35337.png",
       text: `
 🌙✨ <b>Bonus Jumat Berkah 30%</b> ✨🌙<br>
 Periode: SETIAP JUMAT 🔥<br><br>
