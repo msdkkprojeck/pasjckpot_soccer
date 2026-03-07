@@ -18,17 +18,34 @@
 
 <div class="field">
 
-<!-- GAWANG -->
 <div class="goal"></div>
 
 <!-- KIPER -->
-<div id="keeper" class="character"></div>
-
-<!-- PEMAIN -->
-<div id="player" class="character"></div>
+<div id="keeper"></div>
 
 <!-- BOLA -->
 <div id="ball"></div>
+
+<!-- PEMAIN KARTUN -->
+<div id="player">
+
+<svg width="80" height="120" viewBox="0 0 80 120">
+
+<!-- kepala -->
+<circle cx="40" cy="20" r="12" fill="#ffd59e"/>
+
+<!-- badan -->
+<rect x="32" y="32" width="16" height="30" fill="#ff3b3b"/>
+
+<!-- kaki kiri -->
+<rect x="30" y="60" width="8" height="30" fill="#000"/>
+
+<!-- kaki kanan (yang menendang) -->
+<rect id="kickLeg" x="42" y="60" width="8" height="30" fill="#000"/>
+
+</svg>
+
+</div>
 
 <div id="result"></div>
 
