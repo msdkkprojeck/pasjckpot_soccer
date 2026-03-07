@@ -1,26 +1,54 @@
-#gameCanvas{
-
+.game-container{
+position:relative;
 width:100%;
-max-width:600px;
-height:350px;
-
-background:url("https://i.ibb.co/ZYW3VTp/stadium-bg.jpg");
-background-size:cover;
-
-border-radius:15px;
-box-shadow:0 0 20px rgba(255,140,0,0.7);
-
-margin-bottom:20px;
-
+max-width:500px;
+height:400px;
+margin:auto;
+background:linear-gradient(#2e7d32,#1b5e20);
+border-radius:12px;
+overflow:hidden;
 }
 
+/* gawang */
+.goal{
+position:absolute;
+top:10px;
+width:100%;
+text-align:center;
+}
+
+.goal-img{
+width:260px;
+}
+
+/* kiper */
+#goalkeeper{
+position:absolute;
+top:80px;
+left:50%;
+transform:translateX(-50%);
+width:70px;
+transition:0.4s;
+}
+
+/* bola */
+#ball{
+position:absolute;
+bottom:20px;
+left:50%;
+transform:translateX(-50%);
+width:40px;
+transition:0.5s;
+}
+
+/* hasil */
 #result{
-
-font-size:30px;
-color:white;
-
+position:absolute;
+top:45%;
+width:100%;
+text-align:center;
+font-size:28px;
+font-weight:bold;
+color:#fff;
 text-shadow:0 0 10px orange;
-
-margin:10px;
-
 }
