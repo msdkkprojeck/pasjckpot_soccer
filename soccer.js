@@ -1,59 +1,84 @@
-const ball = document.getElementById("ball")
-const keeper = document.getElementById("goalkeeper")
+const canvas = document.getElementById("gameCanvas")
+const ctx = canvas.getContext("2d")
+
+canvas.width = 600
+canvas.height = 350
+
 const result = document.getElementById("result")
 
-let startX = 0
-let startY = 0
+/* gambar */
 
-document.addEventListener("touchstart",(e)=>{
+const player = new Image()
+player.src="https://cdn-icons-png.flaticon.com/512/2331/2331970.png"
+
+const ballImg = new Image()
+ballImg.src="https://cdn-icons-png.flaticon.com/512/53/53283.png"
+
+const keeperImg = new Image()
+keeperImg.src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+
+const goalImg = new Image()
+goalImg.src="https://cdn-icons-png.flaticon.com/512/861/861512.png"
+
+/* posisi */
+
+let ball = {
+x:200,
+y:260,
+vx:0,
+vy:0,
+moving:false
+}
+
+let keeper = {
+x:280,
+y:140
+}
+
+/* swipe */
+
+let startX=0
+let startY=0
+
+canvas.addEventListener("touchstart",(e)=>{
 
 startX = e.touches[0].clientX
 startY = e.touches[0].clientY
 
 })
 
-document.addEventListener("touchend",(e)=>{
+canvas.addEventListener("touchend",(e)=>{
 
 let endX = e.changedTouches[0].clientX
 let endY = e.changedTouches[0].clientY
 
-let deltaX = endX - startX
-let deltaY = startY - endY
+let dx = endX - startX
+let dy = startY - endY
 
-kickBall(deltaX,deltaY)
+kick(dx,dy)
 
 })
 
-function kickBall(x,y){
+/* tendang */
 
-/* kekuatan swipe */
-let power = Math.sqrt(x*x + y*y)
+function kick(dx,dy){
 
-if(power < 30) return
+if(ball.moving) return
 
-/* arah horizontal */
-let direction = x / 5
+ball.vx = dx * 0.15
+ball.vy = -Math.abs(dy * 0.2)
 
-/* posisi target bola */
-let targetLeft = 50 + direction
-
-if(targetLeft < 5) targetLeft = 5
-if(targetLeft > 95) targetLeft = 95
-
-ball.style.transition="0.6s"
-
-ball.style.bottom="260px"
-ball.style.left=targetLeft+"%"
-
-/* peluang gol */
+ball.moving = true
 
 let chance = Math.random()
 
 if(chance <= 0.2){
 
 setTimeout(()=>{
+
 result.innerHTML="GOAL ⚽🔥"
-},500)
+
+},800)
 
 }
 else{
@@ -61,8 +86,10 @@ else{
 moveKeeper()
 
 setTimeout(()=>{
+
 result.innerHTML="DITANGKAP KIPER 🧤"
-},400)
+
+},800)
 
 }
 
@@ -70,20 +97,78 @@ setTimeout(resetBall,2000)
 
 }
 
+/* gerak kiper */
+
 function moveKeeper(){
 
-let pos = ["20%","40%","60%","80%"]
+let pos = [200,280,360]
 
-let random = pos[Math.floor(Math.random()*pos.length)]
-
-keeper.style.left=random
+keeper.x = pos[Math.floor(Math.random()*pos.length)]
 
 }
+
+/* reset */
 
 function resetBall(){
 
-ball.style.bottom="20px"
-ball.style.left="50%"
+ball.x=200
+ball.y=260
+ball.vx=0
+ball.vy=0
+ball.moving=false
+
 result.innerHTML=""
 
 }
+
+/* update physics */
+
+function update(){
+
+if(ball.moving){
+
+ball.x += ball.vx
+ball.y += ball.vy
+
+ball.vy += 0.15
+
+}
+
+}
+
+/* render */
+
+function draw(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height)
+
+/* gawang */
+
+ctx.drawImage(goalImg,180,80,240,120)
+
+/* kiper */
+
+ctx.drawImage(keeperImg,keeper.x,130,60,60)
+
+/* player */
+
+ctx.drawImage(player,120,200,90,120)
+
+/* bola */
+
+ctx.drawImage(ballImg,ball.x,ball.y,30,30)
+
+}
+
+/* game loop */
+
+function gameLoop(){
+
+update()
+draw()
+
+requestAnimationFrame(gameLoop)
+
+}
+
+gameLoop()
