@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded",function(){
 
 const ball=document.getElementById("ball")
 const keeper=document.getElementById("keeper")
-const player=document.getElementById("player")
+const leg=document.getElementById("kickLeg")
 const result=document.getElementById("result")
 
 let startX,startY
@@ -24,12 +24,12 @@ kickBall(dx)
 
 function kickBall(dx){
 
-player.classList.add("kick")
+leg.classList.add("kick")
 ball.classList.add("spin")
 
 setTimeout(()=>{
 
-player.classList.remove("kick")
+leg.classList.remove("kick")
 
 },200)
 
@@ -44,13 +44,13 @@ ball.style.left=target+"px"
 
 let chance=Math.random()
 
-if(chance<=0.2){
+if(chance<0.2){
 
 result.innerHTML="GOAL ⚽"
 
 }else{
 
-keeper.classList.add("jump")
+moveKeeper()
 
 setTimeout(()=>{
 
@@ -64,14 +64,20 @@ setTimeout(resetBall,2000)
 
 }
 
+function moveKeeper(){
+
+let pos=[220,260,300]
+
+keeper.style.left=pos[Math.floor(Math.random()*pos.length)]+"px"
+
+}
+
 function resetBall(){
 
 ball.classList.remove("spin")
 
 ball.style.bottom="80px"
 ball.style.left="290px"
-
-keeper.classList.remove("jump")
 
 result.innerHTML=""
 
