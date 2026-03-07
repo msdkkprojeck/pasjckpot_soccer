@@ -1,54 +1,80 @@
-const ball = document.getElementById("ball")
-const keeper = document.getElementById("goalkeeper")
+const canvas = document.getElementById("gameCanvas")
+const ctx = canvas.getContext("2d")
+
+canvas.width = 600
+canvas.height = 400
+
 const result = document.getElementById("result")
+
+/* bola */
+
+let ball = {
+x:300,
+y:320,
+vx:0,
+vy:0,
+moving:false
+}
+
+/* kiper */
+
+let keeper = {
+x:260,
+y:120,
+width:80,
+height:20
+}
+
+/* swipe */
 
 let startX = 0
 let startY = 0
 
-document.addEventListener("touchstart",(e)=>{
+canvas.addEventListener("touchstart",(e)=>{
 
 startX = e.touches[0].clientX
 startY = e.touches[0].clientY
 
 })
 
-document.addEventListener("touchend",(e)=>{
+canvas.addEventListener("touchend",(e)=>{
 
 let endX = e.changedTouches[0].clientX
 let endY = e.changedTouches[0].clientY
 
-let diffX = endX - startX
-let diffY = startY - endY
+let dx = endX - startX
+let dy = startY - endY
 
-kickBall(diffX,diffY)
+kickBall(dx,dy)
 
 })
 
-function kickBall(x,y){
+/* tendang */
 
-ball.style.bottom = "260px"
+function kickBall(dx,dy){
 
-let direction = x / 5
-let target = 50 + direction
+if(ball.moving) return
 
-if(target < 10) target = 10
-if(target > 90) target = 90
+ball.vx = dx * 0.15
+ball.vy = -Math.abs(dy * 0.25)
 
-ball.style.left = target+"%"
+ball.moving = true
 
 let chance = Math.random()
 
 if(chance <= 0.2){
 
-result.innerHTML="GOAL ⚽🔥"
+setTimeout(()=>{
+result.innerHTML="GOAL ⚽"
+},700)
 
 }else{
 
 moveKeeper()
 
 setTimeout(()=>{
-result.innerHTML="DITANGKAP KIPER 🧤"
-},300)
+result.innerHTML="SAVE 🧤"
+},700)
 
 }
 
@@ -56,18 +82,80 @@ setTimeout(resetBall,2000)
 
 }
 
+/* gerak kiper */
+
 function moveKeeper(){
 
-let pos = ["30%","50%","70%"]
+let pos = [180,260,340]
 
-keeper.style.left = pos[Math.floor(Math.random()*pos.length)]
+keeper.x = pos[Math.floor(Math.random()*pos.length)]
 
 }
+
+/* reset */
 
 function resetBall(){
 
-ball.style.bottom="20px"
-ball.style.left="50%"
+ball.x=300
+ball.y=320
+ball.vx=0
+ball.vy=0
+ball.moving=false
+
 result.innerHTML=""
 
 }
+
+/* physics */
+
+function update(){
+
+if(ball.moving){
+
+ball.x += ball.vx
+ball.y += ball.vy
+
+ball.vy += 0.2
+
+}
+
+}
+
+/* render */
+
+function draw(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height)
+
+/* gawang */
+
+ctx.strokeStyle="white"
+ctx.lineWidth=4
+ctx.strokeRect(200,80,200,80)
+
+/* kiper */
+
+ctx.fillStyle="yellow"
+ctx.fillRect(keeper.x,120,keeper.width,keeper.height)
+
+/* bola */
+
+ctx.beginPath()
+ctx.arc(ball.x,ball.y,10,0,Math.PI*2)
+ctx.fillStyle="white"
+ctx.fill()
+
+}
+
+/* game loop */
+
+function gameLoop(){
+
+update()
+draw()
+
+requestAnimationFrame(gameLoop)
+
+}
+
+gameLoop()
