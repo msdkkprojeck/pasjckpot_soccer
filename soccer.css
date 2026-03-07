@@ -1,57 +1,22 @@
-.game-container{
-position:relative;
+#gameCanvas{
+
 width:100%;
 max-width:600px;
-height:420px;
-margin:auto;
-background:#2e7d32;
+height:400px;
+
+background:#1b5e20;
+
 border-radius:15px;
-overflow:hidden;
+box-shadow:0 0 20px rgba(255,140,0,0.6);
+
+margin-bottom:20px;
+
 }
 
-/* gawang */
-.goal{
-position:absolute;
-top:20px;
-left:50%;
-transform:translateX(-50%);
-width:300px;
-}
-
-/* kiper */
-#goalkeeper{
-position:absolute;
-top:70px;
-left:50%;
-transform:translateX(-50%);
-width:80px;
-transition:0.3s;
-}
-
-/* player */
-.player{
-position:absolute;
-bottom:20px;
-left:120px;
-width:120px;
-}
-
-/* bola */
-#ball{
-position:absolute;
-bottom:50px;
-left:250px;
-width:35px;
-transition:0.6s;
-}
-
-/* hasil */
 #result{
-position:absolute;
-top:45%;
-width:100%;
-text-align:center;
+
 font-size:30px;
 color:white;
 text-shadow:0 0 10px orange;
+
 }
