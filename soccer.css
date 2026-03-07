@@ -2,8 +2,8 @@ body{
 
 margin:0;
 text-align:center;
-font-family:sans-serif;
 background:#1b5e20;
+font-family:sans-serif;
 color:white;
 
 }
@@ -31,28 +31,18 @@ top:20px;
 left:50%;
 transform:translateX(-50%);
 
-width:200px;
+width:220px;
 height:80px;
 
 border:4px solid white;
 
 }
 
-/* kiper */
+/* karakter */
 
-#keeper{
+.character{
 
 position:absolute;
-
-top:80px;
-left:260px;
-
-width:60px;
-height:20px;
-
-background:yellow;
-
-transition:0.3s;
 
 }
 
@@ -60,19 +50,15 @@ transition:0.3s;
 
 #player{
 
-position:absolute;
-
 bottom:60px;
-left:230px;
+left:220px;
 
 width:40px;
-height:60px;
+height:70px;
 
 background:white;
 
 border-radius:10px;
-
-transition:0.2s;
 
 }
 
@@ -81,6 +67,34 @@ transition:0.2s;
 .kick{
 
 transform:rotate(-20deg);
+
+transition:0.2s;
+
+}
+
+/* kiper */
+
+#keeper{
+
+top:80px;
+left:260px;
+
+width:60px;
+height:30px;
+
+background:yellow;
+
+border-radius:6px;
+
+transition:0.4s;
+
+}
+
+/* animasi loncat */
+
+.jump{
+
+transform:translateY(-20px);
 
 }
 
@@ -93,29 +107,29 @@ position:absolute;
 bottom:80px;
 left:290px;
 
-width:20px;
-height:20px;
+width:18px;
+height:18px;
 
 background:black;
 
 border-radius:50%;
 
-transition:0.6s;
+transition:0.7s;
 
 }
 
-/* animasi bola */
+/* bola berputar */
 
-@keyframes spin{
+.spin{
+
+animation:spinBall 0.7s linear;
+
+}
+
+@keyframes spinBall{
 
 0%{transform:rotate(0deg)}
 100%{transform:rotate(720deg)}
-
-}
-
-.ballKick{
-
-animation:spin 0.6s linear;
 
 }
 
@@ -128,6 +142,6 @@ position:absolute;
 top:170px;
 width:100%;
 
-font-size:30px;
+font-size:28px;
 
 }
