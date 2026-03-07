@@ -1,3 +1,5 @@
+document.addEventListener("DOMContentLoaded", () => {
+
 const canvas = document.getElementById("gameCanvas")
 const ctx = canvas.getContext("2d")
 
@@ -6,17 +8,13 @@ canvas.height = 400
 
 const result = document.getElementById("result")
 
-/* bola */
-
 let ball = {
 x:300,
-y:320,
+y:330,
 vx:0,
 vy:0,
 moving:false
 }
-
-/* kiper */
 
 let keeper = {
 x:260,
@@ -24,8 +22,6 @@ y:120,
 width:80,
 height:20
 }
-
-/* swipe */
 
 let startX = 0
 let startY = 0
@@ -49,14 +45,12 @@ kickBall(dx,dy)
 
 })
 
-/* tendang */
-
 function kickBall(dx,dy){
 
 if(ball.moving) return
 
-ball.vx = dx * 0.15
-ball.vy = -Math.abs(dy * 0.25)
+ball.vx = dx * 0.12
+ball.vy = -Math.abs(dy * 0.2)
 
 ball.moving = true
 
@@ -82,8 +76,6 @@ setTimeout(resetBall,2000)
 
 }
 
-/* gerak kiper */
-
 function moveKeeper(){
 
 let pos = [180,260,340]
@@ -92,12 +84,10 @@ keeper.x = pos[Math.floor(Math.random()*pos.length)]
 
 }
 
-/* reset */
-
 function resetBall(){
 
 ball.x=300
-ball.y=320
+ball.y=330
 ball.vx=0
 ball.vy=0
 ball.moving=false
@@ -105,8 +95,6 @@ ball.moving=false
 result.innerHTML=""
 
 }
-
-/* physics */
 
 function update(){
 
@@ -120,8 +108,6 @@ ball.vy += 0.2
 }
 
 }
-
-/* render */
 
 function draw(){
 
@@ -147,8 +133,6 @@ ctx.fill()
 
 }
 
-/* game loop */
-
 function gameLoop(){
 
 update()
@@ -159,3 +143,5 @@ requestAnimationFrame(gameLoop)
 }
 
 gameLoop()
+
+})
