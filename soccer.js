@@ -1,45 +1,20 @@
-document.addEventListener("DOMContentLoaded", () => {
-
-const canvas = document.getElementById("gameCanvas")
-const ctx = canvas.getContext("2d")
-
-canvas.width = 600
-canvas.height = 400
-
+const ball = document.getElementById("ball")
+const keeper = document.getElementById("keeper")
 const result = document.getElementById("result")
 
-let ball = {
-x:300,
-y:330,
-vx:0,
-vy:0,
-moving:false
-}
+let startX,startY
 
-let keeper = {
-x:260,
-y:120,
-width:80,
-height:20
-}
+document.addEventListener("mousedown",(e)=>{
 
-let startX = 0
-let startY = 0
-
-canvas.addEventListener("touchstart",(e)=>{
-
-startX = e.touches[0].clientX
-startY = e.touches[0].clientY
+startX = e.clientX
+startY = e.clientY
 
 })
 
-canvas.addEventListener("touchend",(e)=>{
+document.addEventListener("mouseup",(e)=>{
 
-let endX = e.changedTouches[0].clientX
-let endY = e.changedTouches[0].clientY
-
-let dx = endX - startX
-let dy = startY - endY
+let dx = e.clientX - startX
+let dy = startY - e.clientY
 
 kickBall(dx,dy)
 
@@ -47,20 +22,20 @@ kickBall(dx,dy)
 
 function kickBall(dx,dy){
 
-if(ball.moving) return
+ball.style.bottom="300px"
 
-ball.vx = dx * 0.12
-ball.vy = -Math.abs(dy * 0.2)
+let target = 280 + dx
 
-ball.moving = true
+if(target < 200) target = 200
+if(target > 360) target = 360
+
+ball.style.left = target+"px"
 
 let chance = Math.random()
 
 if(chance <= 0.2){
 
-setTimeout(()=>{
 result.innerHTML="GOAL ⚽"
-},700)
 
 }else{
 
@@ -68,7 +43,7 @@ moveKeeper()
 
 setTimeout(()=>{
 result.innerHTML="SAVE 🧤"
-},700)
+},300)
 
 }
 
@@ -78,70 +53,17 @@ setTimeout(resetBall,2000)
 
 function moveKeeper(){
 
-let pos = [180,260,340]
+let pos=[220,260,300]
 
-keeper.x = pos[Math.floor(Math.random()*pos.length)]
+keeper.style.left=pos[Math.floor(Math.random()*pos.length)]+"px"
 
 }
 
 function resetBall(){
 
-ball.x=300
-ball.y=330
-ball.vx=0
-ball.vy=0
-ball.moving=false
+ball.style.bottom="70px"
+ball.style.left="280px"
 
 result.innerHTML=""
 
 }
-
-function update(){
-
-if(ball.moving){
-
-ball.x += ball.vx
-ball.y += ball.vy
-
-ball.vy += 0.2
-
-}
-
-}
-
-function draw(){
-
-ctx.clearRect(0,0,canvas.width,canvas.height)
-
-/* gawang */
-
-ctx.strokeStyle="white"
-ctx.lineWidth=4
-ctx.strokeRect(200,80,200,80)
-
-/* kiper */
-
-ctx.fillStyle="yellow"
-ctx.fillRect(keeper.x,120,keeper.width,keeper.height)
-
-/* bola */
-
-ctx.beginPath()
-ctx.arc(ball.x,ball.y,10,0,Math.PI*2)
-ctx.fillStyle="white"
-ctx.fill()
-
-}
-
-function gameLoop(){
-
-update()
-draw()
-
-requestAnimationFrame(gameLoop)
-
-}
-
-gameLoop()
-
-})
