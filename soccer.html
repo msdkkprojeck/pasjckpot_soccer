@@ -1,36 +1,225 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Mini Soccer Game</title>
 
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="soccer.css">
+<style>
+
+body{
+margin:0;
+font-family:sans-serif;
+background:#1b5e20;
+text-align:center;
+color:white;
+}
+
+/* field */
+
+.field{
+
+position:relative;
+width:600px;
+height:400px;
+
+background:#2e7d32;
+
+margin:40px auto;
+
+border-radius:15px;
+
+}
+
+/* goal */
+
+.goal{
+
+position:absolute;
+top:20px;
+left:50%;
+transform:translateX(-50%);
+
+width:200px;
+height:80px;
+
+border:4px solid white;
+
+}
+
+/* keeper */
+
+#keeper{
+
+position:absolute;
+
+top:80px;
+left:260px;
+
+width:60px;
+height:20px;
+
+background:yellow;
+
+transition:0.3s;
+
+}
+
+/* player */
+
+.player{
+
+position:absolute;
+
+bottom:60px;
+left:220px;
+
+width:40px;
+height:60px;
+
+background:white;
+
+border-radius:10px;
+
+}
+
+/* ball */
+
+#ball{
+
+position:absolute;
+
+bottom:80px;
+left:290px;
+
+width:20px;
+height:20px;
+
+background:black;
+
+border-radius:50%;
+
+transition:0.6s;
+
+}
+
+#result{
+
+position:absolute;
+
+top:170px;
+width:100%;
+
+font-size:30px;
+
+}
+
+button{
+
+margin-top:20px;
+padding:10px 20px;
+
+}
+
+</style>
 
 </head>
 
 <body>
 
-<div class="overlay"></div>
+<h2>MINI PENALTY GAME</h2>
 
-<section class="page active">
+<div class="field">
 
-<img src="https://i.ibb.co/BKNPDfmy/logo-pasjackpot.webp" class="logo small">
+<div class="goal"></div>
 
-<canvas id="gameCanvas"></canvas>
+<div id="keeper"></div>
+
+<div class="player"></div>
+
+<div id="ball"></div>
 
 <div id="result"></div>
 
-<button class="btn-glow small" onclick="window.location.href='index.html'">
-KEMBALI
-</button>
+</div>
 
-</section>
+<button onclick="window.location.href='index.html'">KEMBALI</button>
 
-<script src="soccer.js" defer></script>
+<script>
+
+const ball = document.getElementById("ball")
+const keeper = document.getElementById("keeper")
+const result = document.getElementById("result")
+
+let startX,startY
+
+document.addEventListener("mousedown",(e)=>{
+
+startX = e.clientX
+startY = e.clientY
+
+})
+
+document.addEventListener("mouseup",(e)=>{
+
+let dx = e.clientX - startX
+let dy = startY - e.clientY
+
+kickBall(dx,dy)
+
+})
+
+function kickBall(dx,dy){
+
+ball.style.bottom="300px"
+
+let target = 290 + dx
+
+if(target < 200) target = 200
+if(target > 380) target = 380
+
+ball.style.left = target+"px"
+
+let chance = Math.random()
+
+if(chance <= 0.2){
+
+result.innerHTML="GOAL ⚽"
+
+}else{
+
+moveKeeper()
+
+setTimeout(()=>{
+result.innerHTML="SAVE 🧤"
+},300)
+
+}
+
+setTimeout(resetBall,2000)
+
+}
+
+function moveKeeper(){
+
+let pos=[220,260,300]
+
+keeper.style.left=pos[Math.floor(Math.random()*pos.length)]+"px"
+
+}
+
+function resetBall(){
+
+ball.style.bottom="80px"
+ball.style.left="290px"
+
+result.innerHTML=""
+
+}
+
+</script>
 
 </body>
 </html>
