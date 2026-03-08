@@ -1,127 +1,22 @@
 body{
-
 margin:0;
-text-align:center;
-font-family:sans-serif;
-background:#1b5e20;
-color:white;
-
+background:#0b6623;
+overflow:hidden;
+font-family:Arial;
 }
 
-.field{
-
-position:relative;
-width:600px;
-height:400px;
-
-background:#2e7d32;
-
-margin:40px auto;
-
-border-radius:15px;
-
+canvas{
+display:block;
+margin:auto;
+background:#4caf50;
 }
 
-/* gawang */
-
-.goal{
-
+#ui{
 position:absolute;
-top:20px;
+top:15px;
 left:50%;
 transform:translateX(-50%);
-
-width:220px;
-height:80px;
-
-border:4px solid white;
-
-}
-
-/* kiper */
-
-#keeper{
-
-position:absolute;
-
-top:80px;
-left:260px;
-
-width:60px;
-height:20px;
-
-background:yellow;
-
-border-radius:4px;
-
-transition:0.4s;
-
-}
-
-/* pemain */
-
-#player{
-
-position:absolute;
-
-bottom:60px;
-left:220px;
-
-}
-
-/* kaki menendang */
-
-.kick{
-
-transform-origin:top;
-transform:rotate(-40deg);
-
-}
-
-/* bola */
-
-#ball{
-
-position:absolute;
-
-bottom:80px;
-left:290px;
-
-width:18px;
-height:18px;
-
-background:black;
-
-border-radius:50%;
-
-transition:0.7s;
-
-}
-
-/* bola berputar */
-
-.spin{
-
-animation:spinBall 0.7s linear;
-
-}
-
-@keyframes spinBall{
-
-0%{transform:rotate(0deg)}
-100%{transform:rotate(720deg)}
-
-}
-
-/* hasil */
-
-#result{
-
-position:absolute;
-
-top:160px;
-width:100%;
-
-font-size:30px;
-
+font-size:26px;
+font-weight:bold;
+color:white;
 }
