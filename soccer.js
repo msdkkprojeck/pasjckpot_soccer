@@ -8,39 +8,55 @@ const result=document.getElementById("result")
 let startX,startY
 
 document.addEventListener("mousedown",(e)=>{
-
 startX=e.clientX
 startY=e.clientY
-
 })
 
 document.addEventListener("mouseup",(e)=>{
 
 let dx=e.clientX-startX
+let dy=startY-e.clientY
 
-kickBall(dx)
+kickBall(dx,dy)
 
 })
 
-function kickBall(dx){
+function kickBall(dx,dy){
 
 leg.classList.add("kick")
-ball.classList.add("spin")
 
 setTimeout(()=>{
-
 leg.classList.remove("kick")
-
 },200)
 
-ball.style.bottom="300px"
+let x=290
+let y=80
+let vx=dx*0.15
+let vy=-Math.abs(dy*0.25)
 
-let target=290+dx
+let gravity=0.25
 
-if(target<200)target=200
-if(target>380)target=380
+let interval=setInterval(()=>{
 
-ball.style.left=target+"px"
+x+=vx
+y+=vy
+vy+=gravity
+
+ball.style.left=x+"px"
+ball.style.bottom=y+"px"
+
+if(y>300){
+
+clearInterval(interval)
+checkGoal(x)
+
+}
+
+},20)
+
+}
+
+function checkGoal(ballX){
 
 let chance=Math.random()
 
@@ -53,10 +69,8 @@ result.innerHTML="GOAL ⚽"
 moveKeeper()
 
 setTimeout(()=>{
-
 result.innerHTML="SAVE 🧤"
-
-},300)
+},200)
 
 }
 
@@ -73,8 +87,6 @@ keeper.style.left=pos[Math.floor(Math.random()*pos.length)]+"px"
 }
 
 function resetBall(){
-
-ball.classList.remove("spin")
 
 ball.style.bottom="80px"
 ball.style.left="290px"
