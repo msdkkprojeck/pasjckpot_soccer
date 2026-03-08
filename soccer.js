@@ -7,54 +7,29 @@ const result=document.getElementById("result")
 
 let startX,startY
 
-document.addEventListener("mousedown",(e)=>{
-startX=e.clientX
-startY=e.clientY
-})
-
-document.addEventListener("mouseup",(e)=>{
-
 let dx=e.clientX-startX
-let dy=startY-e.clientY
 
-kickBall(dx,dy)
+kickBall(dx)
 
 })
 
-function kickBall(dx,dy){
+function kickBall(dx){
 
 leg.classList.add("kick")
+ball.classList.add("spin")
 
 setTimeout(()=>{
+
 leg.classList.remove("kick")
+
 },200)
 
-let x=290
-let y=80
-let vx=dx*0.15
-let vy=-Math.abs(dy*0.25)
+ball.style.bottom="300px"
 
-let gravity=0.25
+let target=290+dx
 
-let interval=setInterval(()=>{
-
-x+=vx
-y+=vy
-vy+=gravity
-
-ball.style.left=x+"px"
-ball.style.bottom=y+"px"
-
-if(y>300){
-
-clearInterval(interval)
-checkGoal(x)
-
-}
-
-},20)
-
-}
+if(target<200)target=200
+if(target>380)target=380
 
 function checkGoal(ballX){
 
@@ -62,14 +37,14 @@ let chance=Math.random()
 
 if(chance<0.2){
 
-result.innerHTML="GOAL ⚽"
+result.innerHTML="TEDDY MENCETAK GOAL"
 
 }else{
 
 moveKeeper()
 
 setTimeout(()=>{
-result.innerHTML="SAVE 🧤"
+result.innerHTML="BOLA TEEDY TERTANGKAP"
 },200)
 
 }
