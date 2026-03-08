@@ -1,59 +1,250 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
+<title>Mini Soccer Cartoon</title>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
 
-<title>Mini Penalty Game</title>
+body{
+margin:0;
+overflow:hidden;
+background:#2e7d32;
+}
 
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="soccer.css">
+canvas{
+display:block;
+margin:auto;
+background:#4caf50;
+}
+
+</style>
 
 </head>
 
 <body>
 
-<h2>MINI PENALTY GAME</h2>
+<canvas id="game" width="900" height="500"></canvas>
 
-<div class="field">
+<script>
 
-<div class="goal"></div>
+const canvas = document.getElementById("game")
+const ctx = canvas.getContext("2d")
 
-<!-- KIPER -->
-<div id="keeper"></div>
+let ball = {
+x:450,
+y:360,
+r:10,
+vx:0,
+vy:0
+}
 
-<!-- BOLA -->
-<div id="ball"></div>
+let player = {
+x:450,
+y:390,
+kick:false
+}
 
-<!-- PEMAIN KARTUN -->
-<div id="player">
+let keeper = {
+x:450,
+y:120,
+dir:3
+}
 
-<svg width="80" height="120" viewBox="0 0 80 120">
+let goal = {
+x:330,
+y:60,
+w:240,
+h:10
+}
 
-<!-- kepala -->
-<circle cx="40" cy="20" r="12" fill="#ffd59e"/>
+let drag=false
+let startX,startY
 
-<!-- badan -->
-<rect x="32" y="32" width="16" height="30" fill="#ff3b3b"/>
+canvas.addEventListener("mousedown",(e)=>{
+drag=true
+startX=e.offsetX
+startY=e.offsetY
+})
 
-<!-- kaki kiri -->
-<rect x="30" y="60" width="8" height="30" fill="#000"/>
+canvas.addEventListener("mouseup",(e)=>{
 
-<!-- kaki kanan (yang menendang) -->
-<rect id="kickLeg" x="42" y="60" width="8" height="30" fill="#000"/>
+if(drag){
 
-</svg>
+let dx=startX-e.offsetX
+let dy=startY-e.offsetY
 
-</div>
+ball.vx=dx*0.18
+ball.vy=dy*0.18
 
-<div id="result"></div>
+player.kick=true
 
-</div>
+setTimeout(()=>{
+player.kick=false
+},200)
 
-<button onclick="window.location.href='index.html'">KEMBALI</button>
+drag=false
+}
 
-<script src="soccer.js"></script>
+})
+
+function drawField(){
+
+ctx.fillStyle="#4caf50"
+ctx.fillRect(0,0,canvas.width,canvas.height)
+
+ctx.fillStyle="white"
+ctx.fillRect(goal.x,goal.y,goal.w,goal.h)
+
+}
+
+function drawPlayer(){
+
+// kepala
+ctx.fillStyle="#ffcc99"
+ctx.beginPath()
+ctx.arc(player.x,player.y-35,10,0,Math.PI*2)
+ctx.fill()
+
+// badan
+ctx.strokeStyle="blue"
+ctx.lineWidth=5
+ctx.beginPath()
+ctx.moveTo(player.x,player.y-25)
+ctx.lineTo(player.x,player.y)
+ctx.stroke()
+
+// tangan
+ctx.beginPath()
+ctx.moveTo(player.x-15,player.y-20)
+ctx.lineTo(player.x+15,player.y-20)
+ctx.stroke()
+
+// kaki kiri
+ctx.beginPath()
+ctx.moveTo(player.x,player.y)
+ctx.lineTo(player.x-12,player.y+25)
+ctx.stroke()
+
+// kaki kanan (animasi tendang)
+ctx.beginPath()
+
+if(player.kick){
+ctx.moveTo(player.x,player.y)
+ctx.lineTo(player.x+25,player.y+10)
+}else{
+ctx.moveTo(player.x,player.y)
+ctx.lineTo(player.x+12,player.y+25)
+}
+
+ctx.stroke()
+
+}
+
+function drawKeeper(){
+
+// kepala
+ctx.fillStyle="#ffcc99"
+ctx.beginPath()
+ctx.arc(keeper.x,keeper.y-25,10,0,Math.PI*2)
+ctx.fill()
+
+// badan
+ctx.strokeStyle="red"
+ctx.lineWidth=5
+ctx.beginPath()
+ctx.moveTo(keeper.x,keeper.y-15)
+ctx.lineTo(keeper.x,keeper.y+15)
+ctx.stroke()
+
+// tangan
+ctx.beginPath()
+ctx.moveTo(keeper.x-20,keeper.y-5)
+ctx.lineTo(keeper.x+20,keeper.y-5)
+ctx.stroke()
+
+// kaki
+ctx.beginPath()
+ctx.moveTo(keeper.x,keeper.y+15)
+ctx.lineTo(keeper.x-12,keeper.y+35)
+ctx.moveTo(keeper.x,keeper.y+15)
+ctx.lineTo(keeper.x+12,keeper.y+35)
+ctx.stroke()
+
+}
+
+function drawBall(){
+
+ctx.fillStyle="white"
+ctx.beginPath()
+ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2)
+ctx.fill()
+
+}
+
+function update(){
+
+ball.x+=ball.vx
+ball.y+=ball.vy
+
+ball.vx*=0.99
+ball.vy*=0.99
+
+// gerakan kiper
+keeper.x+=keeper.dir
+
+if(keeper.x>620 || keeper.x<280){
+keeper.dir*=-1
+}
+
+// collision kiper
+let dist=Math.hypot(ball.x-keeper.x,ball.y-keeper.y)
+
+if(dist<25){
+ball.vy*=-1
+ball.vx*=0.5
+}
+
+// gol
+if(ball.y<goal.y+5 && ball.x>goal.x && ball.x<goal.x+goal.w){
+
+alert("GOAL!! ⚽")
+
+resetBall()
+
+}
+
+// reset jika keluar
+if(ball.y>canvas.height){
+resetBall()
+}
+
+}
+
+function resetBall(){
+
+ball.x=450
+ball.y=360
+ball.vx=0
+ball.vy=0
+
+}
+
+function gameLoop(){
+
+update()
+
+drawField()
+drawPlayer()
+drawKeeper()
+drawBall()
+
+requestAnimationFrame(gameLoop)
+
+}
+
+gameLoop()
+
+</script>
 
 </body>
 </html>
