@@ -1,45 +1,28 @@
 body{
 margin:0;
-background:linear-gradient(#0b6623,#063d15);
-font-family:Arial, sans-serif;
+background:#0b6623;
 overflow:hidden;
+font-family:Arial;
 }
 
-/* container game */
+canvas{
+display:block;
+margin:auto;
+background:#4caf50;
+}
+
+#ui{
+position:absolute;
+top:15px;
+left:50%;
+transform:translateX(-50%);
+font-size:26px;
+font-weight:bold;
+color:white;
+}
 
 #gameContainer{
 position:relative;
 width:900px;
 margin:auto;
-margin-top:40px;
-}
-
-/* scoreboard */
-
-#ui{
-position:absolute;
-top:-40px;
-width:100%;
-text-align:center;
-font-size:28px;
-font-weight:bold;
-color:white;
-text-shadow:0 2px 4px rgba(0,0,0,0.5);
-}
-
-/* canvas */
-
-canvas{
-display:block;
-border:6px solid white;
-border-radius:10px;
-background:linear-gradient(
-to bottom,
-#4caf50 0%,
-#43a047 40%,
-#388e3c 100%
-);
-box-shadow:
-0 0 20px rgba(0,0,0,0.6),
-inset 0 0 20px rgba(0,0,0,0.3);
 }
