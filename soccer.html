@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Penalty Soccer 3D · Target Bawah Diturunkan</title>
+    <title>Penalty Soccer 3D · Kiper Cerdas + Anti Spam</title>
     <style>
         * {
             box-sizing: border-box;
@@ -297,6 +297,10 @@
         let shooting = false;
         let matchEnded = false;
 
+        // ANTI SPAM
+        let canShoot = true;
+        let shootCooldown = false;
+
         // BOLA
         let ball = {
             x: 450,
@@ -307,10 +311,10 @@
             rotation: 0
         };
 
-        // KIPER 3D SUPER DETAIL
+        // KIPER 3D - DITURUNKAN AGAR KAKI MENYENTUH GARIS KOTAK PENALTI
         let keeper = {
             x: 450,
-            y: 165,
+            y: 175,        // diturunkan dari 155 ke 175 agar kaki menyentuh garis
             dir: 2,
             jump: false,
             targetX: 450,
@@ -318,7 +322,7 @@
             armAngle: 0
         };
 
-        // GAWANG - sudah turun
+        // GAWANG
         let goal = {
             x: 300,
             y: 45,
@@ -326,20 +330,23 @@
             h: 150
         };
 
-        // TARGET BULAT KUNING - bagian bawah diturunkan
-        let targets = [
-            { x: 340, y: 80 },   // kiri atas
-            { x: 450, y: 80 },   // tengah atas
-            { x: 560, y: 80 },   // kanan atas
-            { x: 340, y: 145 },  // kiri bawah (diturunkan dari 130 ke 145)
-            { x: 560, y: 145 }   // kanan bawah (diturunkan dari 130 ke 145)
-        ];
+        // KOTAK PENALTI (untuk referensi)
+        const penaltyBox = {
+            x: 250,
+            y: 35,
+            w: 400,
+            h: 150
+        };
 
-        const difficulty = 0.58;
+        // TARGET KOSONG (tendangan bebas)
+        let targets = [];
 
-        // Klik tendang
+        // KECERDASAN KIPER DITAIKKAN MENJADI 0.75
+        const difficulty = 0.75;  // dari 0.58 menjadi 0.75
+
+        // Klik tendang - dengan ANTI SPAM
         canvas.addEventListener("click", (e) => {
-            if (shooting || shot >= 6 || matchEnded) return;
+            if (shooting || shot >= 6 || matchEnded || !canShoot || shootCooldown) return;
 
             const rect = canvas.getBoundingClientRect();
             const scaleX = canvas.width / rect.width;
@@ -348,13 +355,17 @@
             let mouseX = (e.clientX - rect.left) * scaleX;
             let mouseY = (e.clientY - rect.top) * scaleY;
 
-            for (let t of targets) {
-                let d = Math.hypot(mouseX - t.x, mouseY - t.y);
-                if (d < 25) {
-                    shootBall(t.x, t.y);
-                    break;
+            // CEK APAKAH KLIK DI DALAM GAWANG
+            if (mouseX >= goal.x && mouseX <= goal.x + goal.w && 
+                mouseY >= goal.y && mouseY <= goal.y + goal.h) {
+                shootBall(mouseX, mouseY);
+                
+                // AKTIFKAN COOLDOWN ANTI SPAM
+                shootCooldown = true;
+                setTimeout(() => {
+                    shootCooldown = false;
+                }, 500); // Cooldown 500ms
             }
-        }
         });
 
         function shootBall(tx, ty) {
@@ -362,20 +373,24 @@
             shot++;
             document.getElementById("shot").innerText = shot;
 
+            // Hitung kecepatan bola menuju titik klik
             ball.vx = (tx - ball.x) * 0.085;
             ball.vy = (ty - ball.y) * 0.085;
 
+            // Kiper bereaksi dengan kecerdasan 75%
             let guess = Math.random();
             if (guess < difficulty) {
+                // Kiper menebak dengan benar (bergerak ke arah tendangan)
                 keeper.targetX = tx;
             } else {
+                // Kiper salah tebak (bergerak random)
                 keeper.targetX = goal.x + 40 + Math.random() * (goal.w - 80);
             }
             keeper.targetX = Math.min(goal.x + goal.w - 20, Math.max(goal.x + 20, keeper.targetX));
             keeper.jump = true;
         }
 
-        // ===== BACKGROUND DENGAN AWAN (tanpa kotak putih tambahan) =====
+        // ===== BACKGROUND DENGAN AWAN =====
         function drawBackground() {
             // Langit gradasi
             const sky = ctx.createLinearGradient(0, 0, 0, 300);
@@ -397,7 +412,7 @@
             ctx.fillRect(0, 250, canvas.width, 150);
             ctx.globalAlpha = 1;
 
-            // Garis lapangan (hanya kotak penalti dan lingkaran tengah)
+            // Garis lapangan
             ctx.strokeStyle = 'rgba(255,255,255,0.5)';
             ctx.lineWidth = 3;
             ctx.strokeRect(200, 200, 500, 200);
@@ -406,8 +421,7 @@
             ctx.strokeStyle = 'rgba(255,255,255,0.3)';
             ctx.stroke();
 
-            // KOTAK PUTIH DI GAWANG TELAH DIHAPUS
-            // Hanya menyisakan titik penalti
+            // Titik penalti
             ctx.beginPath();
             ctx.arc(450, 125, 4, 0, 2*Math.PI);
             ctx.fillStyle = 'white';
@@ -528,18 +542,9 @@
             ctx.shadowOffsetY = 0;
         }
 
+        // Fungsi drawTargets KOSONG
         function drawTargets() {
-            for (let t of targets) {
-                ctx.beginPath();
-                ctx.arc(t.x, t.y, 16, 0, 2*Math.PI);
-                ctx.strokeStyle = '#ffff00';
-                ctx.lineWidth = 4;
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.arc(t.x, t.y, 8, 0, 2*Math.PI);
-                ctx.fillStyle = '#ffcc00';
-                ctx.fill();
-            }
+            // Tidak menggambar apa-apa
         }
 
         // ===== KIPER 3D SUPER DETAIL =====
@@ -599,22 +604,22 @@
             ctx.ellipse(kx+34, ky-28, 8, 7, 0, 0, Math.PI*2);
             ctx.fill();
 
-            // Kaki
+            // Kaki - DITURUNKAN AGAR MENYENTUH GARIS
             ctx.fillStyle = '#2a5a2a';
             ctx.beginPath();
-            ctx.ellipse(kx-12, ky, 8, 14, 0.1, 0, Math.PI*2);
+            ctx.ellipse(kx-12, ky+5, 8, 14, 0.1, 0, Math.PI*2); // kaki kiri diturunkan
             ctx.fill();
             ctx.beginPath();
-            ctx.ellipse(kx+12, ky, 8, 14, -0.1, 0, Math.PI*2);
+            ctx.ellipse(kx+12, ky+5, 8, 14, -0.1, 0, Math.PI*2); // kaki kanan diturunkan
             ctx.fill();
 
             // Sepatu
             ctx.fillStyle = '#222';
             ctx.beginPath();
-            ctx.ellipse(kx-20, ky+8, 8, 5, 0.1, 0, Math.PI*2);
+            ctx.ellipse(kx-20, ky+13, 8, 5, 0.1, 0, Math.PI*2); // sepatu kiri
             ctx.fill();
             ctx.beginPath();
-            ctx.ellipse(kx+20, ky+8, 8, 5, -0.1, 0, Math.PI*2);
+            ctx.ellipse(kx+20, ky+13, 8, 5, -0.1, 0, Math.PI*2); // sepatu kanan
             ctx.fill();
 
             // Wajah
@@ -638,7 +643,7 @@
             ctx.fillStyle = '#1a3a3a';
             ctx.globalAlpha = 0.5;
             ctx.beginPath();
-            ctx.ellipse(kx, ky+15, 30, 10, 0, 0, 2*Math.PI);
+            ctx.ellipse(kx, ky+20, 30, 10, 0, 0, 2*Math.PI); // bayangan ikut turun
             ctx.fill();
             ctx.globalAlpha = 1;
             ctx.shadowBlur = 0;
