@@ -375,95 +375,93 @@
         }
 
         // ===== BACKGROUND REALISTIS =====
-        function drawBackground() {
-            // Langit gradasi
-            const sky = ctx.createLinearGradient(0, 0, 0, 300);
-            sky.addColorStop(0, '#0a1f3a');
-            sky.addColorStop(0.8, '#3a6ea5');
-            ctx.fillStyle = sky;
-            ctx.fillRect(0, 0, canvas.width, 300);
+       function drawBackground() {
+    // Langit gradasi
+    const skyGrad = ctx.createLinearGradient(0, 0, 0, 300);
+    skyGrad.addColorStop(0, '#0b3b5c');
+    skyGrad.addColorStop(0.7, '#6ba5c0');
+    ctx.fillStyle = skyGrad;
+    ctx.fillRect(0, 0, canvas.width, 300);
 
-            // Rumput stadion
-            const grass = ctx.createLinearGradient(0, 200, 0, canvas.height);
-            grass.addColorStop(0, '#1e7e1e');
-            grass.addColorStop(1, '#0a5a0a');
-            ctx.fillStyle = grass;
-            ctx.fillRect(0, 200, canvas.width, canvas.height);
+    // Awan sederhana
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+    for (let i = 0; i < 5; i++) {
+        let x = 100 + i * 180;
+        let y = 50 + i * 20;
+        ctx.beginPath();
+        ctx.arc(x, y, 40, 0, Math.PI*2);
+        ctx.arc(x+50, y-10, 35, 0, Math.PI*2);
+        ctx.arc(x-30, y+10, 30, 0, Math.PI*2);
+        ctx.fill();
+    }
 
-            // Bayangan stadion
-            ctx.fillStyle = '#0a3a0a';
-            ctx.globalAlpha = 0.3;
-            ctx.fillRect(0, 250, canvas.width, 150);
-            ctx.globalAlpha = 1;
+    // Rumput utama
+    const grassGrad = ctx.createLinearGradient(0, 200, 0, canvas.height);
+    grassGrad.addColorStop(0, '#2a7a2a');
+    grassGrad.addColorStop(1, '#145a14');
+    ctx.fillStyle = grassGrad;
+    ctx.fillRect(0, 200, canvas.width, canvas.height);
 
-            // Garis lapangan
-            ctx.strokeStyle = 'rgba(255,255,255,0.5)';
-            ctx.lineWidth = 3;
-            ctx.strokeRect(200, 200, 500, 200);
+    // Garis-garis rumput (tekstur)
+    ctx.strokeStyle = '#3f9a3f';
+    ctx.lineWidth = 1;
+    for (let i = 0; i < canvas.width; i += 15) {
+        ctx.beginPath();
+        ctx.moveTo(i, 200);
+        ctx.lineTo(i-10, canvas.height);
+        ctx.strokeStyle = 'rgba(70, 140, 70, 0.3)';
+        ctx.stroke();
+    }
+
+    // Kotak penalti (garis putih)
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(250, 35, 400, 150); // kotak penalti besar
+    ctx.strokeRect(300, 35, 300, 120); // kotak gawang (daerah kiper)
+
+    // Lingkaran tengah
+    ctx.beginPath();
+    ctx.arc(450, 300, 70, 0, 2*Math.PI);
+    ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+    ctx.stroke();
+
+    // Titik penalti
+    ctx.beginPath();
+    ctx.arc(450, 125, 4, 0, 2*Math.PI);
+    ctx.fillStyle = 'white';
+    ctx.fill();
+
+    // Tribun penonton di belakang gawang (sisi atas)
+    for (let row = 0; row < 4; row++) {
+        let yBase = 20 + row * 12;
+        for (let col = 0; col < 18; col++) {
+            let x = 200 + col * 30;
+            if (x > 700) continue;
+            ctx.fillStyle = `hsl(${Math.random()*40 + 20}, 70%, 50%)`; // warna random cerah
             ctx.beginPath();
-            ctx.arc(450, 300, 80, 0, 2*Math.PI);
-            ctx.strokeStyle = 'rgba(255,255,255,0.3)';
-            ctx.stroke();
+            ctx.rect(x + row*2, yBase - row*2, 10, 8);
+            ctx.fill();
+            // kepala
+            ctx.fillStyle = '#f7d9aa';
+            ctx.beginPath();
+            ctx.arc(x + row*2 + 5, yBase - row*2 - 2, 4, 0, 2*Math.PI);
+            ctx.fill();
         }
+    }
 
-        // ===== GAWANG REALISTIS DENGAN JARING =====
-        function drawRealisticGoal() {
-            // Tiang gawang 3D
-            ctx.shadowColor = '#00000080';
-            ctx.shadowBlur = 15;
-            ctx.shadowOffsetX = 3;
-            ctx.shadowOffsetY = 3;
+    // Bayangan stadion (transparan)
+    ctx.fillStyle = 'rgba(0,0,0,0.1)';
+    ctx.fillRect(0, 280, canvas.width, 80);
 
-            // Mistar atas (kayu)
-            ctx.fillStyle = '#d2b48c';
-            ctx.fillRect(goal.x, goal.y, goal.w, 12);
-            // Tiang kiri
-            ctx.fillRect(goal.x, goal.y, 12, goal.h);
-            // Tiang kanan
-            ctx.fillRect(goal.x + goal.w - 12, goal.y, 12, goal.h);
-
-            // Detail kayu
-            ctx.fillStyle = '#b89a7a';
-            ctx.fillRect(goal.x+3, goal.y+3, goal.w-6, 6);
-            ctx.fillRect(goal.x+3, goal.y+3, 6, goal.h-6);
-            ctx.fillRect(goal.x+goal.w-9, goal.y+3, 6, goal.h-6);
-
-            // Jaring gawang (lebih realistis)
-            ctx.strokeStyle = '#cccccc';
-            ctx.lineWidth = 1.2;
-            ctx.shadowBlur = 5;
-            ctx.shadowColor = '#00000040';
-
-            // Jaring vertikal
-            for (let i = 0; i < goal.w; i += 18) {
-                ctx.beginPath();
-                ctx.moveTo(goal.x + i, goal.y + 5);
-                ctx.lineTo(goal.x + i - 12, goal.y + goal.h - 5);
-                ctx.strokeStyle = '#aaaaaa';
-                ctx.stroke();
-            }
-            // Jaring horizontal
-            for (let j = goal.y + 15; j < goal.y + goal.h; j += 18) {
-                ctx.beginPath();
-                ctx.moveTo(goal.x + 5, j);
-                ctx.lineTo(goal.x + goal.w - 5, j - 15);
-                ctx.stroke();
-            }
-
-            // Efek jaring melengkung
-            ctx.strokeStyle = '#ffffff40';
-            ctx.lineWidth = 0.8;
-            for (let i = 0; i < 3; i++) {
-                ctx.beginPath();
-                ctx.moveTo(goal.x + 30 + i*50, goal.y + 20);
-                ctx.quadraticCurveTo(goal.x + 80 + i*50, goal.y + 70, goal.x + 40 + i*50, goal.y + 110);
-                ctx.stroke();
-            }
-
-            ctx.shadowBlur = 0;
-            ctx.shadowOffsetX = 0;
-            ctx.shadowOffsetY = 0;
-        }
+    // Garis lapangan tambahan (area pojok)
+    ctx.beginPath();
+    ctx.arc(250, 210, 20, 0, 0.5*Math.PI);
+    ctx.strokeStyle = 'white';
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(650, 210, 20, 0.5*Math.PI, Math.PI);
+    ctx.stroke();
+}
 
         function drawTargets() {
             for (let t of targets) {
