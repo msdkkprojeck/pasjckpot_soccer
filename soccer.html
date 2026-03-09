@@ -352,11 +352,11 @@
             { x: 560, y: 115 }
         ];
 
-        const difficulty = 0.30;
+        const difficulty = 0.50;
 
         // Klik tendang
         canvas.addEventListener("click", (e) => {
-            if (shooting || shot >= 5 || matchEnded) return;
+            if (shooting || shot >= 7 || matchEnded) return;
 
             const rect = canvas.getBoundingClientRect();
             const scaleX = canvas.width / rect.width;
