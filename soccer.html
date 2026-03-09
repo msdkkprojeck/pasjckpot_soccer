@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Penalty Soccer 3D · suara gol & kecewa</title>
+    <title>Penalty Soccer 3D · Fix Skor + Gawang Tinggi</title>
     <style>
         * {
             box-sizing: border-box;
@@ -43,6 +43,7 @@
             border-radius: 60px;
             border: 2px solid #ffd966;
             letter-spacing: 1px;
+            z-index: 10;
         }
 
         canvas {
@@ -138,7 +139,7 @@
         // === AUDIO CONTEXT ===
         let audioCtx = null;
 
-        // ===== SUARA GOOOOL (vocal + tepuk) =====
+        // ===== SUARA GOOOOL =====
         function playGoalSound() {
             if (!audioCtx) {
                 try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return; }
@@ -157,7 +158,7 @@
 
                 const now = audioCtx.currentTime;
 
-                // Suara "G" rendah
+                // Suara "G"
                 const oscG = audioCtx.createOscillator();
                 oscG.type = 'sawtooth';
                 oscG.frequency.value = 120;
@@ -169,7 +170,7 @@
                 oscG.start(now);
                 oscG.stop(now + 0.4);
 
-                // Suara "OOOO" naik (150 → 350Hz)
+                // Suara "OOOO"
                 const oscO = audioCtx.createOscillator();
                 oscO.type = 'triangle';
                 oscO.frequency.setValueAtTime(150, now + 0.15);
@@ -206,7 +207,7 @@
             }
         }
 
-        // ===== SUARA KECEWA (penonton "Awwwww...") =====
+        // ===== SUARA KECEWA =====
         function playDisappointSound() {
             if (!audioCtx) {
                 try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return; }
@@ -225,7 +226,7 @@
 
                 const now = audioCtx.currentTime;
 
-                // Suara "Awww" (turun) dari 300Hz ke 150Hz
+                // Suara "Awww"
                 const oscAww = audioCtx.createOscillator();
                 oscAww.type = 'sawtooth';
                 oscAww.frequency.setValueAtTime(320, now);
@@ -238,7 +239,6 @@
                 oscAww.start(now);
                 oscAww.stop(now + 1.0);
 
-                // Desisan kecil (kekecewaan) - noise pendek
                 for (let i = 0; i < 4; i++) {
                     const delay = i * 0.15;
                     const noiseBuffer = audioCtx.createBuffer(1, 1024, audioCtx.sampleRate);
@@ -260,7 +260,6 @@
                     noise.stop(now + 0.4 + delay);
                 }
 
-                // sedikit siulan kecil (optional)
                 const oscWhistle = audioCtx.createOscillator();
                 oscWhistle.type = 'sine';
                 oscWhistle.frequency.setValueAtTime(900, now+0.3);
@@ -279,9 +278,10 @@
         let score = 0;
         let shot = 0;
         let shooting = false;
-        let resetTimer = null;  // untuk cegah suara berulang
+        let resetTimer = null;
+        let matchEnded = false; // mencegah reset ganda dan perubahan skor
 
-        // BOLA 3D
+        // BOLA
         let ball = {
             x: 450,
             y: 380,
@@ -297,32 +297,31 @@
             y: 140,
             dir: 2,
             jump: false,
-            targetX: 450,
-            dive: 0
+            targetX: 450
         };
 
-        // GAWANG - TINGGI SUDAH DITAMBAH (y jadi 60, tinggi mistar 90)
+        // GAWANG - TINGGI DITAMBAH LAGI (y = 40, tinggi 110)
         let goal = {
             x: 320,
-            y: 60,        // lebih tinggi dari sebelumnya (80 → 60)
+            y: 40,        // lebih tinggi lagi (sebelumnya 60)
             w: 260,
-            h: 90         // tinggi gawang dari mistar ke bawah
+            h: 110        // lebih tinggi (sebelumnya 90)
         };
 
+        // Titik target disesuaikan dengan tinggi gawang baru
         let targets = [
-            { x: 340, y: 90 },   // titik target disesuaikan karena gawang lebih tinggi
-            { x: 450, y: 90 },
-            { x: 560, y: 90 },
-            { x: 340, y: 130 },
-            { x: 560, y: 130 }
+            { x: 340, y: 70 },
+            { x: 450, y: 70 },
+            { x: 560, y: 70 },
+            { x: 340, y: 115 },
+            { x: 560, y: 115 }
         ];
 
-        // Kesulitan (diam-diam)
         const difficulty = 0.58;
 
         // Klik tendang
         canvas.addEventListener("click", (e) => {
-            if (shooting || shot >= 5) return;
+            if (shooting || shot >= 5 || matchEnded) return;
 
             const rect = canvas.getBoundingClientRect();
             const scaleX = canvas.width / rect.width;
@@ -348,7 +347,6 @@
             ball.vx = (tx - ball.x) * 0.085;
             ball.vy = (ty - ball.y) * 0.085;
 
-            // Kiper bereaksi
             let guess = Math.random();
             if (guess < difficulty) {
                 keeper.targetX = tx;
@@ -382,15 +380,15 @@
             ctx.fill();
         }
 
-        // GAWANG dengan ukuran baru (lebih tinggi)
+        // GAWANG TINGGI
         function drawGoal() {
             ctx.shadowColor = '#00000060';
             ctx.shadowBlur = 12;
 
-            // mistar (posisi y = goal.y)
+            // mistar
             ctx.fillStyle = '#e0e0e0';
             ctx.fillRect(goal.x, goal.y, goal.w, 10);
-            // tiang kiri (tinggi goal.h)
+            // tiang kiri
             ctx.fillRect(goal.x, goal.y, 10, goal.h);
             // tiang kanan
             ctx.fillRect(goal.x + goal.w - 10, goal.y, 10, goal.h);
@@ -400,7 +398,7 @@
             ctx.fillRect(goal.x+5, goal.y+2, 5, goal.h-4);
             ctx.fillRect(goal.x+goal.w-15, goal.y+2, 5, goal.h-4);
 
-            // net (garis-garis)
+            // net
             ctx.strokeStyle = 'rgba(220,220,255,0.6)';
             ctx.lineWidth = 1.5;
             for (let i = 0; i < goal.w; i+=20) {
@@ -418,7 +416,7 @@
             ctx.shadowBlur = 0;
         }
 
-        // Titik target (disesuaikan dengan tinggi gawang baru)
+        // Titik target
         function drawTargets() {
             for (let t of targets) {
                 ctx.beginPath();
@@ -498,7 +496,7 @@
             ctx.shadowBlur = 0;
         }
 
-        // Pemain penendang
+        // Pemain
         function drawPlayer() {
             let x = 450, y = 420;
             ctx.shadowColor = '#00000070';
@@ -574,8 +572,10 @@
             ctx.fill();
         }
 
-        // Update dengan suara kecewa jika gagal
+        // Update dengan FIX SKOR
         function update() {
+            if (matchEnded) return; // jika match end, stop update gerakan
+
             ball.x += ball.vx;
             ball.y += ball.vy;
             ball.vx *= 0.98;
@@ -588,43 +588,35 @@
                 keeper.x += (keeper.targetX - keeper.x) * 0.16;
             }
 
-            // Simpan status sebelum reset untuk deteksi gagal
-            let willReset = false;
-            let reason = '';
-
-            // Collision dengan kiper
+            // Deteksi collision dengan kiper
             let d = Math.hypot(ball.x - keeper.x, ball.y - (keeper.y-20));
             if (d < 35) {
-                willReset = true;
-                reason = 'keeper';
+                if (shooting && !matchEnded) {
+                    playDisappointSound();
+                }
+                reset();
+                return;
             }
 
-            // Cek goal (pakai tinggi gawang baru: goal.y + goal.h)
+            // CEK GOAL: Gunakan tinggi gawang baru (goal.y + goal.h)
             if (ball.y < goal.y + goal.h && ball.x > goal.x && ball.x < goal.x + goal.w && ball.y > goal.y) {
-                // GOAL
+                // GOAL SAH
                 score++;
                 document.getElementById("score").innerText = score;
 
-                playGoalSound();   // SUARA GOOOOL!
+                playGoalSound();
                 showGoal();
                 reset();
                 return;
             }
 
-            // Bola keluar lapangan bawah atau atas
-            if (ball.y < goal.y - 10 || ball.y > 500 || ball.x < 0 || ball.x > 900) {
-                willReset = true;
-                reason = 'out';
-            }
-
-            // Jika akan reset karena gagal (tidak gol) dan sedang dalam mode shooting, mainkan suara kecewa
-            if (willReset && shooting && !(shot >= 5)) {
-                // Hindari spam suara dengan timer sederhana
-                if (!resetTimer) {
-                    playDisappointSound();  // SUARA KECEWA
-                    resetTimer = setTimeout(() => { resetTimer = null; }, 300);
+            // Bola keluar (gagal total)
+            if (ball.y < goal.y - 15 || ball.y > 500 || ball.x < 0 || ball.x > 900) {
+                if (shooting && !matchEnded) {
+                    playDisappointSound();
                 }
                 reset();
+                return;
             }
         }
 
@@ -636,10 +628,12 @@
         }
 
         function reset() {
+            // Hanya reset jika belum mencapai batas tembakan
             if (shot >= 5) {
                 matchEnd();
                 return;
             }
+
             ball.x = 450;
             ball.y = 380;
             ball.vx = 0;
@@ -649,19 +643,28 @@
         }
 
         function matchEnd() {
+            if (matchEnded) return; // cegah double
+            matchEnded = true;
+            shooting = false; // tidak bisa tendang lagi
             document.getElementById("endScreen").style.display = "flex";
-            shooting = true;
         }
 
         document.getElementById("playAgain").onclick = function() {
-            score = 0; shot = 0;
+            // Reset semua state dengan aman
+            score = 0;
+            shot = 0;
+            matchEnded = false;
+            shooting = false;
             document.getElementById("score").innerText = "0";
             document.getElementById("shot").innerText = "0";
             document.getElementById("endScreen").style.display = "none";
-            reset();
-            shooting = false;
-            ball.x = 450; ball.y = 380; ball.vx = 0; ball.vy = 0;
+
+            ball.x = 450;
+            ball.y = 380;
+            ball.vx = 0;
+            ball.vy = 0;
             keeper.jump = false;
+            keeper.x = 450; // reset posisi kiper
         };
 
         // Loop
