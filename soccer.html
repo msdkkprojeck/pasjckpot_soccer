@@ -1,50 +1,131 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Penalty Soccer</title>
+<meta charset="UTF-8">
+<title>Penalty Soccer Engine V2</title>
 
 <style>
 
 body{
 margin:0;
-background:linear-gradient(#1b5e20,#0b6623);
+background:#0c5a21;
 font-family:Arial;
 overflow:hidden;
 }
 
-/* container */
-
-#gameContainer{
-width:900px;
-margin:auto;
-margin-top:30px;
+#game{
 position:relative;
-}
-
-/* scoreboard */
-
-#ui{
-position:absolute;
-top:-50px;
-width:100%;
-text-align:center;
-font-size:28px;
-font-weight:bold;
-color:white;
-text-shadow:0 2px 5px black;
-background:rgba(0,0,0,0.3);
-padding:10px;
+width:900px;
+height:500px;
+margin:auto;
+margin-top:40px;
+background:linear-gradient(#1f8f3a,#15732e);
+border:6px solid white;
 border-radius:10px;
 }
 
-/* canvas */
-
-canvas{
-display:block;
+#goal{
+position:absolute;
+top:40px;
+left:50%;
+transform:translateX(-50%);
+width:400px;
+height:120px;
 border:6px solid white;
-border-radius:12px;
-background:linear-gradient(#4caf50,#388e3c);
-box-shadow:0 0 20px rgba(0,0,0,0.6);
+border-bottom:none;
+}
+
+#net{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:
+repeating-linear-gradient(
+90deg,
+rgba(255,255,255,0.3) 0px,
+rgba(255,255,255,0.3) 2px,
+transparent 2px,
+transparent 20px
+),
+repeating-linear-gradient(
+0deg,
+rgba(255,255,255,0.3) 0px,
+rgba(255,255,255,0.3) 2px,
+transparent 2px,
+transparent 20px
+);
+}
+
+#goalie{
+position:absolute;
+top:60px;
+left:50%;
+transform:translateX(-50%);
+width:70px;
+height:70px;
+background:#2196f3;
+border-radius:10px;
+transition:0.4s;
+}
+
+#ball{
+position:absolute;
+bottom:60px;
+left:50%;
+transform:translateX(-50%);
+width:30px;
+height:30px;
+background:white;
+border-radius:50%;
+box-shadow:0 0 10px #fff;
+cursor:pointer;
+transition:0.7s;
+}
+
+#score{
+position:absolute;
+top:10px;
+left:10px;
+color:white;
+font-size:22px;
+font-weight:bold;
+}
+
+#goalText{
+position:absolute;
+top:45%;
+left:50%;
+transform:translate(-50%,-50%) scale(0);
+font-size:70px;
+font-weight:bold;
+color:#00ff00;
+text-shadow:0 0 20px #0f0,0 0 40px #0f0;
+pointer-events:none;
+}
+
+.goal-animation{
+animation:goalPop 1s ease;
+}
+
+@keyframes goalPop{
+
+0%{
+transform:translate(-50%,-50%) scale(0);
+opacity:0;
+}
+
+50%{
+transform:translate(-50%,-50%) scale(1.5);
+opacity:1;
+}
+
+100%{
+transform:translate(-50%,-50%) scale(1);
+opacity:0;
+}
+
 }
 
 </style>
@@ -52,283 +133,111 @@ box-shadow:0 0 20px rgba(0,0,0,0.6);
 
 <body>
 
-<div id="gameContainer">
+<div id="game">
 
-<div id="ui">
-⚽ Score: <span id="score">0</span> | Shot: <span id="shot">0</span>/5
+<div id="score">Score: 0</div>
+
+<div id="goal">
+<div id="net"></div>
 </div>
 
-<canvas id="game" width="900" height="500"></canvas>
+<div id="goalie"></div>
+
+<div id="ball"></div>
+
+<div id="goalText">GOOOAL!!! ⚽</div>
 
 </div>
 
 <script>
 
-const canvas = document.getElementById("game")
-const ctx = canvas.getContext("2d")
+let ball = document.getElementById("ball")
+let goalie = document.getElementById("goalie")
+let score = 0
 
-let score=0
-let shot=0
-let shooting=false
+ball.addEventListener("click", shoot)
 
-let ball={
-x:450,
-y:380,
-r:10,
-vx:0,
-vy:0
+function shoot(){
+
+let direction = Math.random()
+
+let targetX
+let targetY = 100
+
+if(direction < 0.33){
+targetX = 250
+}
+else if(direction < 0.66){
+targetX = 450
+}
+else{
+targetX = 650
 }
 
-let keeper={
-x:450,
-y:140,
-dir:2,
-jump:false,
-targetX:450
+ball.style.left = targetX + "px"
+ball.style.bottom = "350px"
+
+goalieJump()
+
+setTimeout(checkGoal,600)
+
+setTimeout(resetBall,1200)
+
 }
 
-let goal={
-x:320,
-y:80,
-w:260
+function goalieJump(){
+
+let dir = Math.floor(Math.random()*3)
+
+if(dir == 0){
+goalie.style.left = "30%"
 }
-
-let targets=[
-{x:340,y:110},
-{x:450,y:110},
-{x:560,y:110},
-{x:340,y:150},
-{x:560,y:150}
-]
-
-canvas.addEventListener("click",(e)=>{
-
-if(shooting) return
-if(shot>=5) return
-
-let x=e.offsetX
-let y=e.offsetY
-
-for(let t of targets){
-
-let d=Math.hypot(x-t.x,y-t.y)
-
-if(d<20){
-shootBall(t.x,t.y)
+else if(dir == 1){
+goalie.style.left = "50%"
+}
+else{
+goalie.style.left = "70%"
 }
 
 }
 
-})
+function checkGoal(){
 
-function shootBall(tx,ty){
+let ballX = ball.offsetLeft
+let goalieX = goalie.offsetLeft
 
-shooting=true
-shot++
-
-document.getElementById("shot").innerText=shot
-
-ball.vx=(tx-ball.x)*0.08
-ball.vy=(ty-ball.y)*0.08
-
-let guess=Math.random()
-
-if(guess<0.6){
-keeper.targetX=tx
-}else{
-keeper.targetX=goal.x+Math.random()*goal.w
-}
-
-keeper.jump=true
-
-}
-
-function drawField(){
-
-ctx.fillStyle="#43a047"
-ctx.fillRect(0,0,canvas.width,canvas.height)
-
-/* garis tengah */
-
-ctx.strokeStyle="white"
-ctx.lineWidth=3
-
-ctx.strokeRect(200,200,500,200)
-
-}
-
-function drawGoal(){
-
-ctx.fillStyle="white"
-
-ctx.fillRect(goal.x,80,goal.w,8)
-ctx.fillRect(goal.x,80,8,70)
-ctx.fillRect(goal.x+goal.w-8,80,8,70)
-
-/* jaring */
-
-ctx.strokeStyle="rgba(255,255,255,0.3)"
-
-for(let i=0;i<goal.w;i+=20){
-
-ctx.beginPath()
-ctx.moveTo(goal.x+i,80)
-ctx.lineTo(goal.x+i,150)
-ctx.stroke()
-
-}
-
-}
-
-function drawTargets(){
-
-for(let t of targets){
-
-ctx.beginPath()
-ctx.arc(t.x,t.y,12,0,Math.PI*2)
-ctx.strokeStyle="yellow"
-ctx.lineWidth=2
-ctx.stroke()
-
-}
-
-}
-
-function drawKeeper(){
-
-ctx.fillStyle="#ffcc99"
-
-ctx.beginPath()
-ctx.arc(keeper.x,keeper.y-25,10,0,Math.PI*2)
-ctx.fill()
-
-ctx.strokeStyle="black"
-ctx.lineWidth=5
-
-ctx.beginPath()
-ctx.moveTo(keeper.x,keeper.y-15)
-ctx.lineTo(keeper.x,keeper.y+15)
-ctx.stroke()
-
-ctx.beginPath()
-ctx.moveTo(keeper.x-20,keeper.y-5)
-ctx.lineTo(keeper.x+20,keeper.y-5)
-ctx.stroke()
-
-}
-
-function drawPlayer(){
-
-let x=450
-let y=420
-
-ctx.fillStyle="#ffcc99"
-
-ctx.beginPath()
-ctx.arc(x,y-35,10,0,Math.PI*2)
-ctx.fill()
-
-ctx.strokeStyle="blue"
-ctx.lineWidth=5
-
-ctx.beginPath()
-ctx.moveTo(x,y-25)
-ctx.lineTo(x,y)
-ctx.stroke()
-
-}
-
-function drawBall(){
-
-/* shadow */
-
-ctx.fillStyle="rgba(0,0,0,0.3)"
-
-ctx.beginPath()
-ctx.ellipse(ball.x,ball.y+10,10,4,0,0,Math.PI*2)
-ctx.fill()
-
-/* bola */
-
-ctx.fillStyle="white"
-
-ctx.beginPath()
-ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2)
-ctx.fill()
-
-}
-
-function update(){
-
-ball.x+=ball.vx
-ball.y+=ball.vy
-
-ball.vx*=0.99
-ball.vy*=0.99
-
-if(!keeper.jump){
-
-keeper.x+=keeper.dir
-
-if(keeper.x>600 || keeper.x<300){
-keeper.dir*=-1
-}
-
-}else{
-
-keeper.x+=(keeper.targetX-keeper.x)*0.15
-
-}
-
-let d=Math.hypot(ball.x-keeper.x,ball.y-keeper.y)
-
-if(d<25){
-reset()
-}
-
-if(ball.y<90 && ball.x>goal.x && ball.x<goal.x+goal.w){
+if(Math.abs(ballX - goalieX) > 80){
 
 score++
-document.getElementById("score").innerText=score
+document.getElementById("score").innerText="Score: "+score
 
-reset()
+showGoal()
 
-}
-
-if(ball.y<80){
-reset()
 }
 
 }
 
-function reset(){
+function resetBall(){
 
-ball.x=450
-ball.y=380
-ball.vx=0
-ball.vy=0
+ball.style.left = "50%"
+ball.style.bottom = "60px"
+ball.style.transform="translateX(-50%)"
 
-keeper.jump=false
-shooting=false
+goalie.style.left="50%"
 
 }
 
-function gameLoop(){
+function showGoal(){
 
-update()
+let goal = document.getElementById("goalText")
 
-drawField()
-drawGoal()
-drawTargets()
-drawKeeper()
-drawPlayer()
-drawBall()
+goal.classList.remove("goal-animation")
 
-requestAnimationFrame(gameLoop)
+void goal.offsetWidth
+
+goal.classList.add("goal-animation")
 
 }
-
-gameLoop()
 
 </script>
 
