@@ -154,7 +154,7 @@
 <body>
 <div id="gameContainer">
     <div id="ui">
-        ⚽ SCORE: <span id="score">0</span> &nbsp; | &nbsp; SHOT: <span id="shot">0</span>/7
+        ⚽ SCORE: <span id="score">0</span> &nbsp; | &nbsp; SHOT: <span id="shot">0</span>/6
     </div>
     <div id="goalText">🔥 GOOOOL!!! 🔥</div>
     <div id="endScreen">
@@ -356,7 +356,7 @@
 
         // Klik tendang
         canvas.addEventListener("click", (e) => {
-            if (shooting || shot >= 7 || matchEnded) return;
+            if (shooting || shot >= 6 || matchEnded) return;
 
             const rect = canvas.getBoundingClientRect();
             const scaleX = canvas.width / rect.width;
@@ -716,7 +716,7 @@
         }
 
         function reset() {
-            if (shot >= 5) {
+            if (shot >= 6) {
                 matchEnd();
                 return;
             }
