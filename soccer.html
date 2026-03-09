@@ -1,461 +1,592 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Penalty Soccer</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penalty Soccer · bola & suara</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+        }
 
-<style>
+        body {
+            margin: 0;
+            background: linear-gradient(#1b5e20, #0b6623);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
 
-body{
-margin:0;
-background:linear-gradient(#1b5e20,#0b6623);
-font-family:Arial;
-overflow:hidden;
-}
+        #gameContainer {
+            width: 900px;
+            position: relative;
+            box-shadow: 0 20px 30px rgba(0,0,0,0.6);
+            border-radius: 20px;
+        }
 
-#gameContainer{
-width:900px;
-margin:auto;
-margin-top:30px;
-position:relative;
-}
+        #ui {
+            position: absolute;
+            top: -55px;
+            width: 100%;
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 3px 8px black;
+            background: rgba(0, 40, 0, 0.5);
+            backdrop-filter: blur(3px);
+            padding: 10px 0;
+            border-radius: 60px;
+            letter-spacing: 2px;
+            border: 2px solid #ffd966;
+        }
 
-#ui{
-position:absolute;
-top:-50px;
-width:100%;
-text-align:center;
-font-size:28px;
-font-weight:bold;
-color:white;
-text-shadow:0 2px 5px black;
-background:rgba(0,0,0,0.3);
-padding:10px;
-border-radius:10px;
-}
+        canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            border: 6px solid white;
+            border-radius: 24px;
+            background: linear-gradient(#2e7d32, #1f5a25);
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            cursor: crosshair;
+        }
 
-canvas{
-display:block;
-border:6px solid white;
-border-radius:12px;
-background:linear-gradient(#4caf50,#388e3c);
-box-shadow:0 0 20px rgba(0,0,0,0.6);
-}
+        #goalText {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: 90px;
+            font-weight: 900;
+            color: #aaff00;
+            text-shadow: 0 0 20px #00ff80, 0 0 60px #00ff40;
+            pointer-events: none;
+            white-space: nowrap;
+            z-index: 20;
+        }
 
-/* GOAL TEXT */
+        .goalAnim {
+            animation: goalPop 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
 
-#goalText{
-position:absolute;
-top:40%;
-left:50%;
-transform:translate(-50%,-50%) scale(0);
-font-size:90px;
-font-weight:bold;
-color:#00ff00;
-text-shadow:0 0 20px #0f0,0 0 50px #0f0;
-pointer-events:none;
-}
+        @keyframes goalPop {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            40% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+            70% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.9; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+        }
 
-.goalAnim{
-animation:goalPop 1s ease;
-}
+        #endScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(6px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+            font-size: 60px;
+            font-weight: bold;
+            border-radius: 20px;
+            z-index: 30;
+        }
 
-@keyframes goalPop{
+        #playAgain {
+            margin-top: 25px;
+            padding: 18px 45px;
+            font-size: 28px;
+            font-weight: bold;
+            border: none;
+            border-radius: 60px;
+            background: #ffaa33;
+            color: #1a3b1a;
+            box-shadow: 0 8px 0 #a05f00;
+            cursor: pointer;
+            transition: 0.1s ease;
+        }
+        #playAgain:active {
+            transform: translateY(6px);
+            box-shadow: 0 2px 0 #a05f00;
+        }
 
-0%{transform:translate(-50%,-50%) scale(0);opacity:0;}
-50%{transform:translate(-50%,-50%) scale(1.5);opacity:1;}
-100%{transform:translate(-50%,-50%) scale(1);opacity:0;}
-
-}
-
-/* MATCH END */
-
-#endScreen{
-position:absolute;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.7);
-display:none;
-justify-content:center;
-align-items:center;
-flex-direction:column;
-color:white;
-font-size:50px;
-}
-
-#playAgain{
-margin-top:20px;
-padding:15px 30px;
-font-size:22px;
-border:none;
-border-radius:10px;
-background:#ff9800;
-cursor:pointer;
-}
-
-</style>
+        /* kontrol difficulty kecil (hanya developer, bisa diubah di JS) */
+        .dev-note {
+            position: absolute;
+            bottom: -25px;
+            left: 20px;
+            color: rgba(255,255,200,0.9);
+            font-size: 14px;
+            background: #1e3a1e;
+            padding: 4px 16px;
+            border-radius: 40px;
+            border: 1px solid gold;
+        }
+    </style>
 </head>
-
 <body>
-
 <div id="gameContainer">
-
-<div id="ui">
-⚽ Score: <span id="score">0</span> | Shot: <span id="shot">0</span>/5
-</div>
-
-<div id="goalText">GOOOAL!!!</div>
-
-<div id="endScreen">
-<div>MATCH END</div>
-<button id="playAgain">PLAY AGAIN</button>
-</div>
-
-<canvas id="game" width="900" height="500"></canvas>
-
+    <div id="ui">
+        ⚽ SCORE: <span id="score">0</span> &nbsp;&nbsp; | &nbsp;&nbsp; SHOT: <span id="shot">0</span>/5
+    </div>
+    <div id="goalText">🔥 GOOOAL!!!</div>
+    <div id="endScreen">
+        <div>⚡ MATCH END ⚡</div>
+        <button id="playAgain">🔄 PLAY AGAIN</button>
+    </div>
+    <canvas id="game" width="900" height="500"></canvas>
+    <div class="dev-note">⚙️ kesulitan kiper: ubah variable `difficulty` di awal script</div>
 </div>
 
 <script>
-
-const canvas = document.getElementById("game")
-const ctx = canvas.getContext("2d")
-
-let score=0
-let shot=0
-let shooting=false
-
-let ball={
-x:450,
-y:380,
-r:12,
-vx:0,
-vy:0
-}
-
-let keeper={
-x:450,
-y:140,
-dir:2,
-jump:false,
-targetX:450
-}
-
-let goal={
-x:320,
-y:80,
-w:260
-}
-
-let targets=[
-{x:340,y:110},
-{x:450,y:110},
-{x:560,y:110},
-{x:340,y:150},
-{x:560,y:150}
-]
-
-canvas.addEventListener("click",(e)=>{
-
-if(shooting) return
-if(shot>=5) return
-
-let x=e.offsetX
-let y=e.offsetY
-
-for(let t of targets){
-
-let d=Math.hypot(x-t.x,y-t.y)
-
-if(d<20){
-shootBall(t.x,t.y)
-}
-
-}
-
-})
-
-function shootBall(tx,ty){
-
-shooting=true
-shot++
-
-document.getElementById("shot").innerText=shot
-
-ball.vx=(tx-ball.x)*0.08
-ball.vy=(ty-ball.y)*0.08
-
-let guess=Math.random()
-
-if(guess<0.6){
-keeper.targetX=tx
-}else{
-keeper.targetX=goal.x+Math.random()*goal.w
-}
-
-keeper.jump=true
-
-}
-
-/* FIELD */
-
-function drawField(){
-
-ctx.fillStyle="#43a047"
-ctx.fillRect(0,0,canvas.width,canvas.height)
-
-ctx.strokeStyle="white"
-ctx.lineWidth=3
-ctx.strokeRect(200,200,500,200)
-
-}
-
-/* GOAL + NET */
-
-function drawGoal(){
-
-ctx.fillStyle="white"
-
-ctx.fillRect(goal.x,80,goal.w,8)
-ctx.fillRect(goal.x,80,8,70)
-ctx.fillRect(goal.x+goal.w-8,80,8,70)
-
-/* NET GRID */
-
-ctx.strokeStyle="rgba(255,255,255,0.4)"
-
-for(let i=0;i<goal.w;i+=15){
-
-ctx.beginPath()
-ctx.moveTo(goal.x+i,80)
-ctx.lineTo(goal.x+i,150)
-ctx.stroke()
-
-}
-
-for(let j=80;j<150;j+=15){
-
-ctx.beginPath()
-ctx.moveTo(goal.x,j)
-ctx.lineTo(goal.x+goal.w,j)
-ctx.stroke()
-
-}
-
-}
-
-/* TARGET */
-
-function drawTargets(){
-
-for(let t of targets){
-
-ctx.beginPath()
-ctx.arc(t.x,t.y,12,0,Math.PI*2)
-ctx.strokeStyle="yellow"
-ctx.lineWidth=2
-ctx.stroke()
-
-}
-
-}
-
-/* KEEPER */
-
-function drawKeeper(){
-
-ctx.fillStyle="#ffcc99"
-
-ctx.beginPath()
-ctx.arc(keeper.x,keeper.y-25,10,0,Math.PI*2)
-ctx.fill()
-
-ctx.strokeStyle="black"
-ctx.lineWidth=5
-
-ctx.beginPath()
-ctx.moveTo(keeper.x,keeper.y-15)
-ctx.lineTo(keeper.x,keeper.y+15)
-ctx.stroke()
-
-ctx.beginPath()
-ctx.moveTo(keeper.x-20,keeper.y-5)
-ctx.lineTo(keeper.x+20,keeper.y-5)
-ctx.stroke()
-
-}
-
-/* PLAYER */
-
-function drawPlayer(){
-
-let x=450
-let y=420
-
-ctx.fillStyle="#ffcc99"
-
-ctx.beginPath()
-ctx.arc(x,y-35,10,0,Math.PI*2)
-ctx.fill()
-
-ctx.strokeStyle="blue"
-ctx.lineWidth=5
-
-ctx.beginPath()
-ctx.moveTo(x,y-25)
-ctx.lineTo(x,y)
-ctx.stroke()
-
-}
-
-/* REAL BALL */
-
-function drawBall(){
-
-ctx.fillStyle="white"
-ctx.beginPath()
-ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2)
-ctx.fill()
-
-ctx.strokeStyle="black"
-ctx.lineWidth=2
-
-ctx.beginPath()
-ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2)
-ctx.stroke()
-
-ctx.beginPath()
-ctx.moveTo(ball.x-5,ball.y)
-ctx.lineTo(ball.x+5,ball.y)
-ctx.stroke()
-
-ctx.beginPath()
-ctx.moveTo(ball.x,ball.y-5)
-ctx.lineTo(ball.x,ball.y+5)
-ctx.stroke()
-
-}
-
-/* UPDATE */
-
-function update(){
-
-ball.x+=ball.vx
-ball.y+=ball.vy
-
-ball.vx*=0.99
-ball.vy*=0.99
-
-if(!keeper.jump){
-
-keeper.x+=keeper.dir
-
-if(keeper.x>600 || keeper.x<300){
-keeper.dir*=-1
-}
-
-}else{
-
-keeper.x+=(keeper.targetX-keeper.x)*0.15
-
-}
-
-let d=Math.hypot(ball.x-keeper.x,ball.y-keeper.y)
-
-if(d<25){
-reset()
-}
-
-if(ball.y<90 && ball.x>goal.x && ball.x<goal.x+goal.w){
-
-score++
-document.getElementById("score").innerText=score
-
-showGoal()
-
-reset()
-
-}
-
-if(ball.y<80){
-reset()
-}
-
-}
-
-/* GOAL ANIMATION */
-
-function showGoal(){
-
-let g=document.getElementById("goalText")
-
-g.classList.remove("goalAnim")
-void g.offsetWidth
-g.classList.add("goalAnim")
-
-}
-
-/* RESET */
-
-function reset(){
-
-if(shot>=5){
-matchEnd()
-return
-}
-
-ball.x=450
-ball.y=380
-ball.vx=0
-ball.vy=0
-
-keeper.jump=false
-shooting=false
-
-}
-
-/* MATCH END */
-
-function matchEnd(){
-
-document.getElementById("endScreen").style.display="flex"
-
-}
-
-document.getElementById("playAgain").onclick=function(){
-
-score=0
-shot=0
-
-document.getElementById("score").innerText=0
-document.getElementById("shot").innerText=0
-
-document.getElementById("endScreen").style.display="none"
-
-reset()
-
-}
-
-/* LOOP */
-
-function gameLoop(){
-
-update()
-
-drawField()
-drawGoal()
-drawTargets()
-drawKeeper()
-drawPlayer()
-drawBall()
-
-requestAnimationFrame(gameLoop)
-
-}
-
-gameLoop()
-
+    (function() {
+        const canvas = document.getElementById("game");
+        const ctx = canvas.getContext("2d");
+
+        // === EFEK SUARA TEPUK TANGAN (menggunakan Web Audio API) ===
+        let audioCtx = null;  // inisialisasi setelah interaksi pertama (karena kebijakan browser)
+        function playClapSound() {
+            // buat audio context saat pertama kali (setelah user klik)
+            if (!audioCtx) {
+                try {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                } catch (e) {
+                    console.warn("Web Audio tidak didukung");
+                    return;
+                }
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume().then(() => playClapNow());
+            } else {
+                playClapNow();
+            }
+
+            function playClapNow() {
+                if (!audioCtx) return;
+                // master gain
+                const masterGain = audioCtx.createGain();
+                masterGain.gain.value = 0.5; // volume sedang
+                masterGain.connect(audioCtx.destination);
+
+                // buat beberapa suara tepuk secara acak dan overlap
+                for (let i = 0; i < 6; i++) {
+                    const delay = i * 0.05 + Math.random() * 0.03;
+                    setTimeout(() => {
+                        // satu tepuk = noise pendek + filter
+                        const noise = audioCtx.createBufferSource();
+                        const bufferSize = 2048;
+                        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                        const output = buffer.getChannelData(0);
+                        for (let j = 0; j < bufferSize; j++) {
+                            // white noise, turun cepat
+                            output[j] = (Math.random() * 2 - 1) * Math.exp(-j / (bufferSize / 6));
+                        }
+                        noise.buffer = buffer;
+
+                        const filter = audioCtx.createBiquadFilter();
+                        filter.type = 'bandpass';
+                        filter.frequency.value = 1500 + Math.random() * 1500;
+                        filter.Q.value = 2;
+
+                        const gainNode = audioCtx.createGain();
+                        gainNode.gain.value = 0.25 + Math.random() * 0.2;
+
+                        noise.connect(filter);
+                        filter.connect(gainNode);
+                        gainNode.connect(masterGain);
+
+                        noise.start();
+                        noise.stop(audioCtx.currentTime + 0.2);
+                    }, delay * 1000);
+                }
+            }
+        }
+
+        // ===== PENGATURAN SKOR & STATE =====
+        let score = 0;
+        let shot = 0;
+        let shooting = false;
+
+        // BOLA (sekarang dengan properti visual bola)
+        let ball = {
+            x: 450,
+            y: 380,
+            r: 13,         // sedikit lebih besar
+            vx: 0,
+            vy: 0
+        };
+
+        // KIper
+        let keeper = {
+            x: 450,
+            y: 140,
+            dir: 2,
+            jump: false,
+            targetX: 450
+        };
+
+        // gawang
+        let goal = {
+            x: 320,
+            y: 80,
+            w: 260
+        };
+
+        // titik target tendangan (lingkaran kuning)
+        let targets = [
+            { x: 340, y: 110 },
+            { x: 450, y: 110 },
+            { x: 560, y: 110 },
+            { x: 340, y: 150 },
+            { x: 560, y: 150 }
+        ];
+
+        // ========== TINGKAT KESULITAN KIPER ==========
+        // 👇🏻 UBAH NILAI INI: 0.1 (sangat mudah)  ~  0.9 (sulit)
+        const difficulty = 0.55;   // default: 0.55 -> kiper agak pintar
+        // Makin besar, makin sering kiper membaca arah bola (targetX tepat)
+        // ============================================
+
+        // klik tendang
+        canvas.addEventListener("click", (e) => {
+            if (shooting) return;
+            if (shot >= 5) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+
+            let mouseX = (e.clientX - rect.left) * scaleX;
+            let mouseY = (e.clientY - rect.top) * scaleY;
+
+            for (let t of targets) {
+                let d = Math.hypot(mouseX - t.x, mouseY - t.y);
+                if (d < 24) {  // perbesar area klik
+                    shootBall(t.x, t.y);
+                    break;
+            }
+        }
+        });
+
+        function shootBall(tx, ty) {
+            shooting = true;
+            shot++;
+            document.getElementById("shot").innerText = shot;
+
+            // arah bola
+            ball.vx = (tx - ball.x) * 0.08;
+            ball.vy = (ty - ball.y) * 0.08;
+
+            // Kiper bereaksi berdasarkan difficulty
+            let guess = Math.random();
+            // jika guess < difficulty -> kiper tahu arah (tepat)
+            if (guess < difficulty) {
+                keeper.targetX = tx;            // gerak ke titik tendangan
+            } else {
+                // salah baca: bergerak acak di gawang
+                keeper.targetX = goal.x + 40 + Math.random() * (goal.w - 80);
+            }
+
+            // tambahan variasi: kadang sedikit melambat (reaksi)
+            if (Math.random() < 0.3) {
+                // delay kecil tidak diimplementasi, cukup kasih target agak meleset
+                keeper.targetX += (Math.random() - 0.5) * 40;
+            }
+
+            // batasi targetX dalam gawang
+            keeper.targetX = Math.min(goal.x + goal.w - 15, Math.max(goal.x + 15, keeper.targetX));
+
+            keeper.jump = true;
+        }
+
+        // gambar lapangan
+        function drawField() {
+            // gradasi rumput
+            const grass = ctx.createLinearGradient(0, 200, 0, 500);
+            grass.addColorStop(0, '#388e3c');
+            grass.addColorStop(1, '#1f5a25');
+            ctx.fillStyle = grass;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // kotak penalti
+            ctx.strokeStyle = "white";
+            ctx.lineWidth = 4;
+            ctx.strokeRect(200, 200, 500, 200);
+            // titik penalti
+            ctx.beginPath();
+            ctx.arc(450, 300, 6, 0, 2 * Math.PI);
+            ctx.fillStyle = "white";
+            ctx.fill();
+        }
+
+        // gawang + net
+        function drawGoal() {
+            ctx.fillStyle = "#f0f0f0";
+            ctx.shadowColor = '#00000040';
+            ctx.shadowBlur = 10;
+            ctx.fillRect(goal.x, 80, goal.w, 8);
+            ctx.fillRect(goal.x, 80, 8, 70);
+            ctx.fillRect(goal.x + goal.w - 8, 80, 8, 70);
+            ctx.shadowBlur = 0;
+
+            // net
+            ctx.strokeStyle = "rgba(255,255,255,0.4)";
+            ctx.lineWidth = 1.2;
+            for (let i = 0; i < goal.w; i += 18) {
+                ctx.beginPath();
+                ctx.moveTo(goal.x + i, 80);
+                ctx.lineTo(goal.x + i - 5, 150);   // miring dikit biar 3d
+                ctx.stroke();
+            }
+            for (let j = 80; j < 150; j += 16) {
+                ctx.beginPath();
+                ctx.moveTo(goal.x, j);
+                ctx.lineTo(goal.x + goal.w, j - 10);
+                ctx.stroke();
+            }
+        }
+
+        // titik target
+        function drawTargets() {
+            for (let t of targets) {
+                ctx.beginPath();
+                ctx.arc(t.x, t.y, 14, 0, Math.PI * 2);
+                ctx.strokeStyle = "#ffff60";
+                ctx.lineWidth = 3.5;
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(t.x, t.y, 6, 0, Math.PI * 2);
+                ctx.fillStyle = "#ffdd44";
+                ctx.fill();
+            }
+        }
+
+        // kiper (bentuk humanoid)
+        function drawKeeper() {
+            // badan
+            ctx.fillStyle = "#fcd7a0";
+            ctx.shadowColor = '#00000040';
+            ctx.shadowBlur = 8;
+            ctx.beginPath();
+            ctx.ellipse(keeper.x, keeper.y - 15, 12, 18, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // kepala
+            ctx.fillStyle = "#f7c58f";
+            ctx.beginPath();
+            ctx.arc(keeper.x, keeper.y - 38, 12, 0, Math.PI * 2);
+            ctx.fill();
+
+            // tangan (garis)
+            ctx.strokeStyle = "#1e3a5f";
+            ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.moveTo(keeper.x - 16, keeper.y - 25);
+            ctx.lineTo(keeper.x - 28, keeper.y - 10);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(keeper.x + 16, keeper.y - 25);
+            ctx.lineTo(keeper.x + 28, keeper.y - 10);
+            ctx.stroke();
+
+            // sarung tangan putih
+            ctx.fillStyle = "#ddd";
+            ctx.beginPath();
+            ctx.ellipse(keeper.x - 30, keeper.y - 8, 6, 5, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.ellipse(keeper.x + 30, keeper.y - 8, 6, 5, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+        }
+
+        // penendang
+        function drawPlayer() {
+            let x = 450;
+            let y = 420;
+
+            ctx.fillStyle = "#f7c58f";
+            ctx.shadowBlur = 8;
+            ctx.beginPath();
+            ctx.arc(x, y - 35, 12, 0, Math.PI * 2);
+            ctx.fill();
+
+            // badan
+            ctx.fillStyle = "#0f4d8c";
+            ctx.beginPath();
+            ctx.ellipse(x, y - 15, 12, 22, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // kaki
+            ctx.strokeStyle = "#06315c";
+            ctx.lineWidth = 7;
+            ctx.beginPath();
+            ctx.moveTo(x - 8, y);
+            ctx.lineTo(x - 18, y + 20);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x + 8, y);
+            ctx.lineTo(x + 18, y + 20);
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+        }
+
+        // ========== BOLA BARU YANG KEREN (BENTUK BOLA SUNGGAH) ==========
+        function drawBall() {
+            // efek shadow
+            ctx.shadowColor = '#00000070';
+            ctx.shadowBlur = 14;
+            ctx.shadowOffsetY = 3;
+
+            // gradien bola (3d)
+            const gradient = ctx.createRadialGradient(ball.x - 5, ball.y - 5, 3, ball.x, ball.y, ball.r + 5);
+            gradient.addColorStop(0, '#ffffff');
+            gradient.addColorStop(0.3, '#f0f0f0');
+            gradient.addColorStop(0.6, '#c0c0c0');
+            gradient.addColorStop(1, '#7a7a7a');
+
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
+            ctx.fillStyle = gradient;
+            ctx.fill();
+
+            // pola pentagon (gaya bola biasa)
+            ctx.strokeStyle = "#222";
+            ctx.lineWidth = 1.8;
+            ctx.shadowBlur = 6;
+            for (let i = 0; i < 5; i++) {
+                let angle = (i / 5) * Math.PI * 2;
+                let x1 = ball.x + ball.r * 0.6 * Math.cos(angle);
+                let y1 = ball.y + ball.r * 0.6 * Math.sin(angle);
+                let x2 = ball.x + ball.r * 0.6 * Math.cos(angle + 1.2);
+                let y2 = ball.y + ball.r * 0.6 * Math.sin(angle + 1.2);
+                ctx.beginPath();
+                ctx.moveTo(ball.x + ball.r * 0.25 * Math.cos(angle), ball.y + ball.r * 0.25 * Math.sin(angle));
+                ctx.lineTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.strokeStyle = '#2b2b2b';
+                ctx.stroke();
+            }
+            // garis jahitan
+            ctx.beginPath();
+            ctx.ellipse(ball.x, ball.y, ball.r * 0.7, ball.r * 0.4, 0, 0, Math.PI * 2);
+            ctx.strokeStyle = '#111';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetY = 0;
+        }
+
+        // update
+        function update() {
+            ball.x += ball.vx;
+            ball.y += ball.vy;
+            ball.vx *= 0.99;
+            ball.vy *= 0.99;
+
+            if (!keeper.jump) {
+                keeper.x += keeper.dir;
+                if (keeper.x > 600 || keeper.x < 300) keeper.dir *= -1;
+            } else {
+                keeper.x += (keeper.targetX - keeper.x) * 0.18;
+            }
+
+            // tabrakan kiper
+            let d = Math.hypot(ball.x - keeper.x, ball.y - (keeper.y - 15));
+            if (d < 30) reset();
+
+            // GOAL? + suara
+            if (ball.y < 95 && ball.x > goal.x && ball.x < goal.x + goal.w) {
+                score++;
+                document.getElementById("score").innerText = score;
+
+                // TEPUK TANGAN 🔥
+                playClapSound();
+
+                showGoal();
+                reset();
+                return;
+            }
+
+            if (ball.y < 70) reset();
+        }
+
+        function showGoal() {
+            let g = document.getElementById("goalText");
+            g.classList.remove("goalAnim");
+            void g.offsetWidth;
+            g.classList.add("goalAnim");
+        }
+
+        function reset() {
+            if (shot >= 5) {
+                matchEnd();
+                return;
+            }
+            ball.x = 450;
+            ball.y = 380;
+            ball.vx = 0;
+            ball.vy = 0;
+            keeper.jump = false;
+            shooting = false;
+        }
+
+        function matchEnd() {
+            document.getElementById("endScreen").style.display = "flex";
+            shooting = true; // cegah tendang lagi
+        }
+
+        document.getElementById("playAgain").onclick = function() {
+            score = 0;
+            shot = 0;
+            document.getElementById("score").innerText = "0";
+            document.getElementById("shot").innerText = "0";
+            document.getElementById("endScreen").style.display = "none";
+            reset();
+            shooting = false;
+            // pastikan ball direset
+            ball.x = 450; ball.y = 380; ball.vx = 0; ball.vy = 0;
+            keeper.jump = false;
+        };
+
+        // loop
+        function gameLoop() {
+            update();
+            drawField();
+            drawGoal();
+            drawTargets();
+            drawKeeper();
+            drawPlayer();
+            drawBall();  // bola premium
+            requestAnimationFrame(gameLoop);
+        }
+
+        gameLoop();
+
+        // inisialisasi audio context setelah user berinteraksi (klik pertama di canvas)
+        function enableAudio() {
+            if (!audioCtx) {
+                try {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                } catch (e) {}
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+        canvas.addEventListener('click', enableAudio, { once: true });
+        // juga untuk tombol play again
+        document.getElementById("playAgain").addEventListener('click', enableAudio, { once: true });
+    })();
 </script>
-
 </body>
 </html>
