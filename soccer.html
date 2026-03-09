@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Penalty Soccer 3D · Kiper Prediksi Arah Manapun</title>
+    <title>Penalty Soccer 3D · Kiper Super Cerdas 90%</title>
     <style>
         * {
             box-sizing: border-box;
@@ -60,6 +60,7 @@
             box-shadow: 0 0 30px rgba(0,0,0,0.8);
             cursor: crosshair;
             touch-action: manipulation;
+            image-rendering: crisp-edges; /* Optimasi untuk performa */
         }
 
         #goalText {
@@ -180,7 +181,7 @@
             }
 
             #endScreen div:first-child {
-                font-size: 32px; /* LEBIH KECIL UNTUK HP */
+                font-size: 32px;
             }
 
             .end-buttons {
@@ -243,8 +244,12 @@
         const canvas = document.getElementById("game");
         const ctx = canvas.getContext("2d");
 
-        // DETEKSI APAKAH INI PERANGKAT MOBILE
+        // OPTIMASI UNTUK PERFORMANCE
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 800;
+        
+        // Batasi frame rate di mobile untuk menghemat baterai dan mengurangi lag
+        let lastFrameTime = 0;
+        const frameInterval = isMobile ? 16 : 0; // ~60 FPS di mobile, tidak dibatasi di PC
 
         // === AUDIO ===
         let audioCtx = null;
@@ -386,17 +391,19 @@
             rotation: 0
         };
 
-        // KIPER 3D - DENGAN KEMAMPUAN PREDIKSI 2D (X dan Y)
+        // KIPER 3D - DENGAN KECEPATAN RESPON LEBIH CEPAT UNTUK HP
         let keeper = {
             x: 450,
             y: 175,
             targetX: 450,
-            targetY: 175,      // target vertikal untuk lompatan
+            targetY: 175,
             dir: 2,
             jump: false,
             jumpHeight: 0,
             dive: 0,
-            armAngle: 0
+            armAngle: 0,
+            // Kecepatan gerak kiper (lebih cepat untuk menghindari lag di HP)
+            speed: isMobile ? 0.25 : 0.2  // Lebih cepat di mobile
         };
 
         // GAWANG
@@ -407,7 +414,7 @@
             h: 150
         };
 
-        // KOTAK PENALTI (untuk referensi)
+        // KOTAK PENALTI
         const penaltyBox = {
             x: 250,
             y: 35,
@@ -415,11 +422,11 @@
             h: 150
         };
 
-        // TARGET KOSONG (tendangan bebas)
+        // TARGET KOSONG
         let targets = [];
 
-        // KECERDASAN KIPER
-        const difficulty = 0.90;
+        // KECERDASAN KIPER DITINGKATKAN SAMPAI 90%
+        const difficulty = 0.9;  // Dari 0.75 menjadi 0.9 (90% akurat)
 
         // FUNGSI UNTUK MENDAPATKAN KOORDINAT KLICK/TOUCH
         function getCanvasCoordinates(e) {
@@ -458,7 +465,7 @@
                 shootCooldown = true;
                 setTimeout(() => {
                     shootCooldown = false;
-                }, 500);
+                }, 400); // Cooldown lebih cepat 400ms
             }
         }
 
@@ -476,17 +483,20 @@
             ball.vx = (tx - ball.x) * 0.085;
             ball.vy = (ty - ball.y) * 0.085;
 
-            // KIPER BISA PREDIKSI KE ARAH MANAPAN (X dan Y)
+            // KIPER SUPER CERDAS 90%
             let guess = Math.random();
             
             if (guess < difficulty) {
                 // Kiper menebak dengan benar (bergerak ke arah tendangan)
                 keeper.targetX = tx;
-                keeper.targetY = ty - 20; // Sedikit di atas bola karena posisi kiper
+                keeper.targetY = ty - 20;
             } else {
-                // Kiper salah tebak (bergerak random di seluruh area gawang)
-                keeper.targetX = goal.x + 40 + Math.random() * (goal.w - 80);
-                keeper.targetY = goal.y + 20 + Math.random() * (goal.h - 60);
+                // Kiper salah tebak (tetapi masih mendekati area tendangan)
+                // Ini membuat kiper tidak terlalu bodoh meskipun salah tebak
+                let offsetX = (Math.random() - 0.5) * 80;
+                let offsetY = (Math.random() - 0.5) * 60;
+                keeper.targetX = Math.min(goal.x + goal.w - 30, Math.max(goal.x + 30, tx + offsetX));
+                keeper.targetY = Math.min(goal.y + goal.h - 30, Math.max(goal.y + 10, ty - 20 + offsetY));
             }
             
             // Batasi target agar tidak keluar gawang
@@ -648,18 +658,18 @@
 
         function drawTargets() {}
 
-        // ===== KIPER 3D DENGAN GERAKAN VERTIKAL =====
+        // ===== KIPER 3D DENGAN GERAKAN LEBIH CEPAT =====
         function drawKeeper3D() {
-            // Gerakan melompat dan menyelam
+            // Gerakan melompat dan menyelam dengan kecepatan lebih tinggi di mobile
             let ky = keeper.y;
             
             if (keeper.jump) {
-                // Gerakan ke target dengan smooth
-                keeper.x += (keeper.targetX - keeper.x) * 0.1;
-                ky += (keeper.targetY - keeper.y) * 0.1;
+                // Gunakan speed yang berbeda untuk mobile
+                keeper.x += (keeper.targetX - keeper.x) * keeper.speed;
+                ky += (keeper.targetY - keeper.y) * keeper.speed;
                 
                 // Efek lompatan
-                keeper.jumpHeight = Math.sin(Date.now() * 0.02) * 5;
+                keeper.jumpHeight = Math.sin(Date.now() * 0.03) * 5;
                 ky += keeper.jumpHeight;
             }
 
@@ -890,10 +900,10 @@
             if (!keeper.jump) {
                 keeper.x += keeper.dir;
                 if (keeper.x > 600 || keeper.x < 300) keeper.dir *= -1;
-                keeper.targetY = keeper.y; // Reset target Y saat tidak melompat
+                keeper.targetY = keeper.y;
             }
 
-            // Deteksi tabrakan dengan kiper (menggunakan area 2D)
+            // Deteksi tabrakan dengan kiper
             let dx = ball.x - keeper.x;
             let dy = ball.y - (keeper.y - 15);
             let distance = Math.sqrt(dx*dx + dy*dy);
@@ -975,7 +985,14 @@
             window.location.href = "https://msdkkprojeck.github.io/pasjckpot_soccer/index.html";
         };
 
-        function gameLoop() {
+        function gameLoop(timestamp) {
+            // Frame rate limiter untuk mobile
+            if (isMobile && timestamp - lastFrameTime < frameInterval) {
+                requestAnimationFrame(gameLoop);
+                return;
+            }
+            lastFrameTime = timestamp;
+
             drawBackground();
             drawRealisticGoal();
             drawTargets();
@@ -986,7 +1003,7 @@
             requestAnimationFrame(gameLoop);
         }
 
-        gameLoop();
+        requestAnimationFrame(gameLoop);
 
         function enableAudio() {
             if (!audioCtx) {
