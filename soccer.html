@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Penalty Soccer 3D · Kiper Cerdas + Anti Spam</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Penalty Soccer 3D · Responsif Mobile + PC</title>
     <style>
         * {
             box-sizing: border-box;
             user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -19,10 +20,12 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            padding: 10px;
         }
 
         #gameContainer {
             width: 900px;
+            max-width: 100%;
             position: relative;
             box-shadow: 0 20px 30px rgba(0,0,0,0.8);
             border-radius: 20px;
@@ -31,6 +34,8 @@
         #ui {
             position: absolute;
             top: -55px;
+            left: 0;
+            right: 0;
             width: 100%;
             text-align: center;
             font-size: 28px;
@@ -54,6 +59,7 @@
             border-radius: 24px;
             box-shadow: 0 0 30px rgba(0,0,0,0.8);
             cursor: crosshair;
+            touch-action: manipulation; /* Mencegah scroll saat touch di canvas */
         }
 
         #goalText {
@@ -98,6 +104,8 @@
             border-radius: 20px;
             z-index: 30;
             gap: 20px;
+            padding: 20px;
+            text-align: center;
         }
 
         .end-buttons {
@@ -124,6 +132,7 @@
             gap: 12px;
             transition: 0.1s ease;
             min-width: 200px;
+            touch-action: manipulation;
         }
 
         .end-buttons button:active {
@@ -148,6 +157,61 @@
             font-size: 36px;
             line-height: 1;
         }
+
+        /* RESPONSIF UNTUK HP */
+        @media (max-width: 600px) {
+            body {
+                padding: 5px;
+                min-height: 100dvh; /* Lebih baik untuk mobile */
+            }
+
+            #ui {
+                top: -45px;
+                font-size: 18px;
+                padding: 8px 0;
+            }
+
+            #goalText {
+                font-size: 50px;
+            }
+
+            .end-buttons {
+                gap: 15px;
+            }
+
+            .end-buttons button {
+                padding: 12px 25px;
+                font-size: 20px;
+                min-width: 150px;
+                box-shadow: 0 5px 0 #a05f00;
+            }
+
+            .end-buttons button:active {
+                transform: translateY(4px);
+                box-shadow: 0 1px 0 #a05f00;
+            }
+
+            .home-icon {
+                font-size: 24px;
+            }
+
+            #endScreen {
+                font-size: 40px;
+            }
+        }
+
+        /* Landscape mode di HP */
+        @media (max-width: 900px) and (orientation: landscape) {
+            #gameContainer {
+                max-height: 100vh;
+            }
+
+            #ui {
+                top: -35px;
+                font-size: 16px;
+                padding: 5px 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -170,6 +234,9 @@
     (function() {
         const canvas = document.getElementById("game");
         const ctx = canvas.getContext("2d");
+
+        // DETEKSI APAKAH INI PERANGKAT MOBILE
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 800;
 
         // === AUDIO ===
         let audioCtx = null;
@@ -311,10 +378,10 @@
             rotation: 0
         };
 
-        // KIPER 3D - DITURUNKAN AGAR KAKI MENYENTUH GARIS KOTAK PENALTI
+        // KIPER 3D
         let keeper = {
             x: 450,
-            y: 175,        // diturunkan dari 155 ke 175 agar kaki menyentuh garis
+            y: 175,
             dir: 2,
             jump: false,
             targetX: 450,
@@ -341,19 +408,39 @@
         // TARGET KOSONG (tendangan bebas)
         let targets = [];
 
-        // KECERDASAN KIPER DITAIKKAN MENJADI 0.75
-        const difficulty = 0.75;  // dari 0.58 menjadi 0.75
+        // KECERDASAN KIPER
+        const difficulty = 0.75;
 
-        // Klik tendang - dengan ANTI SPAM
-        canvas.addEventListener("click", (e) => {
-            if (shooting || shot >= 6 || matchEnded || !canShoot || shootCooldown) return;
-
+        // FUNGSI UNTUK MENDAPATKAN KOORDINAT KLICK/TOUCH
+        function getCanvasCoordinates(e) {
             const rect = canvas.getBoundingClientRect();
             const scaleX = canvas.width / rect.width;
             const scaleY = canvas.height / rect.height;
 
-            let mouseX = (e.clientX - rect.left) * scaleX;
-            let mouseY = (e.clientY - rect.top) * scaleY;
+            let clientX, clientY;
+
+            if (e.touches) {
+                // Untuk touch event (mobile)
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+                e.preventDefault(); // Mencegah scroll
+            } else {
+                // Untuk mouse event (PC)
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+
+            const canvasX = (clientX - rect.left) * scaleX;
+            const canvasY = (clientY - rect.top) * scaleY;
+
+            return { x: canvasX, y: canvasY };
+        }
+
+        // HANDLER UNTUK SHOOT (bisa dari mouse atau touch)
+        function handleShoot(e) {
+            if (shooting || shot >= 6 || matchEnded || !canShoot || shootCooldown) return;
+
+            const { x: mouseX, y: mouseY } = getCanvasCoordinates(e);
 
             // CEK APAKAH KLIK DI DALAM GAWANG
             if (mouseX >= goal.x && mouseX <= goal.x + goal.w && 
@@ -364,9 +451,16 @@
                 shootCooldown = true;
                 setTimeout(() => {
                     shootCooldown = false;
-                }, 500); // Cooldown 500ms
+                }, 500);
             }
-        });
+        }
+
+        // EVENT LISTENERS (mouse dan touch)
+        canvas.addEventListener("click", handleShoot);
+        canvas.addEventListener("touchstart", handleShoot, { passive: false });
+
+        // Cegah context menu dan gesture di mobile
+        canvas.addEventListener("contextmenu", (e) => e.preventDefault());
 
         function shootBall(tx, ty) {
             shooting = true;
@@ -607,19 +701,19 @@
             // Kaki - DITURUNKAN AGAR MENYENTUH GARIS
             ctx.fillStyle = '#2a5a2a';
             ctx.beginPath();
-            ctx.ellipse(kx-12, ky+5, 8, 14, 0.1, 0, Math.PI*2); // kaki kiri diturunkan
+            ctx.ellipse(kx-12, ky+5, 8, 14, 0.1, 0, Math.PI*2);
             ctx.fill();
             ctx.beginPath();
-            ctx.ellipse(kx+12, ky+5, 8, 14, -0.1, 0, Math.PI*2); // kaki kanan diturunkan
+            ctx.ellipse(kx+12, ky+5, 8, 14, -0.1, 0, Math.PI*2);
             ctx.fill();
 
             // Sepatu
             ctx.fillStyle = '#222';
             ctx.beginPath();
-            ctx.ellipse(kx-20, ky+13, 8, 5, 0.1, 0, Math.PI*2); // sepatu kiri
+            ctx.ellipse(kx-20, ky+13, 8, 5, 0.1, 0, Math.PI*2);
             ctx.fill();
             ctx.beginPath();
-            ctx.ellipse(kx+20, ky+13, 8, 5, -0.1, 0, Math.PI*2); // sepatu kanan
+            ctx.ellipse(kx+20, ky+13, 8, 5, -0.1, 0, Math.PI*2);
             ctx.fill();
 
             // Wajah
@@ -643,7 +737,7 @@
             ctx.fillStyle = '#1a3a3a';
             ctx.globalAlpha = 0.5;
             ctx.beginPath();
-            ctx.ellipse(kx, ky+20, 30, 10, 0, 0, 2*Math.PI); // bayangan ikut turun
+            ctx.ellipse(kx, ky+20, 30, 10, 0, 0, 2*Math.PI);
             ctx.fill();
             ctx.globalAlpha = 1;
             ctx.shadowBlur = 0;
@@ -892,6 +986,7 @@
             }
         }
         canvas.addEventListener('click', enableAudio, { once: true });
+        canvas.addEventListener('touchstart', enableAudio, { once: true, passive: false });
         document.getElementById("playAgain").addEventListener('click', enableAudio, { once: true });
         document.getElementById("homeButton").addEventListener('click', enableAudio, { once: true });
 
