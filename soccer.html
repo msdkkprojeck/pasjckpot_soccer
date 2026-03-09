@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Penalty Soccer · bola & suara</title>
+    <title>Penalty Soccer 3D · GOOOOL! + suara</title>
     <style>
         * {
             box-sizing: border-box;
@@ -14,7 +14,7 @@
             margin: 0;
             background: linear-gradient(#1b5e20, #0b6623);
             font-family: 'Segoe UI', Arial, sans-serif;
-            overflow: hidden;
+ overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -41,7 +41,6 @@
             backdrop-filter: blur(3px);
             padding: 10px 0;
             border-radius: 60px;
-            letter-spacing: 2px;
             border: 2px solid #ffd966;
         }
 
@@ -63,20 +62,20 @@
             transform: translate(-50%, -50%) scale(0);
             font-size: 90px;
             font-weight: 900;
-            color: #aaff00;
-            text-shadow: 0 0 20px #00ff80, 0 0 60px #00ff40;
+            color: #ffee88;
+            text-shadow: 0 0 20px #ffaa00, 0 0 60px #ff8800;
             pointer-events: none;
             white-space: nowrap;
             z-index: 20;
         }
 
         .goalAnim {
-            animation: goalPop 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation: goalPop 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
 
         @keyframes goalPop {
             0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-            40% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+            40% { transform: translate(-50%, -50%) scale(1.4); opacity: 1; }
             70% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.9; }
             100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
         }
@@ -95,7 +94,6 @@
             flex-direction: column;
             color: white;
             font-size: 60px;
-            font-weight: bold;
             border-radius: 20px;
             z-index: 30;
         }
@@ -104,46 +102,30 @@
             margin-top: 25px;
             padding: 18px 45px;
             font-size: 28px;
-            font-weight: bold;
             border: none;
             border-radius: 60px;
             background: #ffaa33;
             color: #1a3b1a;
             box-shadow: 0 8px 0 #a05f00;
             cursor: pointer;
-            transition: 0.1s ease;
         }
         #playAgain:active {
             transform: translateY(6px);
             box-shadow: 0 2px 0 #a05f00;
-        }
-
-        /* kontrol difficulty kecil (hanya developer, bisa diubah di JS) */
-        .dev-note {
-            position: absolute;
-            bottom: -25px;
-            left: 20px;
-            color: rgba(255,255,200,0.9);
-            font-size: 14px;
-            background: #1e3a1e;
-            padding: 4px 16px;
-            border-radius: 40px;
-            border: 1px solid gold;
         }
     </style>
 </head>
 <body>
 <div id="gameContainer">
     <div id="ui">
-        ⚽ SCORE: <span id="score">0</span> &nbsp;&nbsp; | &nbsp;&nbsp; SHOT: <span id="shot">0</span>/5
+        ⚽ SCORE: <span id="score">0</span> &nbsp; | &nbsp; SHOT: <span id="shot">0</span>/5
     </div>
-    <div id="goalText">🔥 GOOOAL!!!</div>
+    <div id="goalText">🔥 GOOOOL!!! 🔥</div>
     <div id="endScreen">
         <div>⚡ MATCH END ⚡</div>
         <button id="playAgain">🔄 PLAY AGAIN</button>
     </div>
     <canvas id="game" width="900" height="500"></canvas>
-    <div class="dev-note">⚙️ kesulitan kiper: ubah variable `difficulty` di awal script</div>
 </div>
 
 <script>
@@ -151,96 +133,121 @@
         const canvas = document.getElementById("game");
         const ctx = canvas.getContext("2d");
 
-        // === EFEK SUARA TEPUK TANGAN (menggunakan Web Audio API) ===
-        let audioCtx = null;  // inisialisasi setelah interaksi pertama (karena kebijakan browser)
-        function playClapSound() {
-            // buat audio context saat pertama kali (setelah user klik)
+        // === SUARA GOOOOL (voice + tepuk) ===
+        let audioCtx = null;
+        function playGoalSound() {
             if (!audioCtx) {
                 try {
                     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                } catch (e) {
-                    console.warn("Web Audio tidak didukung");
-                    return;
-                }
+                } catch (e) { return; }
             }
             if (audioCtx.state === 'suspended') {
-                audioCtx.resume().then(() => playClapNow());
+                audioCtx.resume().then(() => playGoalNow());
             } else {
-                playClapNow();
+                playGoalNow();
             }
 
-            function playClapNow() {
+            function playGoalNow() {
                 if (!audioCtx) return;
-                // master gain
                 const masterGain = audioCtx.createGain();
-                masterGain.gain.value = 0.5; // volume sedang
+                masterGain.gain.value = 0.55;
                 masterGain.connect(audioCtx.destination);
 
-                // buat beberapa suara tepuk secara acak dan overlap
-                for (let i = 0; i < 6; i++) {
-                    const delay = i * 0.05 + Math.random() * 0.03;
-                    setTimeout(() => {
-                        // satu tepuk = noise pendek + filter
-                        const noise = audioCtx.createBufferSource();
-                        const bufferSize = 2048;
-                        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-                        const output = buffer.getChannelData(0);
-                        for (let j = 0; j < bufferSize; j++) {
-                            // white noise, turun cepat
-                            output[j] = (Math.random() * 2 - 1) * Math.exp(-j / (bufferSize / 6));
-                        }
-                        noise.buffer = buffer;
+                // --- SUARA TERIAK "GOOOOL!" (dengan oscillator + noise) ---
+                const now = audioCtx.currentTime;
 
-                        const filter = audioCtx.createBiquadFilter();
-                        filter.type = 'bandpass';
-                        filter.frequency.value = 1500 + Math.random() * 1500;
-                        filter.Q.value = 2;
+                // 1. Suara "G" rendah (100Hz)
+                const oscG = audioCtx.createOscillator();
+                oscG.type = 'sawtooth';
+                oscG.frequency.value = 120;
+                const gainG = audioCtx.createGain();
+                gainG.gain.setValueAtTime(0.3, now);
+                gainG.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                oscG.connect(gainG);
+                gainG.connect(masterGain);
+                oscG.start(now);
+                oscG.stop(now + 0.35);
 
-                        const gainNode = audioCtx.createGain();
-                        gainNode.gain.value = 0.25 + Math.random() * 0.2;
+                // 2. Suara "OOOO" naik (150 → 300Hz)
+                const oscO = audioCtx.createOscillator();
+                oscO.type = 'triangle';
+                oscO.frequency.setValueAtTime(150, now + 0.1);
+                oscO.frequency.exponentialRampToValueAtTime(320, now + 0.9);
+                const gainO = audioCtx.createGain();
+                gainO.gain.setValueAtTime(0.4, now + 0.1);
+                gainO.gain.exponentialRampToValueAtTime(0.01, now + 1.1);
+                oscO.connect(gainO);
+                gainO.connect(masterGain);
+                oscO.start(now + 0.1);
+                oscO.stop(now + 1.2);
 
-                        noise.connect(filter);
-                        filter.connect(gainNode);
-                        gainNode.connect(masterGain);
+                // 3. Suara "L" klik (noise pendek)
+                for (let i = 0; i < 3; i++) {
+                    const noiseBuffer = audioCtx.createBuffer(1, 1024, audioCtx.sampleRate);
+                    const data = noiseBuffer.getChannelData(0);
+                    for (let j = 0; j < 1024; j++) {
+                        data[j] = (Math.random() * 2 - 1) * Math.exp(-j/150);
+                    }
+                    const noise = audioCtx.createBufferSource();
+                    noise.buffer = noiseBuffer;
+                    const gainN = audioCtx.createGain();
+                    gainN.gain.value = 0.15;
+                    noise.connect(gainN);
+                    gainN.connect(masterGain);
+                    noise.start(now + 0.9 + i*0.05);
+                }
 
-                        noise.start();
-                        noise.stop(audioCtx.currentTime + 0.2);
-                    }, delay * 1000);
+                // 4. Tepuk tangan di belakang
+                for (let i = 0; i < 8; i++) {
+                    const delay = 0.2 + i * 0.1 + Math.random()*0.1;
+                    const noiseBuffer = audioCtx.createBuffer(1, 2048, audioCtx.sampleRate);
+                    const data = noiseBuffer.getChannelData(0);
+                    for (let j = 0; j < 2048; j++) {
+                        data[j] = (Math.random() * 2 - 1) * Math.exp(-j/300);
+                    }
+                    const noise = audioCtx.createBufferSource();
+                    noise.buffer = noiseBuffer;
+                    const filter = audioCtx.createBiquadFilter();
+                    filter.type = 'bandpass';
+                    filter.frequency.value = 1800 + Math.random()*1000;
+                    const gainNode = audioCtx.createGain();
+                    gainNode.gain.value = 0.2 + Math.random()*0.15;
+                    noise.connect(filter);
+                    filter.connect(gainNode);
+                    gainNode.connect(masterGain);
+                    noise.start(now + delay);
+                    noise.stop(now + delay + 0.25);
                 }
             }
         }
 
-        // ===== PENGATURAN SKOR & STATE =====
+        // ===== GAME STATE =====
         let score = 0;
         let shot = 0;
         let shooting = false;
 
-        // BOLA (sekarang dengan properti visual bola)
+        // BOLA 3D (properti)
         let ball = {
             x: 450,
             y: 380,
-            r: 13,         // sedikit lebih besar
+            r: 15,
             vx: 0,
-            vy: 0
+            vy: 0,
+            rotation: 0  // untuk efek putaran
         };
 
-        // KIper
+        // KIPER (lebih 3D dengan bayangan)
         let keeper = {
             x: 450,
             y: 140,
             dir: 2,
             jump: false,
-            targetX: 450
+            targetX: 450,
+            dive: 0,        // animasi terjun
+            armAngle: 0
         };
 
-        // gawang
-        let goal = {
-            x: 320,
-            y: 80,
-            w: 260
-        };
-
-        // titik target tendangan (lingkaran kuning)
+        let goal = { x: 320, y: 80, w: 260 };
         let targets = [
             { x: 340, y: 110 },
             { x: 450, y: 110 },
@@ -249,16 +256,12 @@
             { x: 560, y: 150 }
         ];
 
-        // ========== TINGKAT KESULITAN KIPER ==========
-        // 👇🏻 UBAH NILAI INI: 0.1 (sangat mudah)  ~  0.9 (sulit)
-        const difficulty = 0.55;   // default: 0.55 -> kiper agak pintar
-        // Makin besar, makin sering kiper membaca arah bola (targetX tepat)
-        // ============================================
+        // Kesulitan (sembunyi)
+        const difficulty = 0.58;  // 0.1 mudah, 0.9 sulit
 
-        // klik tendang
+        // Klik tendang
         canvas.addEventListener("click", (e) => {
-            if (shooting) return;
-            if (shot >= 5) return;
+            if (shooting || shot >= 5) return;
 
             const rect = canvas.getBoundingClientRect();
             const scaleX = canvas.width / rect.width;
@@ -269,7 +272,7 @@
 
             for (let t of targets) {
                 let d = Math.hypot(mouseX - t.x, mouseY - t.y);
-                if (d < 24) {  // perbesar area klik
+                if (d < 25) {
                     shootBall(t.x, t.y);
                     break;
             }
@@ -281,243 +284,289 @@
             shot++;
             document.getElementById("shot").innerText = shot;
 
-            // arah bola
-            ball.vx = (tx - ball.x) * 0.08;
-            ball.vy = (ty - ball.y) * 0.08;
+            ball.vx = (tx - ball.x) * 0.085;
+            ball.vy = (ty - ball.y) * 0.085;
 
-            // Kiper bereaksi berdasarkan difficulty
+            // Kiper bereaksi
             let guess = Math.random();
-            // jika guess < difficulty -> kiper tahu arah (tepat)
             if (guess < difficulty) {
-                keeper.targetX = tx;            // gerak ke titik tendangan
+                keeper.targetX = tx;
             } else {
-                // salah baca: bergerak acak di gawang
                 keeper.targetX = goal.x + 40 + Math.random() * (goal.w - 80);
             }
-
-            // tambahan variasi: kadang sedikit melambat (reaksi)
-            if (Math.random() < 0.3) {
-                // delay kecil tidak diimplementasi, cukup kasih target agak meleset
-                keeper.targetX += (Math.random() - 0.5) * 40;
-            }
-
-            // batasi targetX dalam gawang
-            keeper.targetX = Math.min(goal.x + goal.w - 15, Math.max(goal.x + 15, keeper.targetX));
-
+            keeper.targetX = Math.min(goal.x + goal.w - 20, Math.max(goal.x + 20, keeper.targetX));
             keeper.jump = true;
+            keeper.dive = 1;   // efek dive
         }
 
-        // gambar lapangan
+        // Gambar lapangan (3d illusion)
         function drawField() {
-            // gradasi rumput
-            const grass = ctx.createLinearGradient(0, 200, 0, 500);
-            grass.addColorStop(0, '#388e3c');
-            grass.addColorStop(1, '#1f5a25');
+            const grass = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            grass.addColorStop(0, '#2e7d32');
+            grass.addColorStop(0.7, '#1b5e20');
             ctx.fillStyle = grass;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // kotak penalti
-            ctx.strokeStyle = "white";
+            // Lingkaran tengah
+            ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(450, 300, 80, 0, 2*Math.PI);
+            ctx.stroke();
+
+            // Kotak penalti
+            ctx.strokeStyle = 'white';
             ctx.lineWidth = 4;
             ctx.strokeRect(200, 200, 500, 200);
-            // titik penalti
             ctx.beginPath();
-            ctx.arc(450, 300, 6, 0, 2 * Math.PI);
-            ctx.fillStyle = "white";
+            ctx.arc(450, 300, 8, 0, 2*Math.PI);
+            ctx.fillStyle = 'white';
             ctx.fill();
         }
 
-        // gawang + net
+        // Gawang 3D (dengan perspektif)
         function drawGoal() {
-            ctx.fillStyle = "#f0f0f0";
-            ctx.shadowColor = '#00000040';
-            ctx.shadowBlur = 10;
-            ctx.fillRect(goal.x, 80, goal.w, 8);
-            ctx.fillRect(goal.x, 80, 8, 70);
-            ctx.fillRect(goal.x + goal.w - 8, 80, 8, 70);
-            ctx.shadowBlur = 0;
+            // tiang gawang (efek gelap-terang)
+            ctx.shadowColor = '#00000060';
+            ctx.shadowBlur = 12;
 
-            // net
-            ctx.strokeStyle = "rgba(255,255,255,0.4)";
-            ctx.lineWidth = 1.2;
-            for (let i = 0; i < goal.w; i += 18) {
+            // mistar
+            ctx.fillStyle = '#e0e0e0';
+            ctx.fillRect(goal.x, 75, goal.w, 10);
+            // tiang kiri
+            ctx.fillRect(goal.x, 75, 10, 70);
+            // tiang kanan
+            ctx.fillRect(goal.x + goal.w - 10, 75, 10, 70);
+
+            // bayangan tiang
+            ctx.fillStyle = '#a0a0a0';
+            ctx.fillRect(goal.x+5, 80, 5, 65);
+            ctx.fillRect(goal.x+goal.w-15, 80, 5, 65);
+
+            // net (dengan garis 3D)
+            ctx.strokeStyle = 'rgba(220,220,255,0.6)';
+            ctx.lineWidth = 1.5;
+            for (let i = 0; i < goal.w; i+=20) {
                 ctx.beginPath();
                 ctx.moveTo(goal.x + i, 80);
-                ctx.lineTo(goal.x + i - 5, 150);   // miring dikit biar 3d
+                ctx.lineTo(goal.x + i - 8, 150);
                 ctx.stroke();
             }
-            for (let j = 80; j < 150; j += 16) {
+            for (let j = 80; j < 150; j+=15) {
                 ctx.beginPath();
                 ctx.moveTo(goal.x, j);
-                ctx.lineTo(goal.x + goal.w, j - 10);
+                ctx.lineTo(goal.x + goal.w, j-10);
                 ctx.stroke();
             }
+            ctx.shadowBlur = 0;
         }
 
-        // titik target
+        // Titik target
         function drawTargets() {
             for (let t of targets) {
                 ctx.beginPath();
-                ctx.arc(t.x, t.y, 14, 0, Math.PI * 2);
-                ctx.strokeStyle = "#ffff60";
-                ctx.lineWidth = 3.5;
+                ctx.arc(t.x, t.y, 16, 0, 2*Math.PI);
+                ctx.strokeStyle = '#ffff00';
+                ctx.lineWidth = 4;
                 ctx.stroke();
                 ctx.beginPath();
-                ctx.arc(t.x, t.y, 6, 0, Math.PI * 2);
-                ctx.fillStyle = "#ffdd44";
+                ctx.arc(t.x, t.y, 8, 0, 2*Math.PI);
+                ctx.fillStyle = '#ffcc00';
                 ctx.fill();
             }
         }
 
-        // kiper (bentuk humanoid)
+        // KIPER 3D (dengan detail dan bayangan)
         function drawKeeper() {
-            // badan
-            ctx.fillStyle = "#fcd7a0";
-            ctx.shadowColor = '#00000040';
-            ctx.shadowBlur = 8;
+            const kx = keeper.x;
+            const ky = keeper.y - (keeper.jump ? 5 * Math.sin(Date.now()*0.02) : 0); // efek goyang
+
+            ctx.shadowColor = '#00000070';
+            ctx.shadowBlur = 12;
+            ctx.shadowOffsetY = 3;
+
+            // badan (seperti blok 3D)
+            ctx.fillStyle = '#225577';
             ctx.beginPath();
-            ctx.ellipse(keeper.x, keeper.y - 15, 12, 18, 0, 0, Math.PI * 2);
+            ctx.ellipse(kx, ky-15, 14, 20, 0, 0, 2*Math.PI);
             ctx.fill();
 
             // kepala
-            ctx.fillStyle = "#f7c58f";
+            ctx.fillStyle = '#f7d9aa';
             ctx.beginPath();
-            ctx.arc(keeper.x, keeper.y - 38, 12, 0, Math.PI * 2);
+            ctx.ellipse(kx, ky-40, 12, 14, 0, 0, 2*Math.PI);
             ctx.fill();
 
-            // tangan (garis)
-            ctx.strokeStyle = "#1e3a5f";
-            ctx.lineWidth = 6;
+            // topi kiper
+            ctx.fillStyle = '#cc5500';
             ctx.beginPath();
-            ctx.moveTo(keeper.x - 16, keeper.y - 25);
-            ctx.lineTo(keeper.x - 28, keeper.y - 10);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(keeper.x + 16, keeper.y - 25);
-            ctx.lineTo(keeper.x + 28, keeper.y - 10);
-            ctx.stroke();
+            ctx.ellipse(kx-2, ky-52, 12, 6, 0, 0, 2*Math.PI);
+            ctx.fill();
 
-            // sarung tangan putih
-            ctx.fillStyle = "#ddd";
+            // tangan 3D
+            ctx.fillStyle = '#f7d9aa';
+            // tangan kiri
             ctx.beginPath();
-            ctx.ellipse(keeper.x - 30, keeper.y - 8, 6, 5, 0, 0, Math.PI * 2);
+            ctx.ellipse(kx-22, ky-25, 8, 6, 0.3, 0, 2*Math.PI);
+            ctx.fill();
+            // tangan kanan
+            ctx.beginPath();
+            ctx.ellipse(kx+22, ky-25, 8, 6, -0.2, 0, 2*Math.PI);
+            ctx.fill();
+
+            // sarung tangan
+            ctx.fillStyle = '#b8860b';
+            ctx.beginPath();
+            ctx.ellipse(kx-32, ky-22, 7, 6, 0, 0, 2*Math.PI);
             ctx.fill();
             ctx.beginPath();
-            ctx.ellipse(keeper.x + 30, keeper.y - 8, 6, 5, 0, 0, Math.PI * 2);
+            ctx.ellipse(kx+32, ky-22, 7, 6, 0, 0, 2*Math.PI);
             ctx.fill();
+
+            // mata
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.arc(kx-5, ky-44, 3, 0, 2*Math.PI);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(kx+5, ky-44, 3, 0, 2*Math.PI);
+            ctx.fill();
+            ctx.fillStyle = '#222';
+            ctx.beginPath();
+            ctx.arc(kx-6, ky-45, 1.5, 0, 2*Math.PI);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(kx+4, ky-45, 1.5, 0, 2*Math.PI);
+            ctx.fill();
+
+            // bayangan bawah
+            ctx.shadowBlur = 8;
+            ctx.fillStyle = '#1a3a3a';
+            ctx.globalAlpha = 0.4;
+            ctx.beginPath();
+            ctx.ellipse(kx, ky, 25, 8, 0, 0, 2*Math.PI);
+            ctx.fill();
+            ctx.globalAlpha = 1;
             ctx.shadowBlur = 0;
         }
 
-        // penendang
+        // Pemain penendang 3D
         function drawPlayer() {
-            let x = 450;
-            let y = 420;
-
-            ctx.fillStyle = "#f7c58f";
-            ctx.shadowBlur = 8;
-            ctx.beginPath();
-            ctx.arc(x, y - 35, 12, 0, Math.PI * 2);
-            ctx.fill();
+            let x = 450, y = 420;
+            ctx.shadowColor = '#00000070';
+            ctx.shadowBlur = 10;
 
             // badan
-            ctx.fillStyle = "#0f4d8c";
+            ctx.fillStyle = '#c44c0e';
             ctx.beginPath();
-            ctx.ellipse(x, y - 15, 12, 22, 0, 0, Math.PI * 2);
+            ctx.ellipse(x, y-15, 15, 25, 0, 0, 2*Math.PI);
+            ctx.fill();
+
+            // kepala
+            ctx.fillStyle = '#f7d9aa';
+            ctx.beginPath();
+            ctx.arc(x, y-45, 14, 0, 2*Math.PI);
+            ctx.fill();
+
+            // rambut
+            ctx.fillStyle = '#382010';
+            ctx.beginPath();
+            ctx.ellipse(x-3, y-55, 8, 5, 0, 0, 2*Math.PI);
             ctx.fill();
 
             // kaki
-            ctx.strokeStyle = "#06315c";
-            ctx.lineWidth = 7;
-            ctx.beginPath();
-            ctx.moveTo(x - 8, y);
-            ctx.lineTo(x - 18, y + 20);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(x + 8, y);
-            ctx.lineTo(x + 18, y + 20);
-            ctx.stroke();
+            ctx.fillStyle = '#0a2f6a';
+            ctx.fillRect(x-15, y-5, 12, 30);
+            ctx.fillRect(x+5, y-5, 12, 30);
+
+            // sepatu
+            ctx.fillStyle = '#222';
+            ctx.fillRect(x-20, y+20, 18, 8);
+            ctx.fillRect(x+5, y+20, 18, 8);
             ctx.shadowBlur = 0;
         }
 
-        // ========== BOLA BARU YANG KEREN (BENTUK BOLA SUNGGAH) ==========
+        // BOLA 3D DENGAN ROTASI (lebih hidup)
         function drawBall() {
-            // efek shadow
-            ctx.shadowColor = '#00000070';
-            ctx.shadowBlur = 14;
-            ctx.shadowOffsetY = 3;
+            ball.rotation += 0.05;  // efek berputar
 
-            // gradien bola (3d)
-            const gradient = ctx.createRadialGradient(ball.x - 5, ball.y - 5, 3, ball.x, ball.y, ball.r + 5);
-            gradient.addColorStop(0, '#ffffff');
-            gradient.addColorStop(0.3, '#f0f0f0');
-            gradient.addColorStop(0.6, '#c0c0c0');
-            gradient.addColorStop(1, '#7a7a7a');
+            ctx.shadowColor = '#00000090';
+            ctx.shadowBlur = 20;
+            ctx.shadowOffsetY = 5;
+
+            // gradien bola
+            const grad = ctx.createRadialGradient(ball.x-6, ball.y-6, 4, ball.x, ball.y, ball.r+5);
+            grad.addColorStop(0, '#f8f8f8');
+            grad.addColorStop(0.4, '#cccccc');
+            grad.addColorStop(0.8, '#7a7a7a');
+            grad.addColorStop(1, '#3a3a3a');
 
             ctx.beginPath();
-            ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
-            ctx.fillStyle = gradient;
+            ctx.arc(ball.x, ball.y, ball.r, 0, 2*Math.PI);
+            ctx.fillStyle = grad;
             ctx.fill();
 
-            // pola pentagon (gaya bola biasa)
-            ctx.strokeStyle = "#222";
-            ctx.lineWidth = 1.8;
-            ctx.shadowBlur = 6;
+            // pola pentagon (seperti bola sungguhan)
+            ctx.strokeStyle = '#2b2b2b';
+            ctx.lineWidth = 2.2;
             for (let i = 0; i < 5; i++) {
-                let angle = (i / 5) * Math.PI * 2;
-                let x1 = ball.x + ball.r * 0.6 * Math.cos(angle);
-                let y1 = ball.y + ball.r * 0.6 * Math.sin(angle);
-                let x2 = ball.x + ball.r * 0.6 * Math.cos(angle + 1.2);
-                let y2 = ball.y + ball.r * 0.6 * Math.sin(angle + 1.2);
+                let angle = (i/5)*2*Math.PI + ball.rotation*0.5;
+                let x1 = ball.x + ball.r*0.7*Math.cos(angle);
+                let y1 = ball.y + ball.r*0.7*Math.sin(angle);
+                let x2 = ball.x + ball.r*0.7*Math.cos(angle+1.2);
+                let y2 = ball.y + ball.r*0.7*Math.sin(angle+1.2);
                 ctx.beginPath();
-                ctx.moveTo(ball.x + ball.r * 0.25 * Math.cos(angle), ball.y + ball.r * 0.25 * Math.sin(angle));
+                ctx.moveTo(ball.x + ball.r*0.3*Math.cos(angle), ball.y + ball.r*0.3*Math.sin(angle));
                 ctx.lineTo(x1, y1);
                 ctx.lineTo(x2, y2);
-                ctx.strokeStyle = '#2b2b2b';
                 ctx.stroke();
             }
             // garis jahitan
             ctx.beginPath();
-            ctx.ellipse(ball.x, ball.y, ball.r * 0.7, ball.r * 0.4, 0, 0, Math.PI * 2);
-            ctx.strokeStyle = '#111';
-            ctx.lineWidth = 1.5;
+            ctx.ellipse(ball.x, ball.y, ball.r*0.75, ball.r*0.4, ball.rotation*0.2, 0, 2*Math.PI);
+            ctx.strokeStyle = '#151515';
             ctx.stroke();
 
+            // sorotan kecil
             ctx.shadowBlur = 0;
-            ctx.shadowOffsetY = 0;
+            ctx.beginPath();
+            ctx.arc(ball.x-4, ball.y-5, 4, 0, 2*Math.PI);
+            ctx.fillStyle = '#ffffff60';
+            ctx.fill();
         }
 
-        // update
+        // Update game state
         function update() {
             ball.x += ball.vx;
             ball.y += ball.vy;
-            ball.vx *= 0.99;
-            ball.vy *= 0.99;
+            ball.vx *= 0.98;
+            ball.vy *= 0.98;
 
             if (!keeper.jump) {
                 keeper.x += keeper.dir;
                 if (keeper.x > 600 || keeper.x < 300) keeper.dir *= -1;
             } else {
-                keeper.x += (keeper.targetX - keeper.x) * 0.18;
+                keeper.x += (keeper.targetX - keeper.x) * 0.16;
+                keeper.dive *= 0.95;
             }
 
-            // tabrakan kiper
-            let d = Math.hypot(ball.x - keeper.x, ball.y - (keeper.y - 15));
-            if (d < 30) reset();
+            // collision kiper
+            let d = Math.hypot(ball.x - keeper.x, ball.y - (keeper.y-20));
+            if (d < 35) reset();
 
-            // GOAL? + suara
+            // GOAL?  + SUARA GOOOOL!
             if (ball.y < 95 && ball.x > goal.x && ball.x < goal.x + goal.w) {
                 score++;
                 document.getElementById("score").innerText = score;
 
-                // TEPUK TANGAN 🔥
-                playClapSound();
+                playGoalSound();   // <--- SUARA GOOOOL BESERTA TEPUK
 
                 showGoal();
                 reset();
                 return;
             }
 
-            if (ball.y < 70) reset();
+            if (ball.y < 60) reset();
         }
 
         function showGoal() {
@@ -537,28 +586,27 @@
             ball.vx = 0;
             ball.vy = 0;
             keeper.jump = false;
+            keeper.dive = 0;
             shooting = false;
         }
 
         function matchEnd() {
             document.getElementById("endScreen").style.display = "flex";
-            shooting = true; // cegah tendang lagi
+            shooting = true;
         }
 
         document.getElementById("playAgain").onclick = function() {
-            score = 0;
-            shot = 0;
+            score = 0; shot = 0;
             document.getElementById("score").innerText = "0";
             document.getElementById("shot").innerText = "0";
             document.getElementById("endScreen").style.display = "none";
             reset();
             shooting = false;
-            // pastikan ball direset
             ball.x = 450; ball.y = 380; ball.vx = 0; ball.vy = 0;
             keeper.jump = false;
         };
 
-        // loop
+        // Loop
         function gameLoop() {
             update();
             drawField();
@@ -566,13 +614,13 @@
             drawTargets();
             drawKeeper();
             drawPlayer();
-            drawBall();  // bola premium
+            drawBall();
             requestAnimationFrame(gameLoop);
         }
 
         gameLoop();
 
-        // inisialisasi audio context setelah user berinteraksi (klik pertama di canvas)
+        // Aktifkan audio setelah klik
         function enableAudio() {
             if (!audioCtx) {
                 try {
@@ -584,8 +632,8 @@
             }
         }
         canvas.addEventListener('click', enableAudio, { once: true });
-        // juga untuk tombol play again
         document.getElementById("playAgain").addEventListener('click', enableAudio, { once: true });
+
     })();
 </script>
 </body>
