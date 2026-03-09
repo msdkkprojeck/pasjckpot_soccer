@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Penalty Soccer 3D · Awan Transparan + Gawang Panjang</title>
+    <title>Penalty Soccer 3D · Target Bawah Diturunkan</title>
     <style>
         * {
             box-sizing: border-box;
@@ -310,7 +310,7 @@
         // KIPER 3D SUPER DETAIL
         let keeper = {
             x: 450,
-            y: 140,
+            y: 165,
             dir: 2,
             jump: false,
             targetX: 450,
@@ -318,20 +318,21 @@
             armAngle: 0
         };
 
-        // GAWANG - DIPERPANJANG
+        // GAWANG - sudah turun
         let goal = {
             x: 300,
-            y: 20,
+            y: 45,
             w: 300,
             h: 150
         };
 
+        // TARGET BULAT KUNING - bagian bawah diturunkan
         let targets = [
-            { x: 340, y: 55 },
-            { x: 450, y: 55 },
-            { x: 560, y: 55 },
-            { x: 340, y: 105 },
-            { x: 560, y: 105 }
+            { x: 340, y: 80 },   // kiri atas
+            { x: 450, y: 80 },   // tengah atas
+            { x: 560, y: 80 },   // kanan atas
+            { x: 340, y: 145 },  // kiri bawah (diturunkan dari 130 ke 145)
+            { x: 560, y: 145 }   // kanan bawah (diturunkan dari 130 ke 145)
         ];
 
         const difficulty = 0.58;
@@ -374,7 +375,7 @@
             keeper.jump = true;
         }
 
-        // ===== BACKGROUND DENGAN AWAN YANG DIPERBAIKI =====
+        // ===== BACKGROUND DENGAN AWAN (tanpa kotak putih tambahan) =====
         function drawBackground() {
             // Langit gradasi
             const sky = ctx.createLinearGradient(0, 0, 0, 300);
@@ -396,7 +397,7 @@
             ctx.fillRect(0, 250, canvas.width, 150);
             ctx.globalAlpha = 1;
 
-            // Garis lapangan
+            // Garis lapangan (hanya kotak penalti dan lingkaran tengah)
             ctx.strokeStyle = 'rgba(255,255,255,0.5)';
             ctx.lineWidth = 3;
             ctx.strokeRect(200, 200, 500, 200);
@@ -405,12 +406,19 @@
             ctx.strokeStyle = 'rgba(255,255,255,0.3)';
             ctx.stroke();
 
-            // ===== AWAN-AWAN (HANYA DI KIRI DAN KANAN, TIDAK DI TENGAH) =====
+            // KOTAK PUTIH DI GAWANG TELAH DIHAPUS
+            // Hanya menyisakan titik penalti
+            ctx.beginPath();
+            ctx.arc(450, 125, 4, 0, 2*Math.PI);
+            ctx.fillStyle = 'white';
+            ctx.fill();
+
+            // ===== AWAN-AWAN =====
             
-            // AWAN KIRI (diperbaiki bentuknya, lebih transparan)
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)'; // lebih transparan
+            // AWAN KIRI
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
             
-            // Awan kiri atas (lebih indah)
+            // Awan kiri atas
             ctx.beginPath();
             ctx.arc(80, 60, 25, 0, Math.PI*2);
             ctx.arc(120, 45, 30, 0, Math.PI*2);
@@ -419,7 +427,7 @@
             ctx.arc(140, 80, 18, 0, Math.PI*2);
             ctx.fill();
             
-            // Awan kiri tengah (sedikit lebih rendah)
+            // Awan kiri tengah
             ctx.beginPath();
             ctx.arc(200, 120, 22, 0, Math.PI*2);
             ctx.arc(240, 105, 28, 0, Math.PI*2);
@@ -427,7 +435,7 @@
             ctx.arc(220, 135, 18, 0, Math.PI*2);
             ctx.fill();
             
-            // AWAN KANAN (tetap dipertahankan)
+            // AWAN KANAN
             ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
             
             // Awan kanan atas
@@ -446,7 +454,7 @@
             ctx.arc(840, 140, 18, 0, Math.PI*2);
             ctx.fill();
 
-            // Sedikit efek volume dengan transparansi lebih tinggi
+            // Efek volume
             ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
             ctx.beginPath();
             ctx.arc(100, 50, 15, 0, Math.PI*2);
@@ -471,10 +479,10 @@
             ctx.fillStyle = '#d2b48c';
             ctx.fillRect(goal.x, goal.y, goal.w, 12);
             
-            // Tiang kiri - diperpanjang
+            // Tiang kiri
             ctx.fillRect(goal.x, goal.y, 12, goal.h);
             
-            // Tiang kanan - diperpanjang
+            // Tiang kanan
             ctx.fillRect(goal.x + goal.w - 12, goal.y, 12, goal.h);
 
             // Detail kayu
