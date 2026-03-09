@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Penalty Soccer 3D · Pemain 3D + Bola Kaki</title>
+    <title>Penalty Soccer 3D · Background Gawang Realistis + Kiper 3D</title>
     <style>
         * {
             box-sizing: border-box;
@@ -12,7 +12,7 @@
 
         body {
             margin: 0;
-            background: linear-gradient(#1b5e20, #0b6623);
+            background: #0a3a0a;
             font-family: 'Segoe UI', Arial, sans-serif;
             overflow: hidden;
             display: flex;
@@ -24,7 +24,7 @@
         #gameContainer {
             width: 900px;
             position: relative;
-            box-shadow: 0 20px 30px rgba(0,0,0,0.6);
+            box-shadow: 0 20px 30px rgba(0,0,0,0.8);
             border-radius: 20px;
         }
 
@@ -37,7 +37,7 @@
             font-weight: bold;
             color: white;
             text-shadow: 0 3px 8px black;
-            background: rgba(0, 40, 0, 0.5);
+            background: rgba(0, 40, 0, 0.7);
             backdrop-filter: blur(3px);
             padding: 10px 0;
             border-radius: 60px;
@@ -52,7 +52,6 @@
             height: auto;
             border: 6px solid white;
             border-radius: 24px;
-            background: linear-gradient(#2e7d32, #1f5a25);
             box-shadow: 0 0 30px rgba(0,0,0,0.8);
             cursor: crosshair;
         }
@@ -158,7 +157,7 @@
     </div>
     <div id="goalText">🔥 GOOOOL!!! 🔥</div>
     <div id="endScreen">
-        <div>⚡ MATCH END ⚡</div>
+        <div>⚡️ MATCH END ⚡️</div>
         <div class="end-buttons">
             <button id="playAgain">🔄 PLAY AGAIN</button>
             <button id="homeButton"><span class="home-icon">🏠</span> HOME</button>
@@ -172,10 +171,8 @@
         const canvas = document.getElementById("game");
         const ctx = canvas.getContext("2d");
 
-        // === AUDIO CONTEXT ===
+        // === AUDIO ===
         let audioCtx = null;
-
-        // ===== SUARA GOOOOL =====
         function playGoalSound() {
             if (!audioCtx) {
                 try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return; }
@@ -185,16 +182,12 @@
             } else {
                 playGoalNow();
             }
-
             function playGoalNow() {
                 if (!audioCtx) return;
                 const masterGain = audioCtx.createGain();
                 masterGain.gain.value = 0.6;
                 masterGain.connect(audioCtx.destination);
-
                 const now = audioCtx.currentTime;
-
-                // Suara "G"
                 const oscG = audioCtx.createOscillator();
                 oscG.type = 'sawtooth';
                 oscG.frequency.value = 120;
@@ -205,8 +198,6 @@
                 gainG.connect(masterGain);
                 oscG.start(now);
                 oscG.stop(now + 0.4);
-
-                // Suara "OOOO"
                 const oscO = audioCtx.createOscillator();
                 oscO.type = 'triangle';
                 oscO.frequency.setValueAtTime(150, now + 0.15);
@@ -218,8 +209,6 @@
                 gainO.connect(masterGain);
                 oscO.start(now + 0.15);
                 oscO.stop(now + 1.2);
-
-                // Tepuk tangan
                 for (let i = 0; i < 8; i++) {
                     const delay = 0.3 + i * 0.12 + Math.random()*0.1;
                     const noiseBuffer = audioCtx.createBuffer(1, 2048, audioCtx.sampleRate);
@@ -242,8 +231,6 @@
                 }
             }
         }
-
-        // ===== SUARA KECEWA =====
         function playDisappointSound() {
             if (!audioCtx) {
                 try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return; }
@@ -253,16 +240,12 @@
             } else {
                 playDisappointNow();
             }
-
             function playDisappointNow() {
                 if (!audioCtx) return;
                 const masterGain = audioCtx.createGain();
                 masterGain.gain.value = 0.45;
                 masterGain.connect(audioCtx.destination);
-
                 const now = audioCtx.currentTime;
-
-                // Suara "Awww"
                 const oscAww = audioCtx.createOscillator();
                 oscAww.type = 'sawtooth';
                 oscAww.frequency.setValueAtTime(320, now);
@@ -274,7 +257,6 @@
                 gainAww.connect(masterGain);
                 oscAww.start(now);
                 oscAww.stop(now + 1.0);
-
                 for (let i = 0; i < 4; i++) {
                     const delay = i * 0.15;
                     const noiseBuffer = audioCtx.createBuffer(1, 1024, audioCtx.sampleRate);
@@ -295,7 +277,6 @@
                     noise.start(now + 0.2 + delay);
                     noise.stop(now + 0.4 + delay);
                 }
-
                 const oscWhistle = audioCtx.createOscillator();
                 oscWhistle.type = 'sine';
                 oscWhistle.frequency.setValueAtTime(900, now+0.3);
@@ -314,45 +295,46 @@
         let score = 0;
         let shot = 0;
         let shooting = false;
-        let resetTimer = null;
         let matchEnded = false;
 
-        // BOLA (posisi di kaki, bukan di atas kepala)
+        // BOLA
         let ball = {
             x: 450,
-            y: 400,      // diturunkan dari 380 ke 400 (sejajar kaki)
+            y: 400,
             r: 15,
             vx: 0,
             vy: 0,
             rotation: 0
         };
 
-        // KIPER
+        // KIPER 3D SUPER DETAIL
         let keeper = {
             x: 450,
             y: 140,
             dir: 2,
             jump: false,
-            targetX: 450
+            targetX: 450,
+            dive: 0,
+            armAngle: 0
         };
 
-        // GAWANG TINGGI
+        // GAWANG
         let goal = {
-            x: 320,
-            y: 40,
-            w: 260,
-            h: 110
+            x: 300,
+            y: 35,
+            w: 300,
+            h: 120
         };
 
         let targets = [
-            { x: 340, y: 70 },
-            { x: 450, y: 70 },
-            { x: 560, y: 70 },
-            { x: 340, y: 115 },
-            { x: 560, y: 115 }
+            { x: 340, y: 65 },
+            { x: 450, y: 65 },
+            { x: 560, y: 65 },
+            { x: 340, y: 110 },
+            { x: 560, y: 110 }
         ];
 
-        const difficulty = 0.50;
+        const difficulty = 0.58;
 
         // Klik tendang
         canvas.addEventListener("click", (e) => {
@@ -392,57 +374,95 @@
             keeper.jump = true;
         }
 
-        // Gambar lapangan
-        function drawField() {
-            const grass = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            grass.addColorStop(0, '#2e7d32');
-            grass.addColorStop(0.7, '#1b5e20');
+        // ===== BACKGROUND REALISTIS =====
+        function drawBackground() {
+            // Langit gradasi
+            const sky = ctx.createLinearGradient(0, 0, 0, 300);
+            sky.addColorStop(0, '#0a1f3a');
+            sky.addColorStop(0.8, '#3a6ea5');
+            ctx.fillStyle = sky;
+            ctx.fillRect(0, 0, canvas.width, 300);
+
+            // Rumput stadion
+            const grass = ctx.createLinearGradient(0, 200, 0, canvas.height);
+            grass.addColorStop(0, '#1e7e1e');
+            grass.addColorStop(1, '#0a5a0a');
             ctx.fillStyle = grass;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillRect(0, 200, canvas.width, canvas.height);
 
-            ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+            // Bayangan stadion
+            ctx.fillStyle = '#0a3a0a';
+            ctx.globalAlpha = 0.3;
+            ctx.fillRect(0, 250, canvas.width, 150);
+            ctx.globalAlpha = 1;
+
+            // Garis lapangan
+            ctx.strokeStyle = 'rgba(255,255,255,0.5)';
             ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.arc(450, 300, 80, 0, 2*Math.PI);
-            ctx.stroke();
-
-            ctx.strokeStyle = 'white';
-            ctx.lineWidth = 4;
             ctx.strokeRect(200, 200, 500, 200);
             ctx.beginPath();
-            ctx.arc(450, 300, 8, 0, 2*Math.PI);
-            ctx.fillStyle = 'white';
-            ctx.fill();
+            ctx.arc(450, 300, 80, 0, 2*Math.PI);
+            ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+            ctx.stroke();
         }
 
-        function drawGoal() {
-            ctx.shadowColor = '#00000060';
-            ctx.shadowBlur = 12;
+        // ===== GAWANG REALISTIS DENGAN JARING =====
+        function drawRealisticGoal() {
+            // Tiang gawang 3D
+            ctx.shadowColor = '#00000080';
+            ctx.shadowBlur = 15;
+            ctx.shadowOffsetX = 3;
+            ctx.shadowOffsetY = 3;
 
-            ctx.fillStyle = '#e0e0e0';
-            ctx.fillRect(goal.x, goal.y, goal.w, 10);
-            ctx.fillRect(goal.x, goal.y, 10, goal.h);
-            ctx.fillRect(goal.x + goal.w - 10, goal.y, 10, goal.h);
+            // Mistar atas (kayu)
+            ctx.fillStyle = '#d2b48c';
+            ctx.fillRect(goal.x, goal.y, goal.w, 12);
+            // Tiang kiri
+            ctx.fillRect(goal.x, goal.y, 12, goal.h);
+            // Tiang kanan
+            ctx.fillRect(goal.x + goal.w - 12, goal.y, 12, goal.h);
 
-            ctx.fillStyle = '#a0a0a0';
-            ctx.fillRect(goal.x+5, goal.y+2, 5, goal.h-4);
-            ctx.fillRect(goal.x+goal.w-15, goal.y+2, 5, goal.h-4);
+            // Detail kayu
+            ctx.fillStyle = '#b89a7a';
+            ctx.fillRect(goal.x+3, goal.y+3, goal.w-6, 6);
+            ctx.fillRect(goal.x+3, goal.y+3, 6, goal.h-6);
+            ctx.fillRect(goal.x+goal.w-9, goal.y+3, 6, goal.h-6);
 
-            ctx.strokeStyle = 'rgba(220,220,255,0.6)';
-            ctx.lineWidth = 1.5;
-            for (let i = 0; i < goal.w; i+=20) {
+            // Jaring gawang (lebih realistis)
+            ctx.strokeStyle = '#cccccc';
+            ctx.lineWidth = 1.2;
+            ctx.shadowBlur = 5;
+            ctx.shadowColor = '#00000040';
+
+            // Jaring vertikal
+            for (let i = 0; i < goal.w; i += 18) {
                 ctx.beginPath();
-                ctx.moveTo(goal.x + i, goal.y);
-                ctx.lineTo(goal.x + i - 8, goal.y + goal.h);
+                ctx.moveTo(goal.x + i, goal.y + 5);
+                ctx.lineTo(goal.x + i - 12, goal.y + goal.h - 5);
+                ctx.strokeStyle = '#aaaaaa';
                 ctx.stroke();
             }
-            for (let j = goal.y; j < goal.y + goal.h; j+=15) {
+            // Jaring horizontal
+            for (let j = goal.y + 15; j < goal.y + goal.h; j += 18) {
                 ctx.beginPath();
-                ctx.moveTo(goal.x, j);
-                ctx.lineTo(goal.x + goal.w, j - 10);
+                ctx.moveTo(goal.x + 5, j);
+                ctx.lineTo(goal.x + goal.w - 5, j - 15);
                 ctx.stroke();
             }
+
+            // Efek jaring melengkung
+            ctx.strokeStyle = '#ffffff40';
+            ctx.lineWidth = 0.8;
+            for (let i = 0; i < 3; i++) {
+                ctx.beginPath();
+                ctx.moveTo(goal.x + 30 + i*50, goal.y + 20);
+                ctx.quadraticCurveTo(goal.x + 80 + i*50, goal.y + 70, goal.x + 40 + i*50, goal.y + 110);
+                ctx.stroke();
+            }
+
             ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
         }
 
         function drawTargets() {
@@ -459,122 +479,148 @@
             }
         }
 
-        // KIPER 3D
-        function drawKeeper() {
+        // ===== KIPER 3D SUPER DETAIL =====
+        function drawKeeper3D() {
             const kx = keeper.x;
-            const ky = keeper.y - (keeper.jump ? 5 * Math.sin(Date.now()*0.02) : 0);
+            const ky = keeper.y - (keeper.jump ? 8 * Math.sin(Date.now()*0.03) : 0);
+            const diveEffect = keeper.jump ? 5 : 0;
 
-            ctx.shadowColor = '#00000070';
-            ctx.shadowBlur = 12;
-            ctx.shadowOffsetY = 3;
+            ctx.shadowColor = '#00000090';
+            ctx.shadowBlur = 20;
+            ctx.shadowOffsetY = 5;
 
-            // Badan
-            ctx.fillStyle = '#225577';
+            // Badan (dengan kostum kiper)
+            ctx.fillStyle = '#3b7a3b'; // hijau kiper
             ctx.beginPath();
-            ctx.ellipse(kx, ky-15, 14, 20, 0, 0, 2*Math.PI);
+            ctx.ellipse(kx, ky-15, 16, 24, 0, 0, Math.PI*2);
+            ctx.fill();
+
+            // Detail kostum (garis)
+            ctx.fillStyle = '#2a5a2a';
+            ctx.beginPath();
+            ctx.ellipse(kx, ky-10, 14, 18, 0, 0, Math.PI*2);
             ctx.fill();
 
             // Kepala
             ctx.fillStyle = '#f7d9aa';
             ctx.beginPath();
-            ctx.ellipse(kx, ky-40, 12, 14, 0, 0, 2*Math.PI);
+            ctx.ellipse(kx, ky-44, 13, 15, 0, 0, Math.PI*2);
             ctx.fill();
 
-            // Topi
-            ctx.fillStyle = '#cc5500';
+            // Topi kiper
+            ctx.fillStyle = '#d43f3f';
             ctx.beginPath();
-            ctx.ellipse(kx-2, ky-52, 12, 6, 0, 0, 2*Math.PI);
+            ctx.ellipse(kx-2, ky-58, 14, 7, 0, 0, Math.PI*2);
+            ctx.fill();
+            ctx.fillStyle = '#b32e2e';
+            ctx.beginPath();
+            ctx.ellipse(kx-2, ky-60, 10, 5, 0, 0, Math.PI*2);
             ctx.fill();
 
-            // Tangan
+            // Tangan kiri (dengan sarung)
             ctx.fillStyle = '#f7d9aa';
             ctx.beginPath();
-            ctx.ellipse(kx-22, ky-25, 8, 6, 0.3, 0, 2*Math.PI);
+            ctx.ellipse(kx-26, ky-28, 7, 10, -0.2, 0, Math.PI*2);
             ctx.fill();
-            ctx.beginPath();
-            ctx.ellipse(kx+22, ky-25, 8, 6, -0.2, 0, 2*Math.PI);
-            ctx.fill();
-
-            // Sarung tangan
             ctx.fillStyle = '#b8860b';
             ctx.beginPath();
-            ctx.ellipse(kx-32, ky-22, 7, 6, 0, 0, 2*Math.PI);
+            ctx.ellipse(kx-34, ky-26, 8, 7, 0, 0, Math.PI*2);
+            ctx.fill(); // sarung
+
+            // Tangan kanan
+            ctx.fillStyle = '#f7d9aa';
+            ctx.beginPath();
+            ctx.ellipse(kx+26, ky-30, 7, 11, 0.2, 0, Math.PI*2);
+            ctx.fill();
+            ctx.fillStyle = '#b8860b';
+            ctx.beginPath();
+            ctx.ellipse(kx+34, ky-28, 8, 7, 0, 0, Math.PI*2);
+            ctx.fill(); // sarung
+
+            // Kaki
+            ctx.fillStyle = '#2a5a2a';
+            ctx.beginPath();
+            ctx.ellipse(kx-12, ky, 8, 14, 0.1, 0, Math.PI*2);
             ctx.fill();
             ctx.beginPath();
-            ctx.ellipse(kx+32, ky-22, 7, 6, 0, 0, 2*Math.PI);
+            ctx.ellipse(kx+12, ky, 8, 14, -0.1, 0, Math.PI*2);
             ctx.fill();
 
-            // Mata
-            ctx.fillStyle = 'white';
+            // Sepatu
+            ctx.fillStyle = '#222';
             ctx.beginPath();
-            ctx.arc(kx-5, ky-44, 3, 0, 2*Math.PI);
+            ctx.ellipse(kx-20, ky+8, 8, 5, 0.1, 0, Math.PI*2);
             ctx.fill();
             ctx.beginPath();
-            ctx.arc(kx+5, ky-44, 3, 0, 2*Math.PI);
+            ctx.ellipse(kx+20, ky+8, 8, 5, -0.1, 0, Math.PI*2);
+            ctx.fill();
+
+            // Wajah
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.arc(kx-5, ky-48, 3, 0, 2*Math.PI);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(kx+5, ky-48, 3, 0, 2*Math.PI);
             ctx.fill();
             ctx.fillStyle = '#222';
             ctx.beginPath();
-            ctx.arc(kx-6, ky-45, 1.5, 0, 2*Math.PI);
+            ctx.arc(kx-6, ky-49, 1.5, 0, 2*Math.PI);
             ctx.fill();
             ctx.beginPath();
-            ctx.arc(kx+4, ky-45, 1.5, 0, 2*Math.PI);
+            ctx.arc(kx+4, ky-49, 1.5, 0, 2*Math.PI);
             ctx.fill();
 
-            // Bayangan
-            ctx.shadowBlur = 8;
+            // Bayangan kiper
+            ctx.shadowBlur = 10;
             ctx.fillStyle = '#1a3a3a';
-            ctx.globalAlpha = 0.4;
+            ctx.globalAlpha = 0.5;
             ctx.beginPath();
-            ctx.ellipse(kx, ky, 25, 8, 0, 0, 2*Math.PI);
+            ctx.ellipse(kx, ky+15, 30, 10, 0, 0, 2*Math.PI);
             ctx.fill();
             ctx.globalAlpha = 1;
             ctx.shadowBlur = 0;
         }
 
-        // ===== PEMAIN 3D YANG LEBIH PROPORSIONAL =====
-        // Bola sekarang di kaki, bukan di atas kepala
+        // Pemain 3D
         function drawPlayer() {
-            let x = 450; 
-            let y = 420; // posisi dasar kaki
-            
+            let x = 450, y = 420;
             ctx.shadowColor = '#00000070';
             ctx.shadowBlur = 12;
             ctx.shadowOffsetY = 4;
 
-            // === BADAN (segitiga terbalik, atletis) ===
-            ctx.fillStyle = '#c44c0e'; // jersey oranye
+            // Badan
+            ctx.fillStyle = '#c44c0e';
             ctx.beginPath();
             ctx.ellipse(x, y-25, 16, 28, 0, 0, Math.PI*2);
             ctx.fill();
 
-            // === KEPALA (lebih proporsional) ===
+            // Kepala
             ctx.fillStyle = '#f7d9aa';
             ctx.beginPath();
             ctx.arc(x, y-58, 14, 0, 2*Math.PI);
             ctx.fill();
 
-            // === RAMBUT ===
+            // Rambut
             ctx.fillStyle = '#382010';
             ctx.beginPath();
             ctx.ellipse(x-3, y-68, 8, 5, 0, 0, 2*Math.PI);
             ctx.fill();
 
-            // === LEHER (agar kepala nyambung) ===
+            // Leher
             ctx.fillStyle = '#f7d9aa';
             ctx.fillRect(x-5, y-48, 10, 10);
 
-            // === KAKI (lebih natural) ===
-            ctx.fillStyle = '#0a2f6a'; // celana biru
-            // Kaki kiri (sedikit ditekuk)
+            // Kaki
+            ctx.fillStyle = '#0a2f6a';
             ctx.beginPath();
             ctx.ellipse(x-12, y-5, 8, 18, 0.1, 0, Math.PI*2);
             ctx.fill();
-            // Kaki kanan (tumpuan)
             ctx.beginPath();
             ctx.ellipse(x+12, y-5, 8, 20, -0.1, 0, Math.PI*2);
             ctx.fill();
 
-            // === SEPATU ===
+            // Sepatu
             ctx.fillStyle = '#222';
             ctx.beginPath();
             ctx.ellipse(x-20, y+8, 9, 5, 0.1, 0, Math.PI*2);
@@ -583,18 +629,16 @@
             ctx.ellipse(x+20, y+8, 9, 5, -0.1, 0, Math.PI*2);
             ctx.fill();
 
-            // === TANGAN (lengan) ===
+            // Tangan
             ctx.fillStyle = '#f7d9aa';
-            // Tangan kiri (sedang ayun)
             ctx.beginPath();
             ctx.ellipse(x-22, y-28, 6, 14, -0.2, 0, Math.PI*2);
             ctx.fill();
-            // Tangan kanan (ke belakang)
             ctx.beginPath();
             ctx.ellipse(x+22, y-30, 6, 16, 0.2, 0, Math.PI*2);
             ctx.fill();
 
-            // === DETAIL WAJAH ===
+            // Mata
             ctx.fillStyle = 'white';
             ctx.beginPath();
             ctx.arc(x-5, y-62, 2.5, 0, 2*Math.PI);
@@ -610,7 +654,7 @@
             ctx.arc(x+4, y-63, 1.2, 0, 2*Math.PI);
             ctx.fill();
 
-            // Bayangan pemain
+            // Bayangan
             ctx.shadowBlur = 8;
             ctx.fillStyle = '#1a3a3a';
             ctx.globalAlpha = 0.3;
@@ -621,7 +665,7 @@
             ctx.shadowBlur = 0;
         }
 
-        // BOLA 3D (sekarang di kaki, y=400)
+        // BOLA 3D
         function drawBall() {
             ball.rotation += 0.05;
 
@@ -722,7 +766,7 @@
             }
 
             ball.x = 450;
-            ball.y = 400; // konsisten di kaki
+            ball.y = 400;
             ball.vx = 0;
             ball.vy = 0;
             keeper.jump = false;
@@ -736,7 +780,6 @@
             document.getElementById("endScreen").style.display = "flex";
         }
 
-        // Tombol PLAY AGAIN
         document.getElementById("playAgain").onclick = function() {
             score = 0;
             shot = 0;
@@ -754,19 +797,18 @@
             keeper.x = 450;
         };
 
-        // TOMBOL HOME
         document.getElementById("homeButton").onclick = function() {
-            window.location.href = "https://msdkkprojeck.github.io/pasjckpot_soccer";
+            window.location.href = "https://msdkkprojeck.github.io/pasjckpot_soccer/index.html";
         };
 
         function gameLoop() {
-            update();
-            drawField();
-            drawGoal();
+            drawBackground();
+            drawRealisticGoal();
             drawTargets();
-            drawKeeper();
+            drawKeeper3D();
             drawPlayer();
             drawBall();
+            update();
             requestAnimationFrame(gameLoop);
         }
 
