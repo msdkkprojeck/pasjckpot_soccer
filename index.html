@@ -27,7 +27,36 @@
 <section id="calculator" class="page">
   <h2>PARLAY CALCULATOR</h2>
 
+  <div class="odds-container" <div class="calculator-layout">
+
+<div class="left-panel">
   <div class="odds-container" id="oddsContainer"></div>
+  <button class="btn-glow" onclick="addOdds()">+ TAMBAH ODDS</button>
+
+  <div class="output">
+    <input id="totalOdds" placeholder="Total Odds" readonly>
+    <input id="stake" type="text" placeholder="Modal">
+    <input id="winResult" placeholder="Hasil Menang" readonly>
+  </div>
+</div>
+
+<div class="right-panel">
+  <table class="detail-table">
+    <thead>
+      <tr>
+        <th>No</th>
+        <th>Odds</th>
+        <th>Type</th>
+        <th>Final</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody id="detailTable"></tbody>
+  </table>
+</div>
+
+</div>
+  <id="oddsContainer"></div>
   <button class="btn-glow" onclick="addOdds()">+ TAMBAH ODDS</button>
 
   <div class="output">
