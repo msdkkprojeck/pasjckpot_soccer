@@ -228,3 +228,51 @@ body::after {
   pointer-events: none;
   animation: ambientGlow 6s ease-in-out infinite;
 }
+
+.calculator-layout{
+display:flex;
+gap:20px;
+align-items:flex-start;
+}
+
+.left-panel{
+flex:1;
+}
+
+.right-panel{
+width:320px;
+background:rgba(0,0,0,0.45);
+border-radius:16px;
+padding:15px;
+backdrop-filter:blur(8px);
+}
+
+.detail-table{
+width:100%;
+border-collapse:collapse;
+font-size:13px;
+}
+
+.detail-table th{
+color:#ffb347;
+padding:6px;
+border-bottom:1px solid rgba(255,165,0,0.4);
+}
+
+.detail-table td{
+padding:6px;
+text-align:center;
+border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+@media(max-width:900px){
+
+.calculator-layout{
+flex-direction:column;
+}
+
+.right-panel{
+width:100%;
+}
+
+}
