@@ -44,44 +44,80 @@ function addOdds() {
 }
 
 function calculate() {
-  let totalOdds = 1;
 
-  document.querySelectorAll(".odds-row").forEach(row => {
-    const odd = parseFloat(row.querySelector("input").value);
-    const type = row.querySelector("select").value;
+let totalOdds = 1;
+let tableHTML = "";
+let index = 1;
 
-    if (!odd || odd <= 1) return;
+document.querySelectorAll(".odds-row").forEach(row => {
 
-    let finalOdd = 1;
+const odd = parseFloat(row.querySelector("input").value);
+const type = row.querySelector("select").value;
 
-    switch(type) {
-      case "win":
-        finalOdd = odd;
-        break;
-      case "halfwin":
-      case "halflose":
-        finalOdd = 1 + (odd - 1) / 2;
-        break;
-      case "draw":
-        finalOdd = 1;
-        break;
-    }
+if(!odd || odd <=1) return;
 
-    totalOdds *= finalOdd;
-  });
+let finalOdd = 1;
+let label = "";
 
-  totalOdds = Number(totalOdds.toFixed(2));
-  document.getElementById("totalOdds").value = totalOdds;
+switch(type){
 
-  const stakeInput = document.getElementById("stake");
-  const stake = parseNumber(stakeInput.value);
+case "win":
+finalOdd = odd;
+label = "WIN";
+break;
 
-  if (stake > 0) {
-    const win = stake * totalOdds;
-    document.getElementById("winResult").value = formatNumber(Math.floor(win));
-  } else {
-    document.getElementById("winResult").value = "";
-  }
+case "halfwin":
+finalOdd = 1 + (odd - 1)/2;
+label = "HALF WIN";
+break;
+
+case "halflose":
+finalOdd = 1 + (odd - 1)/2;
+label = "HALF LOSE";
+break;
+
+case "draw":
+finalOdd = 1;
+label = "DRAW";
+break;
+
+}
+
+totalOdds *= finalOdd;
+
+tableHTML += `
+<tr>
+<td>${index}</td>
+<td>${odd}</td>
+<td>${label}</td>
+<td>${finalOdd.toFixed(2)}</td>
+<td>${totalOdds.toFixed(2)}</td>
+</tr>
+`;
+
+index++;
+
+});
+
+totalOdds = Number(totalOdds.toFixed(2));
+document.getElementById("totalOdds").value = totalOdds;
+
+document.getElementById("detailTable").innerHTML = tableHTML;
+
+const stakeInput = document.getElementById("stake");
+const stake = parseNumber(stakeInput.value);
+
+if(stake > 0){
+
+const win = stake * totalOdds;
+document.getElementById("winResult").value = formatNumber(Math.floor(win));
+
+}else{
+
+document.getElementById("winResult").value = "";
+
+}
+
 }
 
 /* FORMAT MODAL SAAT DIKETIK */
