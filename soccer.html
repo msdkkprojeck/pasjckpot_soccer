@@ -2,76 +2,47 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Penalty Soccer Cartoon</title>
+<title>Penalty Soccer</title>
 
 <style>
 
 body{
 margin:0;
-background:#0a3a0a;
+background:#0b4f0b;
 font-family:Arial;
 display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
-overflow:hidden;
 }
 
-#gameContainer{
-position:relative;
+#container{
+text-align:center;
 }
 
 #ui{
-position:absolute;
-top:-50px;
-left:0;
-right:0;
-text-align:center;
 color:white;
-font-size:26px;
+font-size:22px;
+margin-bottom:10px;
 font-weight:bold;
 }
 
 canvas{
-border:6px solid white;
-border-radius:20px;
 background:#2e7d32;
-}
-
-#goalText{
-position:absolute;
-top:40%;
-left:50%;
-transform:translate(-50%,-50%) scale(0);
-font-size:70px;
-color:yellow;
-font-weight:bold;
-pointer-events:none;
-}
-
-.goalAnim{
-animation:goal 1s forwards;
-}
-
-@keyframes goal{
-0%{transform:translate(-50%,-50%) scale(0)}
-40%{transform:translate(-50%,-50%) scale(1.3)}
-100%{transform:translate(-50%,-50%) scale(0)}
+border-radius:15px;
+border:4px solid white;
 }
 
 </style>
-</head>
 
+</head>
 <body>
 
-<div id="gameContainer">
+<div id="container">
 
 <div id="ui">
 ⚽ SCORE: <span id="score">0</span> | SHOT: <span id="shot">0</span>/6
 </div>
-
-<div id="goalText">GOAL!!</div>
 
 <canvas id="game" width="900" height="500"></canvas>
 
@@ -79,235 +50,277 @@ animation:goal 1s forwards;
 
 <script>
 
-const canvas=document.getElementById("game");
-const ctx=canvas.getContext("2d");
+const canvas=document.getElementById("game")
+const ctx=canvas.getContext("2d")
 
-let score=0;
-let shot=0;
-let shooting=false;
+let score=0
+let shot=0
+let shooting=false
 
 let ball={
 x:450,
-y:400,
-r:18,
+y:380,
+r:12,
 vx:0,
-vy:0,
-rot:0
-};
+vy:0
+}
 
 let keeper={
 x:450,
-y:160,
-targetX:450,
-speed:0.15
-};
+y:150,
+dir:2,
+jump:false,
+targetX:450
+}
 
-const goal={
-x:300,
-y:60,
-w:300,
-h:130
-};
+let goal={
+x:320,
+y:80,
+w:260,
+h:10
+}
 
-canvas.addEventListener("click",shoot);
+let targets=[
+{x:340,y:100},
+{x:450,y:100},
+{x:560,y:100},
+{x:340,y:150},
+{x:560,y:150}
+]
 
-function shoot(e){
+canvas.addEventListener("click",(e)=>{
 
-if(shooting || shot>=6)return;
+if(shooting) return
+if(shot>=6) return
 
-const rect=canvas.getBoundingClientRect();
+let x=e.offsetX
+let y=e.offsetY
 
-const x=(e.clientX-rect.left)*(canvas.width/rect.width);
-const y=(e.clientY-rect.top)*(canvas.height/rect.height);
+for(let t of targets){
 
-if(x>goal.x && x<goal.x+goal.w && y>goal.y && y<goal.y+goal.h){
+let d=Math.hypot(x-t.x,y-t.y)
 
-ball.vx=(x-ball.x)*0.09;
-ball.vy=(y-ball.y)*0.09;
-
-keeper.targetX=x;
-
-shot++;
-document.getElementById("shot").innerText=shot;
-
-shooting=true;
+if(d<25){
+shootBall(t.x,t.y)
+}
 
 }
+
+})
+
+function shootBall(tx,ty){
+
+shooting=true
+shot++
+
+document.getElementById("shot").innerText=shot
+
+ball.vx=(tx-ball.x)*0.08
+ball.vy=(ty-ball.y)*0.08
+
+let guess=Math.random()
+
+if(guess<0.7){
+keeper.targetX=tx
+}else{
+keeper.targetX=goal.x+Math.random()*goal.w
+}
+
+keeper.jump=true
 
 }
 
 function drawField(){
 
-const sky=ctx.createLinearGradient(0,0,0,200);
-sky.addColorStop(0,"#0a1f3a");
-sky.addColorStop(1,"#3a6ea5");
+ctx.fillStyle="#2e7d32"
+ctx.fillRect(0,0,canvas.width,canvas.height)
 
-ctx.fillStyle=sky;
-ctx.fillRect(0,0,900,200);
-
-ctx.fillStyle="#2e7d32";
-ctx.fillRect(0,200,900,300);
-
-ctx.strokeStyle="white";
-ctx.lineWidth=3;
-ctx.strokeRect(200,200,500,200);
+ctx.strokeStyle="white"
+ctx.lineWidth=4
+ctx.strokeRect(200,200,500,200)
 
 }
 
 function drawGoal(){
 
-ctx.fillStyle="#ffffff";
+ctx.fillStyle="white"
 
-ctx.fillRect(goal.x,goal.y,goal.w,10);
-ctx.fillRect(goal.x,goal.y,10,goal.h);
-ctx.fillRect(goal.x+goal.w-10,goal.y,10,goal.h);
+ctx.fillRect(goal.x,goal.y,goal.w,8)
+ctx.fillRect(goal.x,goal.y,8,70)
+ctx.fillRect(goal.x+goal.w-8,goal.y,8,70)
 
 }
+
+function drawTargets(){
+
+for(let t of targets){
+
+ctx.beginPath()
+ctx.arc(t.x,t.y,15,0,Math.PI*2)
+ctx.strokeStyle="yellow"
+ctx.lineWidth=2
+ctx.stroke()
+
+}
+
+}
+
+/* ===== KIPER KARTUN ===== */
 
 function drawKeeper(){
 
-keeper.x+= (keeper.targetX-keeper.x)*keeper.speed;
+// kepala
+ctx.fillStyle="#ffd6a5"
+ctx.beginPath()
+ctx.arc(keeper.x,keeper.y-35,14,0,Math.PI*2)
+ctx.fill()
 
-ctx.fillStyle="#2e6cff";
+// badan
+ctx.fillStyle="#2962ff"
+ctx.fillRect(keeper.x-15,keeper.y-25,30,35)
 
-ctx.beginPath();
-ctx.arc(keeper.x,keeper.y-30,14,0,Math.PI*2);
-ctx.fill();
+// tangan kiri
+ctx.fillStyle="#ffd6a5"
+ctx.fillRect(keeper.x-30,keeper.y-15,15,6)
 
-ctx.fillRect(keeper.x-12,keeper.y-30,24,35);
+// tangan kanan
+ctx.fillRect(keeper.x+15,keeper.y-15,15,6)
 
-ctx.fillRect(keeper.x-28,keeper.y-25,16,8);
-ctx.fillRect(keeper.x+12,keeper.y-25,16,8);
+// sarung tangan
+ctx.fillStyle="yellow"
 
-ctx.fillRect(keeper.x-12,keeper.y+5,10,20);
-ctx.fillRect(keeper.x+2,keeper.y+5,10,20);
+ctx.beginPath()
+ctx.arc(keeper.x-32,keeper.y-12,6,0,Math.PI*2)
+ctx.fill()
+
+ctx.beginPath()
+ctx.arc(keeper.x+32,keeper.y-12,6,0,Math.PI*2)
+ctx.fill()
+
+// kaki
+ctx.fillStyle="#1e40af"
+ctx.fillRect(keeper.x-10,keeper.y+10,8,20)
+ctx.fillRect(keeper.x+2,keeper.y+10,8,20)
 
 }
+
+/* ===== PEMAIN ===== */
 
 function drawPlayer(){
 
-const x=450;
-const y=430;
+let x=450
+let y=420
 
-ctx.fillStyle="#ff9933";
+// kepala
+ctx.fillStyle="#ffd6a5"
+ctx.beginPath()
+ctx.arc(x,y-40,14,0,Math.PI*2)
+ctx.fill()
 
-ctx.beginPath();
-ctx.arc(x,y-35,14,0,Math.PI*2);
-ctx.fill();
+// badan
+ctx.fillStyle="#ff7a00"
+ctx.fillRect(x-15,y-30,30,35)
 
-ctx.fillRect(x-12,y-35,24,40);
+// tangan
+ctx.fillRect(x-30,y-20,15,6)
+ctx.fillRect(x+15,y-20,15,6)
 
-ctx.fillRect(x-28,y-20,16,8);
-ctx.fillRect(x+12,y-20,16,8);
-
-ctx.fillRect(x-12,y+5,10,22);
-ctx.fillRect(x+2,y+5,10,22);
+// kaki
+ctx.fillStyle="#0f766e"
+ctx.fillRect(x-10,y+10,8,20)
+ctx.fillRect(x+2,y+10,8,20)
 
 }
 
+/* ===== BOLA ===== */
+
 function drawBall(){
 
-ball.rot+=0.1;
+ctx.fillStyle="white"
+ctx.beginPath()
+ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2)
+ctx.fill()
 
-ctx.save();
+ctx.strokeStyle="black"
+ctx.lineWidth=2
 
-ctx.translate(ball.x,ball.y);
-ctx.rotate(ball.rot);
-
-ctx.fillStyle="white";
-
-ctx.beginPath();
-ctx.arc(0,0,ball.r,0,Math.PI*2);
-ctx.fill();
-
-ctx.strokeStyle="black";
-ctx.lineWidth=2;
-
-ctx.beginPath();
-ctx.arc(0,0,ball.r*0.7,0,Math.PI*2);
-ctx.stroke();
-
-ctx.restore();
+ctx.beginPath()
+ctx.arc(ball.x,ball.y,ball.r*0.6,0,Math.PI*2)
+ctx.stroke()
 
 }
 
 function update(){
 
-ball.x+=ball.vx;
-ball.y+=ball.vy;
+ball.x+=ball.vx
+ball.y+=ball.vy
 
-ball.vx*=0.98;
-ball.vy*=0.98;
+ball.vx*=0.99
+ball.vy*=0.99
 
-const dx=ball.x-keeper.x;
-const dy=ball.y-(keeper.y-20);
+if(!keeper.jump){
 
-if(Math.sqrt(dx*dx+dy*dy)<35){
+keeper.x+=keeper.dir
 
-reset();
+if(keeper.x>600 || keeper.x<300){
+keeper.dir*=-1
+}
+
+}else{
+
+keeper.x+=(keeper.targetX-keeper.x)*0.15
 
 }
 
-if(ball.y<goal.y+goal.h && ball.x>goal.x && ball.x<goal.x+goal.w){
+let d=Math.hypot(ball.x-keeper.x,ball.y-keeper.y)
 
-score++;
+if(d<25){
+reset()
+}
 
-document.getElementById("score").innerText=score;
+if(ball.y<goal.y+5 && ball.x>goal.x && ball.x<goal.x+goal.w){
 
-showGoal();
+score++
+document.getElementById("score").innerText=score
 
-reset();
+reset()
 
 }
 
-if(ball.y<0 || ball.x<0 || ball.x>900){
-
-reset();
-
+if(ball.y<goal.y){
+reset()
 }
-
-}
-
-function showGoal(){
-
-const g=document.getElementById("goalText");
-
-g.classList.remove("goalAnim");
-void g.offsetWidth;
-g.classList.add("goalAnim");
 
 }
 
 function reset(){
 
-if(shot>=6)return;
+ball.x=450
+ball.y=380
+ball.vx=0
+ball.vy=0
 
-ball.x=450;
-ball.y=400;
-ball.vx=0;
-ball.vy=0;
-
-shooting=false;
-
-}
-
-function loop(){
-
-ctx.clearRect(0,0,900,500);
-
-drawField();
-drawGoal();
-drawKeeper();
-drawPlayer();
-drawBall();
-
-update();
-
-requestAnimationFrame(loop);
+keeper.jump=false
+shooting=false
 
 }
 
-loop();
+function gameLoop(){
+
+update()
+
+drawField()
+drawGoal()
+drawTargets()
+drawKeeper()
+drawPlayer()
+drawBall()
+
+requestAnimationFrame(gameLoop)
+
+}
+
+gameLoop()
 
 </script>
 
