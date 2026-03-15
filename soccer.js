@@ -124,7 +124,6 @@ ctx.stroke()
 
 }
 
-// ===== KIPER KARTUN 2D =====
 function drawKeeper(){
 
 // kepala
@@ -146,6 +145,7 @@ ctx.fillRect(keeper.x+12,keeper.y-15,18,6)
 
 // sarung tangan
 ctx.fillStyle="orange"
+
 ctx.beginPath()
 ctx.arc(keeper.x-32,keeper.y-12,5,0,Math.PI*2)
 ctx.fill()
@@ -166,7 +166,6 @@ ctx.fillRect(keeper.x+2,keeper.y+22,10,5)
 
 }
 
-// ===== PEMAIN KARTUN 2D =====
 function drawPlayer(){
 
 let x=450
@@ -201,7 +200,6 @@ ctx.fillRect(x+2,y+22,10,5)
 
 }
 
-// ===== BOLA SEPAK =====
 function drawBall(){
 
 ctx.fillStyle="white"
@@ -255,9 +253,7 @@ keeper.x+=(keeper.targetX-keeper.x)*0.15
 let d=Math.hypot(ball.x-keeper.x,ball.y-keeper.y)
 
 if(d<25){
-
 reset()
-
 }
 
 if(ball.y<goal.y+5 && ball.x>goal.x && ball.x<goal.x+goal.w){
@@ -270,9 +266,7 @@ reset()
 }
 
 if(ball.y<goal.y){
-
 reset()
-
 }
 
 }
