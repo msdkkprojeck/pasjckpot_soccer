@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>Penalty Soccer Cartoon</title>
+<title>Penalty Soccer Pro</title>
 
 <style>
 
@@ -22,19 +22,32 @@ text-align:center;
 
 #ui{
 color:white;
-font-size:22px;
-margin-bottom:10px;
+font-size:24px;
 font-weight:bold;
+margin-bottom:10px;
 }
 
 canvas{
-border-radius:20px;
 border:5px solid white;
+border-radius:20px;
+}
+
+#goalText{
+position:absolute;
+top:40%;
+left:50%;
+transform:translate(-50%,-50%);
+font-size:70px;
+color:yellow;
+display:none;
+font-weight:bold;
+text-shadow:0 0 20px orange;
 }
 
 </style>
 
 </head>
+
 <body>
 
 <div id="container">
@@ -44,6 +57,8 @@ border:5px solid white;
 </div>
 
 <canvas id="game" width="900" height="500"></canvas>
+
+<div id="goalText">GOAL!</div>
 
 </div>
 
@@ -56,9 +71,21 @@ let score=0
 let shot=0
 let shooting=false
 
-let ball={x:450,y:380,r:14,vx:0,vy:0}
+let ball={
+x:450,
+y:380,
+r:14,
+vx:0,
+vy:0,
+rot:0
+}
 
-let keeper={x:450,y:160,dir:2,jump:false,targetX:450}
+let keeper={
+x:450,
+y:160,
+targetX:450,
+speed:0.2
+}
 
 const goal={x:320,y:70,w:260}
 
@@ -96,33 +123,30 @@ document.getElementById("shot").innerText=shot
 ball.vx=(tx-ball.x)*0.08
 ball.vy=(ty-ball.y)*0.08
 
-if(Math.random()<0.7){
+if(Math.random()<0.75){
 keeper.targetX=tx
 }else{
 keeper.targetX=goal.x+Math.random()*goal.w
 }
 
-keeper.jump=true
-
 }
 
 function drawBackground(){
 
-// langit stadion
 let sky=ctx.createLinearGradient(0,0,0,250)
 sky.addColorStop(0,"#0a1f3a")
 sky.addColorStop(1,"#3a6ea5")
+
 ctx.fillStyle=sky
 ctx.fillRect(0,0,900,250)
 
-// rumput
 let grass=ctx.createLinearGradient(0,200,0,500)
 grass.addColorStop(0,"#2e7d32")
 grass.addColorStop(1,"#145214")
+
 ctx.fillStyle=grass
 ctx.fillRect(0,200,900,300)
 
-// garis lapangan
 ctx.strokeStyle="white"
 ctx.lineWidth=3
 ctx.strokeRect(200,200,500,200)
@@ -137,35 +161,34 @@ ctx.fillRect(goal.x,70,goal.w,10)
 ctx.fillRect(goal.x,70,10,80)
 ctx.fillRect(goal.x+goal.w-10,70,10,80)
 
-// jaring
 ctx.strokeStyle="#cccccc"
 
 for(let i=0;i<goal.w;i+=20){
+
 ctx.beginPath()
 ctx.moveTo(goal.x+i,70)
 ctx.lineTo(goal.x+i,150)
 ctx.stroke()
+
 }
 
 }
 
 function drawKeeper(){
 
-// badan
+keeper.x+=(keeper.targetX-keeper.x)*keeper.speed
+
 ctx.fillStyle="#2962ff"
 ctx.fillRect(keeper.x-18,keeper.y-20,36,40)
 
-// kepala
 ctx.fillStyle="#ffd6a5"
 ctx.beginPath()
 ctx.arc(keeper.x,keeper.y-35,14,0,Math.PI*2)
 ctx.fill()
 
-// tangan
 ctx.fillRect(keeper.x-35,keeper.y-15,18,6)
 ctx.fillRect(keeper.x+17,keeper.y-15,18,6)
 
-// sarung tangan
 ctx.fillStyle="yellow"
 ctx.beginPath()
 ctx.arc(keeper.x-37,keeper.y-12,6,0,Math.PI*2)
@@ -175,7 +198,6 @@ ctx.beginPath()
 ctx.arc(keeper.x+37,keeper.y-12,6,0,Math.PI*2)
 ctx.fill()
 
-// kaki
 ctx.fillStyle="#1e40af"
 ctx.fillRect(keeper.x-10,keeper.y+15,8,20)
 ctx.fillRect(keeper.x+2,keeper.y+15,8,20)
@@ -187,21 +209,17 @@ function drawPlayer(){
 let x=450
 let y=420
 
-// badan
 ctx.fillStyle="#ff7a00"
 ctx.fillRect(x-18,y-30,36,40)
 
-// kepala
 ctx.fillStyle="#ffd6a5"
 ctx.beginPath()
 ctx.arc(x,y-45,14,0,Math.PI*2)
 ctx.fill()
 
-// tangan
 ctx.fillRect(x-35,y-20,18,6)
 ctx.fillRect(x+17,y-20,18,6)
 
-// kaki
 ctx.fillStyle="#0f766e"
 ctx.fillRect(x-10,y+10,8,20)
 ctx.fillRect(x+2,y+10,8,20)
@@ -210,21 +228,32 @@ ctx.fillRect(x+2,y+10,8,20)
 
 function drawBall(){
 
-let g=ctx.createRadialGradient(ball.x-4,ball.y-4,4,ball.x,ball.y,ball.r)
+ball.rot+=0.1
+
+ctx.save()
+
+ctx.translate(ball.x,ball.y)
+ctx.rotate(ball.rot)
+
+let g=ctx.createRadialGradient(-4,-4,4,0,0,ball.r)
+
 g.addColorStop(0,"white")
 g.addColorStop(1,"#bbbbbb")
 
 ctx.fillStyle=g
 
 ctx.beginPath()
-ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2)
+ctx.arc(0,0,ball.r,0,Math.PI*2)
 ctx.fill()
 
 ctx.strokeStyle="black"
 ctx.lineWidth=2
+
 ctx.beginPath()
-ctx.arc(ball.x,ball.y,ball.r*0.6,0,Math.PI*2)
+ctx.arc(0,0,ball.r*0.6,0,Math.PI*2)
 ctx.stroke()
+
+ctx.restore()
 
 }
 
@@ -236,20 +265,6 @@ ball.y+=ball.vy
 ball.vx*=0.99
 ball.vy*=0.99
 
-if(!keeper.jump){
-
-keeper.x+=keeper.dir
-
-if(keeper.x>600||keeper.x<300){
-keeper.dir*=-1
-}
-
-}else{
-
-keeper.x+=(keeper.targetX-keeper.x)*0.15
-
-}
-
 if(Math.hypot(ball.x-keeper.x,ball.y-keeper.y)<30){
 reset()
 }
@@ -258,6 +273,9 @@ if(ball.y<80&&ball.x>goal.x&&ball.x<goal.x+goal.w){
 
 score++
 document.getElementById("score").innerText=score
+
+showGoal()
+
 reset()
 
 }
@@ -268,13 +286,24 @@ reset()
 
 }
 
+function showGoal(){
+
+let g=document.getElementById("goalText")
+g.style.display="block"
+
+setTimeout(()=>{
+g.style.display="none"
+},1000)
+
+}
+
 function reset(){
 
 ball.x=450
 ball.y=380
 ball.vx=0
 ball.vy=0
-keeper.jump=false
+
 shooting=false
 
 }
