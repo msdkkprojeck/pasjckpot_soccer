@@ -3,21 +3,22 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Penalty Kick Human Animation</title>
+<title>Penalty Kick Mini Game</title>
 
 <style>
 
 body{
 background:#1c7c34;
 display:flex;
-justify-content:center;
+flex-direction:column;
 align-items:center;
+justify-content:center;
 height:100vh;
 margin:0;
 font-family:Arial;
 }
 
-/* AREA LAPANGAN */
+/* LAPANGAN */
 
 #field{
 position:relative;
@@ -40,11 +41,11 @@ border:6px solid white;
 border-bottom:none;
 }
 
-/* PEMAIN PENENDANG */
+/* PEMAIN */
 
 #player{
 position:absolute;
-bottom:50px;
+bottom:60px;
 left:420px;
 width:90px;
 transition:0.3s;
@@ -64,16 +65,15 @@ transition:0.4s;
 
 #ball{
 position:absolute;
-bottom:80px;
+bottom:90px;
 left:450px;
-width:35px;
+width:40px;
 transition:0.7s;
 }
 
 /* TOMBOL */
 
 .controls{
-text-align:center;
 margin-top:20px;
 }
 
@@ -82,6 +82,14 @@ padding:10px 20px;
 margin:5px;
 font-size:16px;
 cursor:pointer;
+border:none;
+background:#222;
+color:white;
+border-radius:5px;
+}
+
+button:hover{
+background:#444;
 }
 
 </style>
@@ -89,20 +97,21 @@ cursor:pointer;
 
 <body>
 
-<div>
-
 <div id="field">
 
 <div id="goal"></div>
 
+<!-- PEMAIN -->
 <img id="player"
-src="player.png">
+src="https://upload.wikimedia.org/wikipedia/commons/8/8e/Football_player_silhouette.svg">
 
+<!-- KIPER -->
 <img id="keeper"
-src="keeper.png">
+src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Goalkeeper_silhouette.svg">
 
+<!-- BOLA -->
 <img id="ball"
-src="ball.png">
+src="https://upload.wikimedia.org/wikipedia/commons/d/d3/Soccerball.svg">
 
 </div>
 
@@ -110,8 +119,6 @@ src="ball.png">
 <button onclick="shoot('left')">KIRI</button>
 <button onclick="shoot('center')">TENGAH</button>
 <button onclick="shoot('right')">KANAN</button>
-</div>
-
 </div>
 
 <script>
@@ -122,9 +129,9 @@ let ball = document.getElementById("ball");
 let keeper = document.getElementById("keeper");
 let player = document.getElementById("player");
 
-/* ANIMASI PEMAIN MENENDANG */
+/* ANIMASI TENDANG */
 
-player.style.transform="rotate(-10deg)";
+player.style.transform="rotate(-15deg)";
 
 setTimeout(()=>{
 player.style.transform="rotate(0deg)";
