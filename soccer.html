@@ -3,12 +3,12 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Penalty Kick Animation</title>
+<title>Penalty Kick Human Animation</title>
 
 <style>
 
 body{
-background:#0f7a2a;
+background:#1c7c34;
 display:flex;
 justify-content:center;
 align-items:center;
@@ -17,48 +17,60 @@ margin:0;
 font-family:Arial;
 }
 
-#stadium{
+/* AREA LAPANGAN */
+
+#field{
 position:relative;
-width:800px;
-height:450px;
-background:linear-gradient(#3aa655,#1e7c3a);
-border:4px solid white;
+width:900px;
+height:500px;
+background:linear-gradient(#4caf50,#2e7d32);
+border:5px solid white;
 overflow:hidden;
 }
 
-/* gawang */
+/* GAWANG */
 
 #goal{
 position:absolute;
 top:40px;
-left:250px;
-width:300px;
+left:320px;
+width:250px;
 height:120px;
 border:6px solid white;
 border-bottom:none;
 }
 
-/* kiper */
+/* PEMAIN PENENDANG */
+
+#player{
+position:absolute;
+bottom:50px;
+left:420px;
+width:90px;
+transition:0.3s;
+}
+
+/* KIPER */
 
 #keeper{
 position:absolute;
-top:120px;
-left:360px;
-width:80px;
+top:110px;
+left:420px;
+width:90px;
 transition:0.4s;
 }
 
-/* bola */
+/* BOLA */
 
 #ball{
 position:absolute;
-bottom:40px;
-left:380px;
-width:40px;
+bottom:80px;
+left:450px;
+width:35px;
 transition:0.7s;
 }
 
-/* kontrol */
+/* TOMBOL */
 
 .controls{
 text-align:center;
@@ -79,15 +91,18 @@ cursor:pointer;
 
 <div>
 
-<div id="stadium">
+<div id="field">
 
 <div id="goal"></div>
 
+<img id="player"
+src="player.png">
+
 <img id="keeper"
-src="https://cdn-icons-png.flaticon.com/512/2972/2972185.png">
+src="keeper.png">
 
 <img id="ball"
-src="https://cdn-icons-png.flaticon.com/512/53/53283.png">
+src="ball.png">
 
 </div>
 
@@ -105,38 +120,49 @@ function shoot(direction){
 
 let ball = document.getElementById("ball");
 let keeper = document.getElementById("keeper");
+let player = document.getElementById("player");
+
+/* ANIMASI PEMAIN MENENDANG */
+
+player.style.transform="rotate(-10deg)";
+
+setTimeout(()=>{
+player.style.transform="rotate(0deg)";
+},200);
+
+/* GERAKAN BOLA */
 
 if(direction=="left"){
-ball.style.left="260px";
-ball.style.top="120px";
+ball.style.left="330px";
+ball.style.top="140px";
 }
 
 if(direction=="center"){
-ball.style.left="380px";
-ball.style.top="100px";
-}
-
-if(direction=="right"){
-ball.style.left="500px";
+ball.style.left="450px";
 ball.style.top="120px";
 }
 
-/* kiper random */
+if(direction=="right"){
+ball.style.left="560px";
+ball.style.top="140px";
+}
+
+/* GERAKAN KIPER RANDOM */
 
 let dive = Math.floor(Math.random()*3);
 
 setTimeout(()=>{
 
 if(dive==0){
-keeper.style.left="260px";
+keeper.style.left="330px";
 }
 
 if(dive==1){
-keeper.style.left="360px";
+keeper.style.left="420px";
 }
 
 if(dive==2){
-keeper.style.left="470px";
+keeper.style.left="540px";
 }
 
 },200);
