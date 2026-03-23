@@ -8,32 +8,34 @@
   border-radius: 15px;
 }
 
-/* 🧤 KIPER (BIAR PAS DI GAWANG) */
+/* 🧤 KIPER (DITURUNIN BIAR NEMPEL GAWANG) */
 #keeper {
   position: absolute;
-  top: 155px;          /* SESUAIIN BIAR PAS DI MULUT GAWANG */
+  top: 185px;              /* ⬅️ TURUNIN */
   left: 50%;
   transform: translateX(-50%);
-  width: 110px;
+  width: 100px;           /* ⬅️ SEDIKIT LEBIH KECIL BIAR REAL */
   z-index: 2;
+  transition: all 0.3s ease;
 }
 
-/* ⚽ BOLA (NEMPEL KAKI) */
+/* ⚽ BOLA (IKUT MUNDUR) */
 #ball {
   position: absolute;
-  bottom: 110px;       /* NAIKIN SEDIKIT */
+  bottom: 130px;          /* ⬅️ NAIKIN SEDIKIT */
   left: 50%;
   transform: translateX(-50%);
-  width: 38px;
+  width: 34px;            /* ⬅️ KECILIN BIAR DEPTH */
   z-index: 4;
   transition: all 0.6s cubic-bezier(.3,1.5,.5,1);
 }
 
-/* 🧍 PLAYER (BIAR PROPORSIONAL) */
+/* 🧍 PLAYER (DIMUNDURIN + KECILIN) */
 #player {
   position: absolute;
-  bottom: -10px;       /* TURUNIN BIAR NATURAL */
+  bottom: 20px;           /* ⬅️ NAIKIN (KESAN JAUH) */
   left: 50%;
   transform: translateX(-50%);
-  width: 150px;        /* BESARIN BIAR MATCH */
+  width: 130px;           /* ⬅️ LEBIH KECIL BIAR MASUK PERSPEKTIF */
   z-index: 3;
+}
