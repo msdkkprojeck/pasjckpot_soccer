@@ -23,35 +23,36 @@ body {
   border-radius: 15px;
 }
 
-/* 🧤 KIPER (TURUNIN KE DEPAN GAWANG) */
+/* 🧤 KIPER (LEBIH BESAR + TURUN) */
 #keeper {
   position: absolute;
-  top: 210px;              /* ⬅️ TURUN LAGI */
+  top: 230px;              /* ⬅️ TURUN LAGI */
   left: 50%;
   transform: translateX(-50%);
-  width: 105px;
+  width: 130px;           /* ⬅️ BESARIN */
   z-index: 2;
   transition: all 0.3s ease;
 }
-/* ⚽ BOLA IKUT NAIK BERSAMA PLAYER */
-#ball {
-  position: absolute;
-  bottom: 120px;          /* ⬅️ SESUAIIN KE KAKI PLAYER */
-  left: 50%;
-  transform: translateX(-50%);
-  width: 42px;
-  z-index: 4;
-}
 
-/* 🧍 PLAYER (LEBIH BESAR & DEKAT) */
+/* 🧍 PLAYER (LEBIH BESAR + DEKAT KAMERA) */
 #player {
   position: absolute;
-  bottom: -10px;           /* ⬅️ TURUN (BIAR DEKAT LAYAR) */
+  bottom: -25px;          /* ⬅️ TURUN (LEBIH DEKAT LAYAR) */
   left: 50%;
   transform: translateX(-50%);
-  width: 170px;           /* ⬅️ BESARIN */
+  width: 200px;           /* ⬅️ BESAR BANGET BIAR IMPACT */
   z-index: 3;
   transition: 0.2s;
+}
+
+/* ⚽ BOLA IKUT SESUAIIN */
+#ball {
+  position: absolute;
+  bottom: 135px;          /* ⬅️ NAIKIN BIAR PAS DI KAKI */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 45px;
+  z-index: 4;
 }
 
 
