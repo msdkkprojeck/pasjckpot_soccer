@@ -8,34 +8,34 @@
   border-radius: 15px;
 }
 
-/* 🧤 KIPER (DITURUNIN BIAR NEMPEL GAWANG) */
+/* 🧤 KIPER (TURUNIN KE DEPAN GAWANG) */
 #keeper {
   position: absolute;
-  top: 185px;              /* ⬅️ TURUNIN */
+  top: 210px;              /* ⬅️ TURUN LAGI */
   left: 50%;
   transform: translateX(-50%);
-  width: 100px;           /* ⬅️ SEDIKIT LEBIH KECIL BIAR REAL */
+  width: 105px;
   z-index: 2;
   transition: all 0.3s ease;
 }
 
-/* ⚽ BOLA (IKUT MUNDUR) */
-#ball {
-  position: absolute;
-  bottom: 130px;          /* ⬅️ NAIKIN SEDIKIT */
-  left: 50%;
-  transform: translateX(-50%);
-  width: 34px;            /* ⬅️ KECILIN BIAR DEPTH */
-  z-index: 4;
-  transition: all 0.6s cubic-bezier(.3,1.5,.5,1);
-}
-
-/* 🧍 PLAYER (DIMUNDURIN + KECILIN) */
+/* 🧍 PLAYER (LEBIH BESAR & DEKAT) */
 #player {
   position: absolute;
-  bottom: 20px;           /* ⬅️ NAIKIN (KESAN JAUH) */
+  bottom: -10px;           /* ⬅️ TURUN (BIAR DEKAT LAYAR) */
   left: 50%;
   transform: translateX(-50%);
-  width: 130px;           /* ⬅️ LEBIH KECIL BIAR MASUK PERSPEKTIF */
+  width: 170px;           /* ⬅️ BESARIN */
   z-index: 3;
+  transition: 0.2s;
+}
+
+/* ⚽ BOLA IKUT NAIK BERSAMA PLAYER */
+#ball {
+  position: absolute;
+  bottom: 120px;          /* ⬅️ SESUAIIN KE KAKI PLAYER */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 42px;
+  z-index: 4;
 }
