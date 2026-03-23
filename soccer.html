@@ -2,37 +2,216 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Penalty Jackpot</title>
-<link rel="stylesheet" href="style.css">
+<title>Penalty Game</title>
+
+<style>
+body {
+  margin: 0;
+  background: #0c1b2a;
+  text-align: center;
+  color: white;
+  font-family: Arial;
+}
+
+.field {
+  width: 400px;
+  height: 600px;
+  margin: auto;
+  position: relative;
+  background: url("https://i.ibb.co/q3XB9T0L/gawang-dan-lapangan.png") center/cover no-repeat;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+/* PLAYER */
+#player {
+  position: absolute;
+  bottom: 0;
+  left: 140px;
+  width: 120px;
+  z-index: 3;
+  transition: 0.2s;
+}
+
+/* BALL */
+#ball {
+  position: absolute;
+  bottom: 90px;
+  left: 170px;
+  width: 40px;
+  transition: all 0.6s cubic-bezier(.3,1.5,.5,1);
+  z-index: 4;
+}
+
+/* KEEPER */
+#keeper {
+  position: absolute;
+  top: 120px;
+  left: 140px;
+  width: 120px;
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+/* RESULT TEXT */
+#result {
+  position: absolute;
+  top: 80px;
+  width: 100%;
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+  opacity: 0;
+  z-index: 5;
+  text-shadow: 0 0 15px gold;
+}
+
+/* SHAKE */
+@keyframes shake {
+  0% { transform: translate(0); }
+  25% { transform: translate(-5px, 5px); }
+  50% { transform: translate(5px, -5px); }
+  75% { transform: translate(-5px, 5px); }
+  100% { transform: translate(0); }
+}
+
+button {
+  padding: 10px 20px;
+  margin: 5px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+</style>
 </head>
+
 <body>
 
-<div class="game">
+<h2>Penalty Game</h2>
 
-  <div class="field">
+<div class="field">
 
-    <!-- TEXT RESULT -->
-    <div id="resultText"></div>
+  <div id="result"></div>
 
-    <!-- KIPER -->
-    <img id="keeper" src="KEEPER_IDLE.png">
-
-    <!-- BOLA -->
-    <img id="ball" src="BALL.png">
-
-    <!-- CLICK AREA -->
-    <div class="shoot-area">
-      <div onclick="shoot('left')" class="zone"></div>
-      <div onclick="shoot('center')" class="zone"></div>
-      <div onclick="shoot('right')" class="zone"></div>
-    </div>
-
-  </div>
-
-  <h2>Score: <span id="score">0</span></h2>
+  <img id="keeper" src="https://i.ibb.co/DPBmgWRZ/keper-sebelum-mulai.png">
+  <img id="ball" src="https://i.ibb.co/WWFHTzwt/20260323-154207.jpg">
+  <img id="player" src="https://i.ibb.co/F4qkqKLC/penendang-gambar-2.png">
 
 </div>
 
-<script src="script.js"></script>
+<div>
+  <button onclick="shoot('left')">Kiri</button>
+  <button onclick="shoot('center')">Tengah</button>
+  <button onclick="shoot('right')">Kanan</button>
+</div>
+
+<h3>Score: <span id="score">0</span></h3>
+
+<script>
+let score = 0;
+let isPlaying = false;
+
+const assets = {
+  player_idle: "https://i.ibb.co/F4qkqKLC/penendang-gambar-2.png",
+  player_kick: "https://i.ibb.co/nsfh5VSX/penendang-gambar-3.png",
+
+  keeper_idle: "https://i.ibb.co/DPBmgWRZ/keper-sebelum-mulai.png",
+  keeper_ready: "https://i.ibb.co/0pKTdxdM/sudah-mulai-dan-bersiap.png",
+  keeper_left: "https://i.ibb.co/v66vC5yz/kiper-diving-kiri.png",
+  keeper_center: "https://i.ibb.co/Sw8cQTkX/dapat-bola-1.png",
+  keeper_right: "https://i.ibb.co/9SLqdWg/kiper-diving-kanan.png"
+};
+
+function shoot(direction) {
+  if (isPlaying) return;
+  isPlaying = true;
+
+  const player = document.getElementById("player");
+  const ball = document.getElementById("ball");
+  const keeper = document.getElementById("keeper");
+  const result = document.getElementById("result");
+  const field = document.querySelector(".field");
+
+  const directions = ["left","center","right"];
+  const keeperMove = directions[Math.floor(Math.random()*3)];
+
+  // PLAYER NENDANG
+  player.src = assets.player_kick;
+  player.style.transform = "scale(1.05)";
+
+  setTimeout(() => {
+    player.style.transform = "scale(1)";
+  }, 200);
+
+  // KIPER SIAP
+  setTimeout(() => {
+    keeper.src = assets.keeper_ready;
+  }, 150);
+
+  // BOLA GERAK
+  setTimeout(() => {
+    if (direction === "left") {
+      ball.style.left = "70px";
+      ball.style.transform = "scale(0.6) rotate(-20deg)";
+    } else if (direction === "center") {
+      ball.style.left = "170px";
+      ball.style.transform = "scale(0.6)";
+    } else {
+      ball.style.left = "270px";
+      ball.style.transform = "scale(0.6) rotate(20deg)";
+    }
+
+    ball.style.bottom = "420px";
+  }, 200);
+
+  // KIPER LOMPAT
+  setTimeout(() => {
+    if (keeperMove === "left") {
+      keeper.src = assets.keeper_left;
+      keeper.style.left = "80px";
+    } else if (keeperMove === "center") {
+      keeper.src = assets.keeper_center;
+      keeper.style.left = "140px";
+    } else {
+      keeper.src = assets.keeper_right;
+      keeper.style.left = "220px";
+    }
+  }, 400);
+
+  // HASIL
+  setTimeout(() => {
+    if (direction !== keeperMove) {
+      score++;
+      result.innerText = "GOAL!!! 🔥";
+      result.style.color = "gold";
+      field.style.animation = "shake 0.3s";
+    } else {
+      result.innerText = "SAVE 🧤";
+      result.style.color = "red";
+    }
+
+    result.style.opacity = 1;
+    document.getElementById("score").innerText = score;
+
+    setTimeout(() => {
+      result.style.opacity = 0;
+      field.style.animation = "";
+
+      player.src = assets.player_idle;
+      keeper.src = assets.keeper_idle;
+
+      ball.style.bottom = "90px";
+      ball.style.left = "170px";
+      ball.style.transform = "scale(1)";
+
+      keeper.style.left = "140px";
+
+      isPlaying = false;
+    }, 700);
+
+  }, 900);
+}
+</script>
+
 </body>
 </html>
