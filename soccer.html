@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Penalty Game</title>
+<title>permainan erik tan</title>
 
 <style>
 body {
@@ -23,41 +23,37 @@ body {
   border-radius: 15px;
 }
 
-/* 🧤 KIPER */
+/* 🧤 KIPER (TURUNIN KE DEPAN GAWANG) */
 #keeper {
   position: absolute;
-  top: 150px;
+  top: 210px;              /* ⬅️ TURUN LAGI */
   left: 50%;
   transform: translateX(-50%);
-  width: 110px;
+  width: 105px;
   z-index: 2;
   transition: all 0.3s ease;
-  filter: drop-shadow(0 6px 6px rgba(0,0,0,0.5));
 }
-
-/* ⚽ BOLA */
+/* ⚽ BOLA IKUT NAIK BERSAMA PLAYER */
 #ball {
   position: absolute;
-  bottom: 110px;
+  bottom: 120px;          /* ⬅️ SESUAIIN KE KAKI PLAYER */
   left: 50%;
   transform: translateX(-50%);
-  width: 38px;
+  width: 42px;
   z-index: 4;
-  transition: all 0.6s cubic-bezier(.3,1.5,.5,1);
-  filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5));
 }
 
-/* 🧍 PLAYER */
+/* 🧍 PLAYER (LEBIH BESAR & DEKAT) */
 #player {
   position: absolute;
-  bottom: -10px;
+  bottom: -10px;           /* ⬅️ TURUN (BIAR DEKAT LAYAR) */
   left: 50%;
   transform: translateX(-50%);
-  width: 150px;
+  width: 170px;           /* ⬅️ BESARIN */
   z-index: 3;
   transition: 0.2s;
-  filter: drop-shadow(0 8px 8px rgba(0,0,0,0.6));
 }
+
 
 /* RESULT TEXT */
 #result {
@@ -93,7 +89,7 @@ button {
 
 <body>
 
-<h2>Penalty Game</h2>
+<h2>permainan erik tan</h2>
 
 <div class="field">
 
@@ -186,11 +182,11 @@ function shoot(direction) {
   setTimeout(() => {
     if (direction !== keeperMove) {
       score++;
-      result.innerText = "GOAL!!! 🔥";
+      result.innerText = "GOAL!!! 🔥bang erik";
       result.style.color = "gold";
       field.style.animation = "shake 0.3s";
     } else {
-      result.innerText = "SAVE 🧤";
+      result.innerText = "ketangkap bg erik";
       result.style.color = "red";
     }
 
