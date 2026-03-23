@@ -1,38 +1,155 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Penalty Game Advance</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>Penalty Game</title>
+
+<style>
+body {
+  margin: 0;
+  background: #0c1b2a;
+  text-align: center;
+  color: white;
+  font-family: Arial;
+}
+
+.field {
+  width: 400px;
+  height: 600px;
+  margin: auto;
+  position: relative;
+  background: url("https://i.ibb.co/q3XB9T0L/gawang-dan-lapangan.png
+") center/cover no-repeat;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+/* PLAYER */
+#player {
+  position: absolute;
+  bottom: 0;
+  left: 140px;
+  width: 120px;
+}
+
+/* BALL */
+#ball {
+  position: absolute;
+  bottom: 90px;
+  left: 170px;
+  width: 40px;
+  transition: 0.6s;
+}
+
+/* KEEPER */
+#keeper {
+  position: absolute;
+  top: 120px;
+  left: 140px;
+  width: 120px;
+  transition: 0.3s;
+}
+
+button {
+  padding: 10px 20px;
+  margin: 5px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+</style>
 </head>
+
 <body>
 
-<div class="game">
+<h2>Penalty Game</h2>
 
-  <!-- 🏟️ BACKGROUND (lapangan + gawang jadi 1 gambar) -->
-  <div class="field">
+<div class="field">
 
-    <!-- 🧤 KIPER -->
-    <img id="keeper" src="https://i.ibb.co/DPBmgWRZ/keper-sebelum-mulai.png">
-
-    <!-- ⚽ BOLA -->
-    <img id="ball" src="https://i.ibb.co/WWFHTzwt/20260323-154207.jpg">
-
-    <!-- 🧍 PLAYER -->
-    <img id="player" src="https://i.ibb.co/k66M9qqz/penandang-gambar-1.png">
-
-  </div>
-
-  <div class="controls">
-    <button onclick="shoot('left')">Kiri</button>
-    <button onclick="shoot('center')">Tengah</button>
-    <button onclick="shoot('right')">Kanan</button>
-  </div>
-
-  <h2>Score: <span id="score">0</span></h2>
+  <img id="keeper" src="https://i.ibb.co/DPBmgWRZ/keper-sebelum-mulai.png">
+  <img id="ball" src="https://i.ibb.co/WWFHTzwt/20260323-154207.jpg">
+  <img id="player" src="https://i.ibb.co/k66M9qqz/penandang-gambar-1.png">
 
 </div>
 
-<script src="script.js"></script>
+<div>
+  <button onclick="shoot('left')">Kiri</button>
+  <button onclick="shoot('center')">Tengah</button>
+  <button onclick="shoot('right')">Kanan</button>
+</div>
+
+<h3>Score: <span id="score">0</span></h3>
+
+<script>
+let score = 0;
+
+const assets = {
+  player_idle: "https://i.ibb.co/F4qkqKLC/penendang-gambar-2.png",
+  player_kick: "https://i.ibb.co/nsfh5VSX/penendang-gambar-3.png
+",
+
+  keeper_idle: "https://i.ibb.co/DPBmgWRZ/keper-sebelum-mulai.png",
+  keeper_ready: "https://i.ibb.co/0pKTdxdM/sudah-mulai-dan-bersiap.png",
+  keeper_left: "https://i.ibb.co/v66vC5yz/kiper-diving-kiri.png",
+  keeper_center: "https://i.ibb.co/Sw8cQTkX/dapat-bola-1.png",
+  keeper_right: "https://i.ibb.co/9SLqdWg/kiper-diving-kanan.png"
+};
+
+function shoot(direction) {
+  const player = document.getElementById("player");
+  const ball = document.getElementById("ball");
+  const keeper = document.getElementById("keeper");
+
+  const directions = ["left","center","right"];
+  const keeperMove = directions[Math.floor(Math.random()*3)];
+
+  player.src = assets.player_kick;
+
+  setTimeout(()=> keeper.src = assets.keeper_ready,150);
+
+  setTimeout(()=>{
+    if(direction==="left") ball.style.left="80px";
+    if(direction==="center") ball.style.left="170px";
+    if(direction==="right") ball.style.left="260px";
+
+    ball.style.bottom="420px";
+  },200);
+
+  setTimeout(()=>{
+    if(keeperMove==="left"){
+      keeper.src=assets.keeper_left;
+      keeper.style.left="80px";
+    }
+    if(keeperMove==="center"){
+      keeper.src=assets.keeper_center;
+      keeper.style.left="140px";
+    }
+    if(keeperMove==="right"){
+      keeper.src=assets.keeper_right;
+      keeper.style.left="220px";
+    }
+  },400);
+
+  setTimeout(()=>{
+    if(direction!==keeperMove){
+      score++;
+      alert("GOAL ⚽");
+    } else {
+      alert("SAVE 🧤");
+    }
+
+    document.getElementById("score").innerText=score;
+
+    player.src=assets.player_idle;
+    keeper.src=assets.keeper_idle;
+
+    ball.style.bottom="90px";
+    ball.style.left="170px";
+    keeper.style.left="140px";
+
+  },900);
+}
+</script>
+
 </body>
 </html>
