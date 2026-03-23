@@ -23,48 +23,47 @@ body {
   border-radius: 15px;
 }
 
-/* 🧤 KIPER (LEBIH BESAR + TURUN) */
+/* 🧤 KIPER */
 #keeper {
   position: absolute;
-  top: 230px;              /* ⬅️ TURUN LAGI */
+  top: 230px;
   left: 50%;
   transform: translateX(-50%);
-  width: 130px;           /* ⬅️ BESARIN */
+  width: 130px;
   z-index: 2;
   transition: all 0.3s ease;
 }
 
-/* 🧍 PLAYER (LEBIH BESAR + DEKAT KAMERA) */
+/* 🧍 PLAYER */
 #player {
   position: absolute;
-  bottom: -40px;          /* ⬅️ lebih turun = lebih dekat kamera */
+  bottom: -40px;
   left: 50%;
   transform: translateX(-50%);
-  width: 230px;           /* ⬅️ lebih besar */
+  width: 230px;
   z-index: 3;
+  transition: 0.2s;
 }
 
-/* ⚽ BOLA IKUT SESUAIIN */
+/* ⚽ BOLA */
 #ball {
   position: absolute;
-  bottom: 135px;          /* ⬅️ NAIKIN BIAR PAS DI KAKI */
+  bottom: 135px;
   left: 50%;
   transform: translateX(-50%);
   width: 45px;
   z-index: 4;
+  transition: all 0.6s cubic-bezier(.3,1.5,.5,1);
 }
 
-
-/* RESULT TEXT */
+/* RESULT */
 #result {
   position: absolute;
   top: 70px;
   width: 100%;
   font-size: 30px;
   font-weight: bold;
-  text-align: center;
   opacity: 0;
-  z-index: 5;
   text-shadow: 0 0 15px gold;
 }
 
@@ -137,9 +136,18 @@ function shoot(direction) {
   const directions = ["left","center","right"];
   const keeperMove = directions[Math.floor(Math.random()*3)];
 
+  // RESET BALL
+  ball.style.transition = "none";
+  ball.style.left = "50%";
+  ball.style.bottom = "135px";
+
+  setTimeout(() => {
+    ball.style.transition = "all 0.6s cubic-bezier(.3,1.5,.5,1)";
+  }, 50);
+
   // PLAYER NENDANG
   player.src = assets.player_kick;
-  player.style.transform = "translateX(-50%) scale(1.05)";
+  player.style.transform = "translateX(-50%) scale(1.1)";
 
   setTimeout(() => {
     player.style.transform = "translateX(-50%) scale(1)";
@@ -150,20 +158,23 @@ function shoot(direction) {
     keeper.src = assets.keeper_ready;
   }, 150);
 
-  // GERAK BOLA (PERSEN BIAR RESPONSIVE)
-  if (direction === "left") ball.style.left = "35%";   // ⬅️ masuk kiri gawang
-if (direction === "center") ball.style.left = "50%"; // tengah
-if (direction === "right") ball.style.left = "65%";  // kanan gawang
+  // GERAK BOLA
+  setTimeout(() => {
+
+    if (direction === "left") ball.style.left = "35%";
+    if (direction === "center") ball.style.left = "50%";
+    if (direction === "right") ball.style.left = "65%";
 
     ball.style.transform = "translateX(-50%) scale(0.6)";
-    ball.style.bottom = "420px";
+    ball.style.bottom = "360px";
+
   }, 200);
 
   // GERAK KIPER
   setTimeout(() => {
     if (keeperMove === "left") {
       keeper.src = assets.keeper_left;
-      keeper.style.left = "25%";
+      keeper.style.left = "30%";
     }
     if (keeperMove === "center") {
       keeper.src = assets.keeper_center;
@@ -171,21 +182,19 @@ if (direction === "right") ball.style.left = "65%";  // kanan gawang
     }
     if (keeperMove === "right") {
       keeper.src = assets.keeper_right;
-      keeper.style.left = "75%";
+      keeper.style.left = "70%";
     }
-
-    keeper.style.transform = "translateX(-50%)";
   }, 400);
 
   // HASIL
   setTimeout(() => {
     if (direction !== keeperMove) {
       score++;
-      result.innerText = "GOAL!!! 🔥bang erik";
+      result.innerText = "GOAL!!! 🔥 bang erik";
       result.style.color = "gold";
       field.style.animation = "shake 0.3s";
     } else {
-      result.innerText = "ketangkap bg erik";
+      result.innerText = "KETANGKAP 🧤";
       result.style.color = "red";
     }
 
@@ -199,7 +208,7 @@ if (direction === "right") ball.style.left = "65%";  // kanan gawang
       player.src = assets.player_idle;
       keeper.src = assets.keeper_idle;
 
-      ball.style.bottom = "110px";
+      ball.style.bottom = "135px";
       ball.style.left = "50%";
       ball.style.transform = "translateX(-50%) scale(1)";
 
