@@ -1,11 +1,3 @@
-body {
-  margin: 0;
-  background: black;
-  text-align: center;
-  color: white;
-  font-family: Arial;
-}
-
 .field {
   width: 400px;
   height: 600px;
@@ -13,77 +5,36 @@ body {
   position: relative;
   background: url("https://i.ibb.co/q3XB9T0L/gawang-dan-lapangan.png") center/cover no-repeat;
   overflow: hidden;
+  border-radius: 15px;
 }
 
-/* RESULT TEXT */
-#resultText {
-  position: absolute;
-  top: 80px;
-  width: 100%;
-  font-size: 32px;
-  font-weight: bold;
-  text-align: center;
-  opacity: 0;
-  z-index: 10;
-  text-shadow: 0 0 15px gold;
-}
-
-/* KIPER */
+/* 🧤 KIPER (BIAR PAS DI GAWANG) */
 #keeper {
   position: absolute;
-  top: 180px;
-  left: 140px;
+  top: 155px;          /* SESUAIIN BIAR PAS DI MULUT GAWANG */
+  left: 50%;
+  transform: translateX(-50%);
   width: 110px;
-  transition: 0.3s;
+  z-index: 2;
 }
 
-/* BALL */
+/* ⚽ BOLA (NEMPEL KAKI) */
 #ball {
   position: absolute;
-  bottom: 80px;
-  left: 170px;
-  width: 45px;
-  transition: all 0.6s ease;
+  bottom: 110px;       /* NAIKIN SEDIKIT */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 38px;
+  z-index: 4;
+  transition: all 0.6s cubic-bezier(.3,1.5,.5,1);
 }
 
-/* CLICK AREA */
-.shoot-area {
+/* 🧍 PLAYER (BIAR PROPORSIONAL) */
+#player {
   position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 200px;
-  display: flex;
-}
-
-.zone {
-  flex: 1;
-  cursor: pointer;
-}
-
-/* JACKPOT ANIMATION */
-.jackpot {
-  animation: pop 0.6s ease, glow 1s infinite alternate;
-}
-
-@keyframes pop {
-  0% { transform: scale(0.5); opacity: 0; }
-  100% { transform: scale(1.2); opacity: 1; }
-}
-
-@keyframes glow {
-  from { text-shadow: 0 0 10px yellow; }
-  to { text-shadow: 0 0 25px orange; }
-}
-
-/* SHAKE */
-.shake {
-  animation: shake 0.3s;
-}
-
-@keyframes shake {
-  0% { transform: translate(0); }
-  25% { transform: translate(-5px, 5px); }
-  50% { transform: translate(5px, -5px); }
-  75% { transform: translate(-5px, 5px); }
-  100% { transform: translate(0); }
+  bottom: -10px;       /* TURUNIN BIAR NATURAL */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 150px;        /* BESARIN BIAR MATCH */
+  z-index: 3;
 }
