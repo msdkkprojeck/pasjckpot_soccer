@@ -41,35 +41,31 @@ function shoot(direction) {
     ball.style.transition = "all 0.6s cubic-bezier(.3,1.5,.5,1)";
     
     if (direction === "left") {
-      ball.style.left = "70px";
-      ball.style.transform = "scale(0.6) rotate(-20deg)";
-    } 
-    else if (direction === "center") {
-      ball.style.left = "170px";
-      ball.style.transform = "scale(0.6)";
-    } 
-    else {
-      ball.style.left = "270px";
-      ball.style.transform = "scale(0.6) rotate(20deg)";
-    }
-
-    ball.style.bottom = "420px";
-  }, 200);
+  ball.style.left = "25%";
+}
+else if (direction === "center") {
+  ball.style.left = "50%";
+}
+else {
+  ball.style.left = "75%";
+}
 
   // 🧤 KIPER LOMPAT
   setTimeout(() => {
     if (keeperMove === "left") {
       keeper.src = assets.keeper_left;
-      keeper.style.left = "80px";
+      keeper.style.left = "25%";
+keeper.style.transform = "translateX(-50%)";
     }
     if (keeperMove === "center") {
       keeper.src = assets.keeper_center;
-      keeper.style.left = "140px";
+     keeper.style.left = "50%"; // tengah
     }
     if (keeperMove === "right") {
       keeper.src = assets.keeper_right;
-      keeper.style.left = "220px";
+     keeper.style.left = "75%"; // kanan
     }
+    ball.style.transform = "translateX(-50%) scale(0.6)";
   }, 400);
 
   // 🎉 HASIL
@@ -140,4 +136,16 @@ function resetGame(player, ball, keeper) {
 
     isPlaying = false;
   }, 500);
+}
+
+#ball {
+  filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5));
+}
+
+#player {
+  filter: drop-shadow(0 8px 8px rgba(0,0,0,0.6));
+}
+
+#keeper {
+  filter: drop-shadow(0 6px 6px rgba(0,0,0,0.5));
 }
