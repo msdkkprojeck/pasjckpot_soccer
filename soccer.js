@@ -137,15 +137,3 @@ function resetGame(player, ball, keeper) {
     isPlaying = false;
   }, 500);
 }
-
-#ball {
-  filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5));
-}
-
-#player {
-  filter: drop-shadow(0 8px 8px rgba(0,0,0,0.6));
-}
-
-#keeper {
-  filter: drop-shadow(0 6px 6px rgba(0,0,0,0.5));
-}
