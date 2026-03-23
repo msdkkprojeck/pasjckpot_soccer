@@ -1,6 +1,6 @@
 let score = 0;
+let isPlaying = false;
 
-// 🎨 ASSET (TINGGAL GANTI LINK)
 const assets = {
   player_idle: "https://i.ibb.co/F4qkqKLC/penendang-gambar-2.png",
   player_kick: "https://i.ibb.co/nsfh5VSX/penendang-gambar-3.png",
@@ -13,67 +13,131 @@ const assets = {
 };
 
 function shoot(direction) {
+  if (isPlaying) return;
+  isPlaying = true;
+
   const player = document.getElementById("player");
   const ball = document.getElementById("ball");
   const keeper = document.getElementById("keeper");
 
-  const directions = ["left", "center", "right"];
-  const keeperMove = directions[Math.floor(Math.random() * 3)];
+  const directions = ["left","center","right"];
+  const keeperMove = directions[Math.floor(Math.random()*3)];
 
-  // 1. Player nendang
+  // 🎯 PLAYER NENDANG (ANIMASI)
+  player.style.transform = "scale(1.05)";
   player.src = assets.player_kick;
 
-  // 2. Kiper siap
+  setTimeout(() => {
+    player.style.transform = "scale(1)";
+  }, 200);
+
+  // 🧤 KIPER SIAP
   setTimeout(() => {
     keeper.src = assets.keeper_ready;
   }, 150);
 
-  // 3. Bola jalan
+  // ⚽ BOLA GERAK (LEBIH HIDUP)
   setTimeout(() => {
+    ball.style.transition = "all 0.6s cubic-bezier(.3,1.5,.5,1)";
+    
     if (direction === "left") {
-      ball.style.left = "80px";
-    } else if (direction === "center") {
+      ball.style.left = "70px";
+      ball.style.transform = "scale(0.6) rotate(-20deg)";
+    } 
+    else if (direction === "center") {
       ball.style.left = "170px";
-    } else {
-      ball.style.left = "260px";
+      ball.style.transform = "scale(0.6)";
+    } 
+    else {
+      ball.style.left = "270px";
+      ball.style.transform = "scale(0.6) rotate(20deg)";
     }
+
     ball.style.bottom = "420px";
-    ball.style.transform = "scale(0.7)";
   }, 200);
 
-  // 4. Kiper lompat
+  // 🧤 KIPER LOMPAT
   setTimeout(() => {
     if (keeperMove === "left") {
       keeper.src = assets.keeper_left;
       keeper.style.left = "80px";
-    } else if (keeperMove === "center") {
+    }
+    if (keeperMove === "center") {
       keeper.src = assets.keeper_center;
       keeper.style.left = "140px";
-    } else {
+    }
+    if (keeperMove === "right") {
       keeper.src = assets.keeper_right;
       keeper.style.left = "220px";
     }
   }, 400);
 
-  // 5. RESULT
+  // 🎉 HASIL
   setTimeout(() => {
     if (direction !== keeperMove) {
       score++;
-      alert("GOAL!!! ⚽🔥");
+      showResult("GOAL!!! 🔥", "gold");
+      screenShake();
     } else {
-      alert("DITANGKAP!! 🧤");
+      showResult("SAVE!! 🧤", "red");
     }
 
     document.getElementById("score").innerText = score;
 
-    // RESET
+    resetGame(player, ball, keeper);
+
+  }, 900);
+}
+
+// 🔥 TEXT HASIL (GANTI ALERT)
+function showResult(text, color) {
+  let result = document.getElementById("result");
+
+  if (!result) {
+    result = document.createElement("div");
+    result.id = "result";
+    document.querySelector(".field").appendChild(result);
+  }
+
+  result.innerText = text;
+  result.style.color = color;
+  result.style.position = "absolute";
+  result.style.top = "80px";
+  result.style.width = "100%";
+  result.style.fontSize = "32px";
+  result.style.fontWeight = "bold";
+  result.style.textAlign = "center";
+  result.style.textShadow = "0 0 15px " + color;
+  result.style.opacity = "1";
+
+  setTimeout(() => {
+    result.style.opacity = "0";
+  }, 800);
+}
+
+// 💥 SHAKE EFFECT
+function screenShake() {
+  const field = document.querySelector(".field");
+  field.style.animation = "shake 0.3s";
+
+  setTimeout(() => {
+    field.style.animation = "";
+  }, 300);
+}
+
+// 🔁 RESET
+function resetGame(player, ball, keeper) {
+  setTimeout(() => {
     player.src = assets.player_idle;
     keeper.src = assets.keeper_idle;
 
+    ball.style.transition = "0.3s";
     ball.style.bottom = "90px";
     ball.style.left = "170px";
     ball.style.transform = "scale(1)";
+
     keeper.style.left = "140px";
 
-  }, 900);
+    isPlaying = false;
+  }, 500);
 }
