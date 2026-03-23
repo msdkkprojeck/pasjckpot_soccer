@@ -152,10 +152,9 @@ function shoot(direction) {
   }, 150);
 
   // GERAK BOLA (PERSEN BIAR RESPONSIVE)
-  setTimeout(() => {
-    if (direction === "left") ball.style.left = "25%";
-    if (direction === "center") ball.style.left = "50%";
-    if (direction === "right") ball.style.left = "75%";
+  if (direction === "left") ball.style.left = "35%";   // ⬅️ masuk kiri gawang
+if (direction === "center") ball.style.left = "50%"; // tengah
+if (direction === "right") ball.style.left = "65%";  // kanan gawang
 
     ball.style.transform = "translateX(-50%) scale(0.6)";
     ball.style.bottom = "420px";
